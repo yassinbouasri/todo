@@ -1,6 +1,6 @@
 # Todo - Task Manager
 
-A simple Todo List application built using **PHP**, **MySQL**, **HTML/CSS**, and **JS**.
+A simple Todo List application built using **PHP**, **MySQL**, **HTML/CSS**, **JS** and **Bootstrap** for styling.
 
 ## Key Features
 
