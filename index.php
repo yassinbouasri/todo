@@ -50,6 +50,7 @@
                     <td><span class="badge badge-completed">Completed</span></td>
                     <td>
                         <button class="btn btn-primary btn-sm">Edit</button>
+                        <button type="button" class="btn btn-info btn-sm">View</button>
                         <button class="btn btn-danger btn-sm">Delete</button>
                     </td>
                 </tr>
@@ -59,6 +60,7 @@
                     <td><span class="badge badge-in-progress">In Progress</span></td>
                     <td>
                         <button class="btn btn-primary btn-sm">Edit</button>
+                        <button type="button" class="btn btn-info btn-sm">View</button>
                         <button class="btn btn-danger btn-sm">Delete</button>
                     </td>
                 </tr>
