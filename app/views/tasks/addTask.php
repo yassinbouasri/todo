@@ -1,29 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php require_once '../layout.php'; ?>
 <head>
   <title>Add Task - Todo App</title>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <style>
-    .task-container {
-      max-width: 500px;
-      margin: 0 auto;
-      margin-top: 50px;
-      padding: 20px;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-      border-radius: 10px;
-    }
-    .task-title {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-  </style>
+
+    <link rel="stylesheet" href="../../../public/css/style.css">
 </head>
 <body>
-    <?php require_once "topmenu.php"; ?>
+    <?php require_once "../topmenu.php"; ?>
   <div class="container task-container">
     <h2 class="task-title">Add Task</h2>
     <form action="save_task.php" method="post">
