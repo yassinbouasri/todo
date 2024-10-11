@@ -34,7 +34,7 @@
 </head>
 <body>
 
-<?php require_once "topmenu.php"; ?>
+<?php require_once "../topmenu.php"; ?>
 <div class="container task-container">
   <div class="row">
     <div class="col-md-8 col-md-offset-2">
@@ -75,7 +75,7 @@
         </div>
   
         <div class="panel-footer">
-          <a href="index.php" class="btn btn-primary btn-back">Back to Task List</a>
+          <a href="../home.php" class="btn btn-primary btn-back">Back to Task List</a>
         </div>
       </div>
     </div>
