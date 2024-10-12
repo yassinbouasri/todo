@@ -7,7 +7,6 @@ require_once "../models/categories.php";
 $tasksModel = new Tasks();
 $tasks = $tasksModel->getAllTasks();
 $categoriesModels = new Categories();
-
 ?>
 
   <div class="container mt-5">
@@ -34,47 +33,21 @@ $categoriesModels = new Categories();
                 </tr>
             </thead>
             <tbody id="taskTable">
+            <?php foreach ($tasks as $task): ?>
                 <tr>
-                    <?php foreach ($tasks as $task): ?>
                     <td><?php echo htmlspecialchars($task['task_title']); ?></td>
                     <td><?php echo htmlspecialchars($task['task_description']); ?></td>
                     <?php $category = $categoriesModels->getCategoryById($task['category_id']); ?>
                     <td><?php echo htmlspecialchars($category['category_name']); ?></td>
                     <td><?php echo htmlspecialchars($task['due_date']); ?></td>
-                    <td><span class="badge badge-high"><?php echo htmlspecialchars($task['priority']); ?></span></td>
-                    <td><span class="badge badge-success"><?php echo htmlspecialchars($task['status']); ?></span></td>
+                    <td><span class="<?php echo htmlspecialchars($tasksModel->badge($task['priority'])); ?>"> <?php echo htmlspecialchars($task['priority']); ?></span></td>
+                    <td><span class="<?php echo htmlspecialchars($tasksModel->badge($task['status'])); ?>"><?php echo htmlspecialchars($task['status']); ?></span></td>
                     <td>
                         <a href="tasks/show.php" class="btn btn-primary btn-sm">Edit</a>
                         <a href="tasks/show.php" class="btn btn-info btn-back btn-sm">View</a>
                         <a href="tasks/show.php" class="btn btn-danger btn-sm">Delete</a>
                     </td>
                     <?php endforeach;?>
-                </tr>
-                <tr>
-                    <td>Task Title 2</td>
-                    <td>This is a brief description of task 2.</td>
-                    <td>Marketing</td>
-                    <td>October 18, 2024</td>
-                    <td><span class="badge badge-medium">Medium</span></td>
-                    <td><span class="badge badge-warning">In Progress</span></td> 
-                    <td>
-                        <a href="tasks/show.php" class="btn btn-primary btn-sm">Edit</a>
-                        <a href="tasks/show.php" class="btn btn-info btn-back btn-sm">View</a>
-                        <a href="tasks/show.php" class="btn btn-danger btn-sm">Delete</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Task Title 3</td>
-                    <td>This is a brief description of task 3.</td>
-                    <td>Design</td>
-                    <td>October 20, 2024</td>
-                    <td><span class="badge badge-high">High</span></td>
-                    <td><span class="badge badge-success">Complete</span></td>
-                    <td>
-                        <a href="tasks/show.php" class="btn btn-primary btn-sm">Edit</a>
-                        <a href="tasks/show.php" class="btn btn-info btn-back btn-sm">View</a>
-                        <a href="tasks/show.php" class="btn btn-danger btn-sm">Delete</a>
-                    </td>
                 </tr>
             </tbody>
         </table>
