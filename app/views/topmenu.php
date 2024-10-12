@@ -22,12 +22,18 @@
         <li class="dropdown">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tasks <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="tasks/addTask.php">Add Task</a></li>
+            <li><a href="<?php echo $base_url; ?>app/views/tasks/addTask.php">Add Task</a></li>
             <li><a href="#">Edit Task</a></li>
             <li><a href="#">Delete Task</a></li>
           </ul>
         </li>
-        <li><a href="#">Categories</a></li>
+          <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Categories <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                  <li><a href="<?php echo $base_url; ?>app/views/categories/showCategory.php">Show Categories</a></li>
+                  <li><a href="<?php echo $base_url; ?>app/views/categories/addCategory.php">Add Category</a></li>
+              </ul>
+          </li>
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
