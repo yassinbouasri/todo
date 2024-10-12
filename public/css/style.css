@@ -10,10 +10,6 @@
     background-color: #198754;
     color: white;
 }
-.badge-warning {
-    background-color: #ffc107;
-    color: black;
-}
 .task-container {
     max-width: 500px;
     margin: 0 auto;
