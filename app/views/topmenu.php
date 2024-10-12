@@ -1,3 +1,4 @@
+<?php $base_url = "/todo/"; ?>
 
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
@@ -10,14 +11,14 @@
         <span class="icon-bar"></span>                        
       </button>
 
-      <a class="navbar-brand" href="home.php">Todo</a>
+      <a class="navbar-brand" href="<?php echo $base_url; ?>app/views/home.php">Todo</a>
     </div>
     
 
     <div class="collapse navbar-collapse" id="myNavbar">
 
       <ul class="nav navbar-nav">
-        <li class="active"><a href="home.php">Home</a></li>
+        <li class="active"><a href="<?php echo $base_url; ?>app/views/home.php">Home</a></li>
         <li class="dropdown">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tasks <span class="caret"></span></a>
           <ul class="dropdown-menu">
