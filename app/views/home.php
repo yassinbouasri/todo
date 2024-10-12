@@ -1,5 +1,14 @@
-<?php require_once "layout.php"; ?>
-<?php require_once "topmenu.php"; ?>
+<?php
+require_once "layout.php";
+require_once "topmenu.php";
+require_once "../models/tasks.php";
+require_once "../models/categories.php";
+
+$tasksModel = new Tasks();
+$tasks = $tasksModel->getAllTasks();
+$categoriesModels = new Categories();
+
+?>
 
   <div class="container mt-5">
     <h1 class="text-center mb-4">Tasks List</h1>
@@ -26,17 +35,20 @@
             </thead>
             <tbody id="taskTable">
                 <tr>
-                    <td>Task Title 1</td>
-                    <td>This is a brief description of task 1.</td>
-                    <td>Web Development</td>
-                    <td>October 15, 2024</td>
-                    <td><span class="badge badge-high">High</span></td>
-                    <td><span class="badge badge-success">Completed</span></td>
+                    <?php foreach ($tasks as $task): ?>
+                    <td><?php echo htmlspecialchars($task['task_title']); ?></td>
+                    <td><?php echo htmlspecialchars($task['task_description']); ?></td>
+                    <?php $category = $categoriesModels->getCategoryById($task['category_id']); ?>
+                    <td><?php echo htmlspecialchars($category['category_name']); ?></td>
+                    <td><?php echo htmlspecialchars($task['due_date']); ?></td>
+                    <td><span class="badge badge-high"><?php echo htmlspecialchars($task['priority']); ?></span></td>
+                    <td><span class="badge badge-success"><?php echo htmlspecialchars($task['status']); ?></span></td>
                     <td>
                         <a href="tasks/show.php" class="btn btn-primary btn-sm">Edit</a>
                         <a href="tasks/show.php" class="btn btn-info btn-back btn-sm">View</a>
                         <a href="tasks/show.php" class="btn btn-danger btn-sm">Delete</a>
                     </td>
+                    <?php endforeach;?>
                 </tr>
                 <tr>
                     <td>Task Title 2</td>
