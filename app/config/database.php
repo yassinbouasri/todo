@@ -1,24 +1,27 @@
 <?php
 class Database
 {
-    private $pdo;
-    public function __construct(){
-        $host = "localhost";
+
+    private static $instance;
+    private function __construct(){
+
+    }
+
+    public static function getConnection(){
+        if(isset(self::$instance)){
+            return self::$instance;
+        }
+        $host = "127.0.0.1";
         $user = "root";
         $password = "";
         $dbname = "todo";
 
         $dsn = "mysql:host=$host;dbname=$dbname;charset=utf8mb4";
 
-        try {
-            $this->pdo = new PDO($dsn, $user, $password);
-        } catch (\PDOException $e) {
-            throw new \PDOException($e->getMessage(), (int)$e->getCode());
-        }
-    }
 
-    public function getConnection(){
-        return $this->pdo;
+        self::$instance = new PDO($dsn, $user, $password);
+
+        return self::$instance;
     }
 
 }

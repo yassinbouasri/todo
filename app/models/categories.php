@@ -1,12 +1,12 @@
 <?php
-require_once "../config/database.php";
+require_once __DIR__ .  "/../config/database.php";
 class Categories
 {
     private $db;
 
     public function __construct(){
-        $database = new Database();
-        $this->db = $database->getConnection();
+
+        $this->db = Database::getConnection();
     }
 
     public function getCategoryById($id){
@@ -14,5 +14,11 @@ class Categories
         $stmt = $this->db->prepare($sql);
         $stmt->execute(array("id" => $id));
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getAllCategories(){
+        $sql = "SELECT * FROM categories";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

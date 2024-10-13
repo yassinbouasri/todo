@@ -3,10 +3,12 @@ require_once "layout.php";
 require_once "topmenu.php";
 require_once "../models/tasks.php";
 require_once "../models/categories.php";
+require_once "../controllers/taskController.php";
 
 $tasksModel = new Tasks();
 $tasks = $tasksModel->getAllTasks();
 $categoriesModels = new Categories();
+$taskController = new TaskController();
 ?>
 
   <div class="container mt-5">
@@ -40,8 +42,8 @@ $categoriesModels = new Categories();
                     <?php $category = $categoriesModels->getCategoryById($task['category_id']); ?>
                     <td><?php echo htmlspecialchars($category['category_name']); ?></td>
                     <td><?php echo htmlspecialchars($task['due_date']); ?></td>
-                    <td><span class="<?php echo htmlspecialchars($tasksModel->badge($task['priority'])); ?>"> <?php echo htmlspecialchars($task['priority']); ?></span></td>
-                    <td><span class="<?php echo htmlspecialchars($tasksModel->badge($task['status'])); ?>"><?php echo htmlspecialchars($task['status']); ?></span></td>
+                    <td><span class="<?php echo htmlspecialchars($taskController->badge($task['priority'])); ?>"> <?php echo htmlspecialchars($task['priority']); ?></span></td>
+                    <td><span class="<?php echo htmlspecialchars($taskController->badge($task['status'])); ?>"><?php echo htmlspecialchars($task['status']); ?></span></td>
                     <td>
                         <a href="tasks/show.php" class="btn btn-primary btn-sm">Edit</a>
                         <a href="tasks/show.php" class="btn btn-info btn-back btn-sm">View</a>
