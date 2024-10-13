@@ -13,5 +13,8 @@ if($controller == "task"){
     if($method == "create"){
         $controller->create();
     }
+    if($method == "save"){
+        $controller->save();
+    }
 
 }
