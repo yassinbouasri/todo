@@ -1,4 +1,11 @@
-<?php require_once '../layout.php'; ?>
+<?php
+
+require_once 'layout.php';
+require_once "topmenu.php";
+
+/** @var array $categories */
+
+?>
 <head>
     <title>Add Task - Todo App</title>
     <meta charset="utf-8">
@@ -6,14 +13,13 @@
     <!-- Flatpickr CSS for DateTime Picker -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
-    <link rel="stylesheet" href="../../../public/css/style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<?php require_once "../topmenu.php"; ?>
 
 <div class="container task-container">
     <h2 class="task-title">Add Task</h2>
-    <form action="save_task.php" method="post">
+    <form action="/index.php?controller=task&method=save" method="post">
         <div class="form-group">
             <label for="taskTitle">Task Title</label>
             <input type="text" class="form-control" id="taskTitle" name="task_title" placeholder="Enter task title" required>
@@ -28,11 +34,9 @@
             <label for="taskCategory">Category</label>
             <select class="form-control" id="taskCategory" name="task_category" required>
                 <option value="">Select Category</option>
-                <option value="work">Work</option>
-                <option value="personal">Personal</option>
-                <option value="school">School</option>
-                <option value="fitness">Fitness</option>
-                <option value="shopping">Shopping</option>
+                <?php foreach ($categories as $category): ?>
+                <option value="<?php echo htmlspecialchars($category['id'], HTML_ENTITIES, 'UTF-8') ?>"><?php echo htmlspecialchars($category['category_name'], HTML_ENTITIES, 'UTF-8') ?></option>
+                <?php endforeach;?>
             </select>
         </div>
 

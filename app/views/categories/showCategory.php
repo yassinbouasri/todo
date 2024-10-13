@@ -5,7 +5,7 @@
 
     <!-- Include Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../../../public/css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
 <?php require_once "../topmenu.php"; ?>
