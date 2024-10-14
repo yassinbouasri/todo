@@ -30,7 +30,7 @@
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Categories <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="?controller=categories&method=showCategories">Show Categories</a></li>
-                        <li><a href="<?php echo $base_url; ?>app/views/categories/addCategory.php">Add Category</a></li>
+                        <li><a href="?controller=categories&method=saveCategory">Add Category</a></li>
                     </ul>
                 </li>
             </ul>

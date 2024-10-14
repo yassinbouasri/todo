@@ -21,7 +21,9 @@ if($controller == "task"){
 } else if($controller == "categories"){
     $catController = new CategoryController();
 
-    if($method == "index"){
+    if($method == "showCategories"){
         $catController->index();
+    }else if ($method == "saveCategory"){
+        $catController->saveCategory();
     }
 }
