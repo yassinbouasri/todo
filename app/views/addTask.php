@@ -1,10 +1,9 @@
 <?php
-
 require_once 'layout.php';
 require_once "topmenu.php";
 
 /** @var array $categories */
-
+/** @var string $alertMessage */
 ?>
 <head>
     <title>Add Task - Todo App</title>
@@ -19,6 +18,12 @@ require_once "topmenu.php";
 
 <div class="container task-container">
     <h2 class="task-title">Add Task</h2>
+
+    <!-- Display the alert message here before the form -->
+    <?php if (!empty($alertMessage)): ?>
+        <?php echo $alertMessage; ?>
+    <?php endif; ?>
+
     <form action="/index.php?controller=task&method=create" method="post">
         <div class="form-group">
             <label for="taskTitle">Task Title</label>
@@ -35,7 +40,7 @@ require_once "topmenu.php";
             <select class="form-control" id="category_id" name="category_id" required>
                 <option value="">Select Category</option>
                 <?php foreach ($categories as $category): ?>
-                <option value="<?php echo htmlspecialchars($category['id'], HTML_ENTITIES, 'UTF-8') ?>"><?php echo htmlspecialchars($category['category_name'], HTML_ENTITIES, 'UTF-8') ?></option>
+                    <option value="<?php echo htmlspecialchars($category['id'], HTML_ENTITIES, 'UTF-8') ?>"><?php echo htmlspecialchars($category['category_name'], HTML_ENTITIES, 'UTF-8') ?></option>
                 <?php endforeach;?>
             </select>
         </div>

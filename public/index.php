@@ -1,4 +1,5 @@
 <?php
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -12,8 +13,7 @@ if($controller == "task"){
 
     if($method == "create"){
         $controller->create();
-    }
-    if($method == "index"){
+    } else{
         $controller->index();
     }
 
