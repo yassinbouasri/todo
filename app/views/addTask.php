@@ -19,20 +19,20 @@ require_once "topmenu.php";
 
 <div class="container task-container">
     <h2 class="task-title">Add Task</h2>
-    <form action="/index.php?controller=task&method=save" method="post">
+    <form action="/index.php?controller=task&method=create" method="post">
         <div class="form-group">
             <label for="taskTitle">Task Title</label>
-            <input type="text" class="form-control" id="taskTitle" name="task_title" placeholder="Enter task title" required>
+            <input type="text" class="form-control" id="task_title" name="task_title" placeholder="Enter task title" required>
         </div>
 
         <div class="form-group">
             <label for="taskDescription">Task Description</label>
-            <textarea class="form-control" id="taskDescription" name="task_description" rows="3" placeholder="Enter task description" required></textarea>
+            <textarea class="form-control" id="task_description" name="task_description" rows="3" placeholder="Enter task description" required></textarea>
         </div>
 
         <div class="form-group">
             <label for="taskCategory">Category</label>
-            <select class="form-control" id="taskCategory" name="task_category" required>
+            <select class="form-control" id="category_id" name="category_id" required>
                 <option value="">Select Category</option>
                 <?php foreach ($categories as $category): ?>
                 <option value="<?php echo htmlspecialchars($category['id'], HTML_ENTITIES, 'UTF-8') ?>"><?php echo htmlspecialchars($category['category_name'], HTML_ENTITIES, 'UTF-8') ?></option>
@@ -42,7 +42,7 @@ require_once "topmenu.php";
 
         <div class="form-group">
             <label for="taskPriority">Priority</label>
-            <select class="form-control" id="taskPriority" name="task_priority" required>
+            <select class="form-control" id="priority" name="priority" required>
                 <option value="">Select Priority</option>
                 <option value="high">High</option>
                 <option value="medium">Medium</option>
@@ -51,13 +51,13 @@ require_once "topmenu.php";
         </div>
 
         <div class="form-group">
-            <label for="dueDate">Due Date</label>
-            <input type="text" class="form-control" id="dueDate" name="due_date" placeholder="Select due date" required>
+            <label for="due_date">Due Date</label>
+            <input type="text" class="form-control" id="due_date" name="due_date" placeholder="Select due date" required>
         </div>
 
         <div class="form-group">
             <label for="taskStatus">Task Status</label>
-            <select class="form-control" id="taskStatus" name="task_status" required>
+            <select class="form-control" id="status" name="status" required>
                 <option value="in-progress">In Progress</option>
                 <option value="completed">Completed</option>
             </select>

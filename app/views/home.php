@@ -1,15 +1,12 @@
 <?php
 require_once "layout.php";
 require_once "topmenu.php";
-require_once "../models/tasks.php";
-require_once "../models/categories.php";
-require_once "../controllers/taskController.php";
-
-$tasksModel = new Tasks();
-$tasks = $tasksModel->getAllTasks();
-$categoriesModels = new Categories();
-$taskController = new TaskController();
+/* @var array $tasks
+ * @var array $categoriesModels
+ * @var array $taskController
+ */
 ?>
+
 
   <div class="container mt-5">
     <h1 class="text-center mb-4">Tasks List</h1>

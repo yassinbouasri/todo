@@ -13,8 +13,8 @@ if($controller == "task"){
     if($method == "create"){
         $controller->create();
     }
-    if($method == "save"){
-        $controller->create();
+    if($method == "index"){
+        $controller->index();
     }
 
 }
