@@ -30,4 +30,20 @@ class Categories
             "category_name" => $category,
         ));
     }
+
+    public function deleteCategory($id){
+        $sql = "DELETE FROM categories WHERE id = :id";
+
+        $stm = $this->db->prepare($sql);
+        $stm->bindParam(":id", $id, PDO::PARAM_INT);
+        $stm->execute();
+        if ($stm->rowCount() > 0){
+            echo "Category has been deleted";
+            return true;
+        } else {
+            echo "Something went wrong";
+            return false;
+        }
+
+    }
 }
