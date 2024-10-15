@@ -26,16 +26,16 @@
         </tr>
         </thead>
         <tbody id="categoryTable">
-        <?php foreach ($categories as $category) :?>
+        <?php $i = 1; foreach ($categories as $category) :?>
         <tr>
-            <td><?php echo $category['id']; ?></td>
+            <td> <?php echo $i ;?></td>
             <td><?php echo $category['category_name']?></td>
             <td>
                 <button class="btn btn-primary btn-sm">Edit</button>
                 <button class="btn btn-danger btn-sm">Delete</button>
             </td>
         </tr>
-        <?php endforeach;?>
+        <?php $i++; endforeach;?>
         </tbody>
     </table>
 </div>
