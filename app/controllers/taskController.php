@@ -56,7 +56,7 @@ class TaskController {
         require_once __DIR__ . "/../controllers/taskController.php";
 
         $tasksModel = new Tasks();
-        $tasks = $tasksModel->getAllTasks();
+        $tasks = $this->task->getAllTasks();
         $categoriesModels = new Categories();
         $taskController = new TaskController();
 

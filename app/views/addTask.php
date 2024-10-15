@@ -78,7 +78,7 @@ require_once "topmenu.php";
 <!-- Initialize Flatpickr -->
 <script>
     $(document).ready(function(){
-        flatpickr("#dueDate", {
+        flatpickr("#due_date", {
             enableTime: true,
             dateFormat: "Y-m-d H:i", // Customize the date-time format
         });

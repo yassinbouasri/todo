@@ -28,5 +28,7 @@ if($controller == "task"){
         $catController->saveCategory();
     } else if($method == "removeCategory"){
         $catController->removeCategory();
+    } else if($method == "updateCategory"){
+        $catController->edit();
     }
 }

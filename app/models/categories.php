@@ -38,12 +38,24 @@ class Categories
         $stm->bindParam(":id", $id, PDO::PARAM_INT);
         $stm->execute();
         if ($stm->rowCount() > 0){
-            echo "Category has been deleted";
             return true;
         } else {
-            echo "Something went wrong";
             return false;
         }
 
+    }
+
+    public function updateCategory($category, $id){
+        $sql = "UPDATE categories SET category_name = :category_name WHERE id = :id";
+
+        $stm = $this->db->prepare($sql);
+        $stm->bindParam(":category_name", $category, PDO::PARAM_STR);
+        $stm->bindParam(":id", $id, PDO::PARAM_INT);
+        $stm->execute();
+        if ($stm->execute() > 0 ){
+            return true;
+        } else {
+            return false;
+        }
     }
 }

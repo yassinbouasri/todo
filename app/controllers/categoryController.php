@@ -5,7 +5,9 @@ require_once __DIR__ . "/../models/categories.php";
 class categoryController
 {
 
+
     public function __construct(){
+        //$categoriesModel = new Categories();
     }
     public function index(){
         $categoryModel = new categories();
@@ -45,5 +47,43 @@ class categoryController
            // header("location: /?controller=categories&method=showCategories");
         }
         require_once __DIR__ . "/../views/categories/showCategory.php";
+    }
+
+    public function getCategoryById(){
+        $categoryModel = new categories();
+        if($_SERVER["REQUEST_METHOD"] == "POST"){
+            $category_id = $_POST['category_id'];
+            $result = $categoryModel->getCategoryById($category_id);
+            if($result){
+                return $result;
+            }
+        }
+    }
+
+    public function edit(){
+        require_once __DIR__ . "/../views/categories/editCategory.php";
+        $alertMessage = "";
+
+        if ($_SERVER["REQUEST_METHOD"] == "POST"){
+
+            $categoryName = $_POST['category_name'] ?? null;
+            $categoryId = $_POST['category_id'] ?? null;
+
+            if ($categoryName != null && $categoryId != null){
+
+                $categoryModel = new categories();
+                $category = $categoryModel->getCategoryById($_POST["id"]);
+                $updated = $categoryModel->updateCategory($categoryName, $categoryId);
+
+                if($updated){
+                    $alertMessage = "<div class='alert alert-success' role='alert'>Category updated successfully!</div>";
+
+                } else {
+                    $alertMessage = "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
+                }
+            }
+        }
+
+
     }
 }
