@@ -21,4 +21,13 @@ class Categories
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function addCategory($category){
+        $sql = "INSERT INTO categories (category_name) VALUES (:category_name)";
+        $stm = $this->db->prepare($sql);
+
+        return $stm->execute(array(
+            "category_name" => $category,
+        ));
+    }
 }

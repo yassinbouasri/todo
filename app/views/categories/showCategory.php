@@ -1,4 +1,8 @@
-<?php require_once '../layout.php'; ?>
+<?php require_once __DIR__ .  '/../layout.php';
+
+/* @var array $categories */
+
+?>
 <head>
     <title>Show Categories - Todo App</title>
     <meta charset="utf-8">
@@ -8,7 +12,7 @@
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-<?php require_once "../topmenu.php"; ?>
+<?php require_once __DIR__ . "/../topmenu.php"; ?>
 
 <div class="container mt-5">
     <h2 class="text-center">Categories List</h2>
@@ -16,37 +20,22 @@
     <table class="table table-striped table-hover">
         <thead>
         <tr>
+            <th>Id</th>
             <th>Category Name</th>
-            <th>Description</th>
             <th>Actions</th>
         </tr>
         </thead>
         <tbody id="categoryTable">
-
+        <?php foreach ($categories as $category) :?>
         <tr>
-            <td>Web Development</td>
-            <td>All tasks related to web development.</td>
+            <td><?php echo $category['id']; ?></td>
+            <td><?php echo $category['category_name']?></td>
             <td>
                 <button class="btn btn-primary btn-sm">Edit</button>
                 <button class="btn btn-danger btn-sm">Delete</button>
             </td>
         </tr>
-        <tr>
-            <td>Mobile Development</td>
-            <td>Tasks related to mobile app development.</td>
-            <td>
-                <button class="btn btn-primary btn-sm">Edit</button>
-                <button class="btn btn-danger btn-sm">Delete</button>
-            </td>
-        </tr>
-        <tr>
-            <td>Design</td>
-            <td>Tasks related to graphic design and UI/UX.</td>
-            <td>
-                <button class="btn btn-primary btn-sm">Edit</button>
-                <button class="btn btn-danger btn-sm">Delete</button>
-            </td>
-        </tr>
+        <?php endforeach;?>
         </tbody>
     </table>
 </div>

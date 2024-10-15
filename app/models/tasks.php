@@ -1,7 +1,7 @@
 <?php
 
 
-require_once "../config/database.php";
+require_once __DIR__ .  "/../config/database.php";
 
 
 class Tasks
@@ -17,7 +17,20 @@ class Tasks
     }
     //changing the badge color for priority and status, according to data fetched from DB.
 
-    public function addTask($id, $taskTitle, $taskDescription, $status, $priority, $category_id){
+    public function insert($data = array()) {
+        $sql = "INSERT INTO tasks (task_title, task_description, due_date, priority, status, category_id) 
+                VALUES (?, ?, ?, ?, ?, ?)";
 
+        $stmt = $this->db->prepare($sql);
+
+        // Ensure the values are in the correct order
+        return $stmt->execute([
+            $data['task_title'],
+            $data['task_description'],
+            $data['due_date'],
+            $data['priority'],
+            $data['status'],
+            $data['category_id']
+        ]); // Return true on success, false on failure
     }
 }
