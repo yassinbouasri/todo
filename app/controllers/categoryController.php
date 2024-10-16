@@ -54,25 +54,34 @@ class categoryController
         if($_SERVER["REQUEST_METHOD"] == "POST"){
             $category_id = $_POST['category_id'];
             $result = $categoryModel->getCategoryById($category_id);
-            if($result){
-                return $result;
-            }
+
+        } else {
+            $category_id = $_GET['category_id'];
+            $result = $categoryModel->getCategoryById($category_id);
+        }
+        if($result){
+            return $result;
         }
     }
 
     public function edit(){
-        require_once __DIR__ . "/../views/categories/editCategory.php";
+        $categoryModel = new categories();
+        $category = $this->getCategoryById();
+
+        $categoryId = $category['id'];
+        $categoryName = $category['category_name'];
+
+
         $alertMessage = "";
+        if (isset($_POST['update'])){
 
-        if ($_SERVER["REQUEST_METHOD"] == "POST"){
 
-            $categoryName = $_POST['category_name'] ?? null;
-            $categoryId = $_POST['category_id'] ?? null;
 
-            if ($categoryName != null && $categoryId != null){
 
-                $categoryModel = new categories();
-                $category = $categoryModel->getCategoryById($_POST["id"]);
+
+            if (!empty($categoryName)){
+
+
                 $updated = $categoryModel->updateCategory($categoryName, $categoryId);
 
                 if($updated){
@@ -85,5 +94,6 @@ class categoryController
         }
 
 
+        require_once __DIR__ . "/../views/categories/editCategory.php";
     }
 }

@@ -45,17 +45,20 @@ class Categories
 
     }
 
-    public function updateCategory($category, $id){
+    public function updateCategory($category_name, $id){
+
         $sql = "UPDATE categories SET category_name = :category_name WHERE id = :id";
 
         $stm = $this->db->prepare($sql);
-        $stm->bindParam(":category_name", $category, PDO::PARAM_STR);
-        $stm->bindParam(":id", $id, PDO::PARAM_INT);
-        $stm->execute();
-        if ($stm->execute() > 0 ){
-            return true;
+        $stm->execute([
+            "category_name" => $category_name,
+            "id" => $id,
+        ]);
+        if ($stm->rowCount() > 0){
+            echo "Category updated";
+
         } else {
-            return false;
+            echo "Category not updated";
         }
     }
 }

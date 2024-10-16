@@ -1,8 +1,6 @@
 <?php require_once __DIR__ . '/../layout.php';
 require_once __DIR__ . "/../../models/categories.php";
 
-$categoryModel = new categories();
-$category = $categoryModel->getCategoryById($_GET['category_id']);
 ?>
 <head>
     <title>Add Category - Todo App</title>
@@ -23,7 +21,7 @@ $category = $categoryModel->getCategoryById($_GET['category_id']);
             <input type="text" class="form-control" id="category_name" name="category_name" value="<?php echo htmlspecialchars($category['category_name'], ENT_QUOTES, 'UTF-8'); ?>" required>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-block">Edit Category</button>
+        <button type="submit" name="update" class="btn btn-primary btn-block">Edit Category</button>
     </form>
 </div>
 
