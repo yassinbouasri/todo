@@ -55,10 +55,9 @@ class Categories
             "id" => $id,
         ]);
         if ($stm->rowCount() > 0){
-            echo "Category updated";
-
+            return true;
         } else {
-            echo "Category not updated";
+            return false;
         }
     }
 }

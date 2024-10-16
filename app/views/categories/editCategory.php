@@ -17,8 +17,8 @@ require_once __DIR__ . "/../../models/categories.php";
     <form action="?controller=categories&method=updateCategory" method="post">
         <div class="form-group">
             <label for="categoryName">Category Name</label>
-            <input type="hidden" name="category_id" value="<?php echo htmlspecialchars($category['id'], ENT_QUOTES, 'UTF-8'); ?>">
-            <input type="text" class="form-control" id="category_name" name="category_name" value="<?php echo htmlspecialchars($category['category_name'], ENT_QUOTES, 'UTF-8'); ?>" required>
+            <input type="hidden" name="category_id" value="<?php echo $categoryId ; ?>">
+            <input type="text" class="form-control" id="category_name" name="category_name" value="<?php echo $categoryName; ?>" required>
         </div>
 
         <button type="submit" name="update" class="btn btn-primary btn-block">Edit Category</button>

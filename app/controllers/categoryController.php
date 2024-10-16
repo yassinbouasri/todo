@@ -67,22 +67,14 @@ class categoryController
     public function edit(){
         $categoryModel = new categories();
         $category = $this->getCategoryById();
-
         $categoryId = $category['id'];
         $categoryName = $category['category_name'];
-
-
         $alertMessage = "";
         if (isset($_POST['update'])){
+            $id = $_POST['category_id'];
+            $name = $_POST['category_name'];
 
-
-
-
-
-            if (!empty($categoryName)){
-
-
-                $updated = $categoryModel->updateCategory($categoryName, $categoryId);
+                $updated = $categoryModel->updateCategory($name, $id);
 
                 if($updated){
                     $alertMessage = "<div class='alert alert-success' role='alert'>Category updated successfully!</div>";
@@ -90,7 +82,7 @@ class categoryController
                 } else {
                     $alertMessage = "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
                 }
-            }
+
         }
 
 
