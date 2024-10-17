@@ -68,7 +68,6 @@ class TaskController {
 
         $id = $_GET['id'];
 
-
         $tasksModels = new Tasks();
 
         $tasksModel = $tasksModels->getTaskById($id);
@@ -82,16 +81,24 @@ class TaskController {
                 $color = 'status completed';
             } else if ($tasksModel['status'] == 'In Progress') {
                 $color = 'status in-progress';
-            } else {
-                $color = '';
             }
             require_once __DIR__ . "/../views/tasks/show.php";
             return $tasksModel;
         }
 
+    }
 
-
-
+    public function remove(){
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $id = $_POST['id'];
+            $result = $this->task->delete($id);
+            if ($result) {
+                $alertMessage = "<div class='alert alert-success' role='alert'>Task deleted successfully!</div>";
+            } else {
+                $alertMessage = "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
+            }
+        }
+        $this->index();
     }
 
 }

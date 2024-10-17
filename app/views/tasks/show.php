@@ -78,7 +78,7 @@
         </div>
   
         <div class="panel-footer">
-          <a href="../home.php" class="btn btn-primary btn-back">Back to Task List</a>
+          <a href="?controller=task&method=index" class="btn btn-primary btn-back">Back to Task List</a>
         </div>
       </div>
     </div>

@@ -41,4 +41,14 @@ class Tasks
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function delete($id){
+        $sql = "DELETE FROM tasks WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$id]);
+        if($stmt->rowCount() > 0){
+            return true;
+        }
+
+    }
+
 }

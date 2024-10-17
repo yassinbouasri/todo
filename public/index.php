@@ -16,7 +16,10 @@ if($controller == "task"){
         $controller->create();
     } else if($method == "show"){
         $controller->show();
-    } else{
+    } else if($method == "remove"){
+        $controller->remove();
+    }
+    else{
         $controller->index();
     }
 

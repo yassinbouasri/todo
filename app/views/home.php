@@ -43,8 +43,11 @@ require_once "topmenu.php";
                     <td><span class="<?php echo htmlspecialchars($taskController->badge($task['status'])); ?>"><?php echo htmlspecialchars($task['status']); ?></span></td>
                     <td>
                         <a href="tasks/show.php" class="btn btn-primary btn-sm">Edit</a>
-                        <a href="?controller=task&method=show&id=<?php echo htmlspecialchars($task['id']); ?>" class="btn btn-info btn-back btn-sm">View</a>
-                        <a href="tasks/show.php" class="btn btn-danger btn-sm">Delete</a>
+                        <a href="?controller=task&method=show&id=<?php echo htmlspecialchars($task['id'], ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-info btn-back btn-sm">View</a>
+                        <form action="?controller=task&method=remove" method="post" onsubmit="return confirmDelete()" style="display:inline;">
+                            <input type="hidden" name="id" value="<?php echo htmlspecialchars($task['id'], ENT_QUOTES, 'UTF-8'); ?>">
+                            <button type="submit" class="btn btn-danger btn-sm" >Delete</button>
+                        </form>
                     </td>
                     <?php endforeach;?>
                 </tr>
@@ -66,5 +69,9 @@ require_once "topmenu.php";
             } else {
                 tasks[i].style.display = "none";
             }
+        }
+
+        function confirmDelete(){
+            return "Are you sure you want to delete this Task?";
         }
     });</script>
