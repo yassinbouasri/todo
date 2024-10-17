@@ -1,6 +1,6 @@
 <?php
 require_once "layout.php";
-require_once "topmenu.php";
+require_once  "topmenu.php";
 /* @var array $tasks
  * @var array $categoriesModels
  * @var array $taskController
@@ -42,7 +42,7 @@ require_once "topmenu.php";
                     <td><span class="<?php echo htmlspecialchars($taskController->badge($task['priority'])); ?>"> <?php echo htmlspecialchars($task['priority']); ?></span></td>
                     <td><span class="<?php echo htmlspecialchars($taskController->badge($task['status'])); ?>"><?php echo htmlspecialchars($task['status']); ?></span></td>
                     <td>
-                        <a href="tasks/show.php" class="btn btn-primary btn-sm">Edit</a>
+                        <a href="?controller=task&method=update&id=<?php echo htmlspecialchars($task['id']); ?>" class="btn btn-primary btn-sm">Edit</a>
                         <a href="?controller=task&method=show&id=<?php echo htmlspecialchars($task['id'], ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-info btn-back btn-sm">View</a>
                         <form action="?controller=task&method=remove" method="post" onsubmit="return confirmDelete()" style="display:inline;">
                             <input type="hidden" name="id" value="<?php echo htmlspecialchars($task['id'], ENT_QUOTES, 'UTF-8'); ?>">

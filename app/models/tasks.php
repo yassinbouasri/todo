@@ -48,7 +48,23 @@ class Tasks
         if($stmt->rowCount() > 0){
             return true;
         }
+    }
 
+    public function update($id, $data = array()){
+        $sql = "UPDATE tasks SET task_title = ?, task_description = ?, due_date = ?, priority = ?, status = ?, category_id = ? WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        $result = $stmt->execute([
+            $data['task_title'],
+            $data['task_description'],
+            $data['due_date'],
+            $data['priority'],
+            $data['status'],
+            $data['category_id'],
+            $id,
+            ]);
+        if ($result) {
+            return true;
+        }
     }
 
 }

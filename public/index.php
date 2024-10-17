@@ -18,6 +18,8 @@ if($controller == "task"){
         $controller->show();
     } else if($method == "remove"){
         $controller->remove();
+    }else if($method == "update"){
+        $controller->update();
     }
     else{
         $controller->index();

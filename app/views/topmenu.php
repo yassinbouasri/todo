@@ -23,7 +23,7 @@
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tasks <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="?controller=task&method=create">Add Task</a></li>
-                        <li><a href="<?php echo $base_url; ?>app/views/home.php">Show Tasks</a></li>
+                        <li><a href="?controller=task&method=index">Show Tasks</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">

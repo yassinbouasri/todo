@@ -3,8 +3,10 @@ require_once __DIR__ .  "/../models/categories.php";
 require_once __DIR__ .  "/../models/tasks.php";
 class TaskController {
     private $task;
+    private $categories;
     public function __construct() {
         $this->task = new tasks();
+        $this->categories = new Categories();
     }
     public function badge($priorityOrStatus)
     {
@@ -99,6 +101,37 @@ class TaskController {
             }
         }
         $this->index();
+    }
+    public  function update(){
+        $statusOptions = ['In Progress', 'Completed', 'Pending'];
+        $priorityOptions = ['High', 'Medium', 'Low'];
+
+
+        $id = $_GET['id'];
+        $tasks = $this->task->getTaskById($id);
+        $AllCategories = $this->categories->getAllCategories();
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+            $task_title = $_POST['task_title'];
+            $task_description = $_POST['task_description'];
+            $due_date = $_POST['due_date'];
+            $priority = $_POST['priority'];
+            $status = $_POST['status'];
+            $category_id = $_POST['category_id'];
+
+            $updated = $this->task->update($id, [
+                $task_title, $task_description, $due_date, $priority, $status, $category_id,
+            ]);
+            if ($updated) {
+                $alertMessage = "<div class='alert alert-success' role='alert'>Task updated successfully!</div>";
+
+            } else {
+                $alertMessage = "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
+            }
+        }
+
+        require_once __DIR__ . "/../views/tasks/updateTask.php";
     }
 
 }
