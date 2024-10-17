@@ -1,12 +1,13 @@
 <?php
-require_once __DIR__ . "/../layout.php";
-require_once __DIR__ . "/../topmenu.php";
-
-$taskModels = new TaskController();
-$taskModel = $taskModels->show();
-
 
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Details</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <style>
     .task-container {
       margin-top: 50px;
@@ -36,7 +37,7 @@ $taskModel = $taskModels->show();
 </head>
 <body>
 
-
+<?php require_once __DIR__ . "/../topmenu.php"; ?>
 <div class="container task-container">
   <div class="row">
     <div class="col-md-8 col-md-offset-2">
@@ -46,33 +47,33 @@ $taskModel = $taskModels->show();
         </div>
         <div class="panel-body">
           <!-- Task Title -->
-          <div class="task-title"><?php echo $taskModel['task_title']; ?></div>
+          <div class="task-title"><?php echo htmlspecialchars( $tasksModel["task_title"], ENT_QUOTES, "UTF-8"); ?></div>
           
           <!-- Task Information -->
           <div class="task-info">
             <strong>Description: </strong> <br>
-            This task involves completing the frontend and backend for the Todo List application, ensuring all features like adding, editing, and deleting tasks work properly.
+              <?php echo htmlspecialchars( $tasksModel["task_description"], ENT_QUOTES, "UTF-8"); ?>
           </div>
           
           <!-- Task Status -->
           <div class="task-info">
             <strong>Status: </strong> 
-            <span class="status completed">Completed</span>
+            <span class="<?php echo htmlspecialchars( $color, ENT_QUOTES, "UTF-8"); ?>"><?php echo htmlspecialchars( $tasksModel["status"], ENT_QUOTES, "UTF-8"); ?></span>
           </div>
           
    
           <div class="task-info">
-            <strong>Due Date: </strong> October 15, 2024
+            <strong>Due Date: </strong> <?php echo htmlspecialchars( $tasksModel["due_date"], ENT_QUOTES, "UTF-8"); ?>
           </div>
           
       
           <div class="task-info">
-            <strong>Category: </strong> Web Development
+            <strong>Category: </strong> <?php echo htmlspecialchars( $category["category_name"], ENT_QUOTES, "UTF-8"); ?>
           </div>
           
     
           <div class="task-info">
-            <strong>Priority: </strong> High
+            <strong>Priority: </strong> <?php echo htmlspecialchars( $tasksModel["priority"], ENT_QUOTES, "UTF-8"); ?>
           </div>
         </div>
   

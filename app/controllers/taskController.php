@@ -65,14 +65,27 @@ class TaskController {
     public function show(){
         require_once __DIR__ . "/../models/tasks.php";
         require_once __DIR__ . "/../models/categories.php";
+
         $id = $_GET['id'];
 
 
         $tasksModels = new Tasks();
-        $categoriesModels = new Categories();
+
         $tasksModel = $tasksModels->getTaskById($id);
-        require_once __DIR__ . "/../views/tasks/show.php";
+        $categoryId = $tasksModel['category_id'];
+        $color = '';
         if (isset($tasksModel)) {
+            $categoriesModels = new Categories();
+            $category = $categoriesModels->getCategoryById($categoryId);
+
+            if ($tasksModel['status'] == 'Completed') {
+                $color = 'status completed';
+            } else if ($tasksModel['status'] == 'In Progress') {
+                $color = 'status in-progress';
+            } else {
+                $color = '';
+            }
+            require_once __DIR__ . "/../views/tasks/show.php";
             return $tasksModel;
         }
 

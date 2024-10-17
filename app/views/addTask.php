@@ -63,8 +63,9 @@ require_once "topmenu.php";
         <div class="form-group">
             <label for="taskStatus">Task Status</label>
             <select class="form-control" id="status" name="status" required>
-                <option value="in-progress">In Progress</option>
-                <option value="completed">Completed</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+                <option value="Pending">Pending</option>
             </select>
         </div>
 
