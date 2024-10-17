@@ -62,5 +62,23 @@ class TaskController {
 
         require_once __DIR__ . "/../views/home.php";
     }
+    public function show(){
+        require_once __DIR__ . "/../models/tasks.php";
+        require_once __DIR__ . "/../models/categories.php";
+        $id = $_GET['id'];
+
+
+        $tasksModels = new Tasks();
+        $categoriesModels = new Categories();
+        $tasksModel = $tasksModels->getTaskById($id);
+        require_once __DIR__ . "/../views/tasks/show.php";
+        if (isset($tasksModel)) {
+            return $tasksModel;
+        }
+
+
+
+
+    }
 
 }

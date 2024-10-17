@@ -1,6 +1,10 @@
 <?php require_once __DIR__ . '/../layout.php';
 require_once __DIR__ . "/../../models/categories.php";
 
+/* @var string $alertMessage
+ * @var int $categoryId
+ * @var string $categoryName
+ */
 ?>
 <head>
     <title>Add Category - Todo App</title>
@@ -13,6 +17,9 @@ require_once __DIR__ . "/../../models/categories.php";
 <?php require_once __DIR__ . "/../topmenu.php"; ?>
 
 <div class="container task-container">
+    <?php if ($alertMessage) :?>
+    <?php echo $alertMessage;?>
+    <?php endif; ?>
     <h2 class="task-title">Edit Category</h2>
     <form action="?controller=categories&method=updateCategory" method="post">
         <div class="form-group">

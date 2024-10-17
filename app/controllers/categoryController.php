@@ -70,12 +70,15 @@ class categoryController
         $categoryId = $category['id'];
         $categoryName = $category['category_name'];
         $alertMessage = "";
-        if (isset($_POST['update'])){
+
+        if ($_SERVER["REQUEST_METHOD"] == "POST"){
             $id = $_POST['category_id'];
             $name = $_POST['category_name'];
 
-                $updated = $categoryModel->updateCategory($name, $id);
-
+            $updated = $categoryModel->updateCategory($name, $id);
+            $category = $this->getCategoryById();
+            $categoryId = $category['id'];
+            $categoryName = $category['category_name'];
                 if($updated){
                     $alertMessage = "<div class='alert alert-success' role='alert'>Category updated successfully!</div>";
 
@@ -84,7 +87,6 @@ class categoryController
                 }
 
         }
-
 
         require_once __DIR__ . "/../views/categories/editCategory.php";
     }

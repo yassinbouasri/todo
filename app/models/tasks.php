@@ -33,4 +33,12 @@ class Tasks
             $data['category_id']
         ]); // Return true on success, false on failure
     }
+
+    public function getTaskById($id){
+        $sql = "SELECT * FROM tasks WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
 }

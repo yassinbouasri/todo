@@ -14,6 +14,8 @@ if($controller == "task"){
 
     if($method == "create"){
         $controller->create();
+    } else if($method == "show"){
+        $controller->show();
     } else{
         $controller->index();
     }

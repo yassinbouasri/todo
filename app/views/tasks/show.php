@@ -1,10 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Task Details</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<?php
+require_once __DIR__ . "/../layout.php";
+require_once __DIR__ . "/../topmenu.php";
+
+$taskModels = new TaskController();
+$taskModel = $taskModels->show();
+
+
+?>
   <style>
     .task-container {
       margin-top: 50px;
@@ -34,7 +36,7 @@
 </head>
 <body>
 
-<?php require_once "../topmenu.php"; ?>
+
 <div class="container task-container">
   <div class="row">
     <div class="col-md-8 col-md-offset-2">
@@ -44,7 +46,7 @@
         </div>
         <div class="panel-body">
           <!-- Task Title -->
-          <div class="task-title">Finish the Todo List Application</div>
+          <div class="task-title"><?php echo $taskModel['task_title']; ?></div>
           
           <!-- Task Information -->
           <div class="task-info">

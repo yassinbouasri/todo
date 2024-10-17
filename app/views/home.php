@@ -43,7 +43,7 @@ require_once "topmenu.php";
                     <td><span class="<?php echo htmlspecialchars($taskController->badge($task['status'])); ?>"><?php echo htmlspecialchars($task['status']); ?></span></td>
                     <td>
                         <a href="tasks/show.php" class="btn btn-primary btn-sm">Edit</a>
-                        <a href="tasks/show.php" class="btn btn-info btn-back btn-sm">View</a>
+                        <a href="?controller=task&method=show&id=<?php echo htmlspecialchars($task['id']); ?>" class="btn btn-info btn-back btn-sm">View</a>
                         <a href="tasks/show.php" class="btn btn-danger btn-sm">Delete</a>
                     </td>
                     <?php endforeach;?>
