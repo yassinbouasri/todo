@@ -10,9 +10,15 @@ class Tasks
     function __construct(){
         $this->db = Database::getConnection();
     }
-    public function getAllTasks(){
-        $sql = "SELECT * FROM tasks";
-        $stmt = $this->db->query($sql);
+    public function getAllTasks($limit, $offset){
+        $sql = "SELECT * FROM tasks ORDER BY due_date DESC LIMIT :limit OFFSET :offset";
+
+        $stmt = $this->db->prepare($sql);
+
+        $stmt->bindValue(':limit', (int) $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int) $offset, PDO::PARAM_INT);
+
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     //changing the badge color for priority and status, according to data fetched from DB.
@@ -66,6 +72,13 @@ class Tasks
         if ($result) {
             return true;
         }
+    }
+
+    public function getTotalTasks(){
+        $sql = "SELECT COUNT(*) FROM tasks";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchColumn();
     }
 
 }

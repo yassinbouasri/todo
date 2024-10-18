@@ -52,7 +52,30 @@ require_once  "topmenu.php";
                     <?php endforeach;?>
                 </tr>
             </tbody>
+
         </table>
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <?php if ($currentPage > 1): ?>
+                    <li class="page-item">
+                        <a class="page-link" href="?controller=task&method=index&page=<?php echo $currentPage - 1; ?>">Previous</a>
+                    </li>
+                <?php endif; ?>
+
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <li class="page-item <?php echo ($i == $currentPage) ? 'active' : ''; ?>">
+                        <a class="page-link" href="?controller=task&method=index&page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                    </li>
+                <?php endfor; ?>
+
+                <?php if ($currentPage < $totalPages): ?>
+                    <li class="page-item">
+                        <a class="page-link" href="?controller=task&method=index&page=<?php echo $currentPage + 1; ?>">Next</a>
+                    </li>
+                <?php endif; ?>
+            </ul>
+        </nav>
+
     </div>
   </div>
 <script>// JS function to filter tasks

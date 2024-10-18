@@ -57,10 +57,23 @@ class TaskController {
         require_once __DIR__ . "/../models/categories.php";
         require_once __DIR__ . "/../controllers/taskController.php";
 
+        $tasksPerPage = 6;
+        $totalTasks = $this->task->getTotalTasks();
+
+        $totalPages = ceil($totalTasks / $tasksPerPage);
+
+        $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        if ($currentPage < 1) {
+            $currentPage = 1;
+        }
+
+        $offset = ($currentPage - 1) * $tasksPerPage;
+
         $tasksModel = new Tasks();
-        $tasks = $this->task->getAllTasks();
+        $tasks = $this->task->getAllTasks($tasksPerPage, $offset);
         $categoriesModels = new Categories();
         $taskController = new TaskController();
+
 
         require_once __DIR__ . "/../views/home.php";
     }
