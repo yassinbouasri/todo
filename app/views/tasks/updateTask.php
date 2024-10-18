@@ -2,9 +2,12 @@
 require_once __DIR__ . '/../layout.php';
 require_once __DIR__ . "/../topmenu.php";
 
-/** @var array $AllCategories */
-/** @var string $alertMessage */
-/** @var string $tasks  */
+/** @var array $AllCategories
+* @var string $alertMessage
+* @var array $tasks
+ * @var array $statusOptions
+ * @var array $priorityOptions
+ */
 
 
 ?>
@@ -27,8 +30,9 @@ require_once __DIR__ . "/../topmenu.php";
         <?php echo $alertMessage; ?>
     <?php endif; ?>
 
-    <form action="?controller=task&method=update" method="post">
+    <form action="?controller=task&method=update&id=<?php echo htmlspecialchars($tasks['id'], ENT_QUOTES, 'UTF-8'); ?>" method="post">
         <div class="form-group">
+            <input type="hidden" name="id" id="id" value="<?php echo $tasks['id']; ?>">
             <label for="taskTitle">Task Title</label>
             <input type="text" class="form-control" id="task_title" name="task_title" value="<?php echo $tasks['task_title'];?>" placeholder="Enter task title" required>
         </div>

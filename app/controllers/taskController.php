@@ -107,28 +107,30 @@ class TaskController {
         $priorityOptions = ['High', 'Medium', 'Low'];
 
 
-        $id = $_GET['id'];
-        $tasks = $this->task->getTaskById($id);
+
+        $tasks = $this->task->getTaskById($_GET['id']);
         $AllCategories = $this->categories->getAllCategories();
 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $id = $_POST['id'];
             $task_title = $_POST['task_title'];
             $task_description = $_POST['task_description'];
-            $due_date = $_POST['due_date'];
+            $due_date = DateTime::createFromFormat('Y-m-d H:i', $_POST['due_date'])->format('Y-m-d H:i:s');
             $priority = $_POST['priority'];
             $status = $_POST['status'];
             $category_id = $_POST['category_id'];
 
-            $updated = $this->task->update($id, [
-                $task_title, $task_description, $due_date, $priority, $status, $category_id,
-            ]);
+            $updated = $this->task->update($id, $task_title, $task_description, $due_date, $priority, $status, $category_id);
+
             if ($updated) {
                 $alertMessage = "<div class='alert alert-success' role='alert'>Task updated successfully!</div>";
 
             } else {
                 $alertMessage = "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
             }
+            $tasks = $this->task->getTaskById($id);
         }
 
         require_once __DIR__ . "/../views/tasks/updateTask.php";

@@ -50,17 +50,18 @@ class Tasks
         }
     }
 
-    public function update($id, $data = array()){
-        $sql = "UPDATE tasks SET task_title = ?, task_description = ?, due_date = ?, priority = ?, status = ?, category_id = ? WHERE id = :id";
+    public function update($id, $task_title, $task_description, $due_date, $priority, $status, $category_id){
+        $sql = "UPDATE tasks SET task_title = :task_title , task_description = :task_description, due_date = :due_date, priority = :priority, status = :status, category_id = :category_id WHERE id = :id";
+
         $stmt = $this->db->prepare($sql);
         $result = $stmt->execute([
-            $data['task_title'],
-            $data['task_description'],
-            $data['due_date'],
-            $data['priority'],
-            $data['status'],
-            $data['category_id'],
-            $id,
+            'task_title' => $task_title,
+            'task_description' => $task_description,
+            'due_date' => $due_date,
+            'priority' => $priority,
+            'status' => $status,
+            'category_id' => $category_id,
+            'id' => $id
             ]);
         if ($result) {
             return true;
