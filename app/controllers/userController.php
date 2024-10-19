@@ -59,4 +59,14 @@ class userController
         }
         require_once __DIR__ . '/../views/login/login.php';
     }
+    public function logout(){
+        session_start();
+
+        $_SESSION = array();
+
+        session_destroy();
+
+        header('location: ?controller=users&method=login');
+        exit();
+    }
 }

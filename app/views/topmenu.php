@@ -36,8 +36,13 @@
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="?controller=users&method=register"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                <li><a href="?controller=users&method=login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#"> <span class="glyphicon glyphicon-user"></span>  Account<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="?controller=task&method=create">Settings</a></li>
+                        <li><a href="?controller=users&method=logout">Logout</a></li>
+                    </ul>
+                </li>
             </ul>
         </div>
     </div>

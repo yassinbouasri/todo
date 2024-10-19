@@ -1,11 +1,12 @@
 <?php
 require_once __DIR__ .  "/../config/database.php";
+require_once __DIR__ .  "/../helpers.php";
 class Categories
 {
     private $db;
 
     public function __construct(){
-
+        checkSession();
         $this->db = Database::getConnection();
     }
 

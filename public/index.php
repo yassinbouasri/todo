@@ -45,5 +45,7 @@ if($controller == "task"){
         $controller->register();
     } else if($method == "login"){
         $controller->login();
+    } else if($method == "logout"){
+        $controller->logout();
     }
 }
