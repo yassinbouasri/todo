@@ -1,5 +1,5 @@
 // JS function to filter tasks
-document.getElementById('searchBar').addEventListener('keyup', function() {
+document.getElementById('searchBar').addEventListener('keyup', function () {
     let searchValue = this.value.toLowerCase();
     let tasks = document.getElementById('taskTable').getElementsByTagName('tr');
 
@@ -14,4 +14,3 @@ document.getElementById('searchBar').addEventListener('keyup', function() {
         }
     }
 });
-

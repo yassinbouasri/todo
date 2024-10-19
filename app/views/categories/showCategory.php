@@ -14,7 +14,7 @@
 <body>
 <?php require_once __DIR__ . "/../topmenu.php"; ?>
 
-<div class="container mt-5">
+<div class="container mt-2">
     <h2 class="text-center">Categories List</h2>
 
     <table class="table table-striped table-hover">
@@ -26,19 +26,31 @@
         </tr>
         </thead>
         <tbody id="categoryTable">
-        <?php foreach ($categories as $category) :?>
+        <?php if (!empty($alertMessage)) : ?>
+        <?php echo $alertMessage; ?>
+        <?php endif; ?>
+        <?php $i = 1; foreach ($categories as $category) :?>
         <tr>
-            <td><?php echo $category['id']; ?></td>
+            <td> <?php echo $i ;?></td>
             <td><?php echo $category['category_name']?></td>
             <td>
-                <button class="btn btn-primary btn-sm">Edit</button>
-                <button class="btn btn-danger btn-sm">Delete</button>
+                    <a href="?controller=categories&method=updateCategory&category_id=<?php echo $category['id']; ?>"class="btn btn-primary btn-sm">Edit</a>
+                </form>
+                <form action="?controller=categories&method=removeCategory" method="post" onsubmit="return confirmDelete();" style="display:inline;">
+                    <input type="hidden" name="category_id" value="<?php echo htmlspecialchars($category['id'], ENT_QUOTES, 'UTF-8'); ?>">
+                    <button type="submit" class="btn btn-danger btn-sm" >Delete</button>
+                </form>
             </td>
         </tr>
-        <?php endforeach;?>
+        <?php $i++; endforeach;?>
         </tbody>
     </table>
 </div>
 
+<script>
+    function confirmDelete() {
+        return confirm("Are you sure you want to delete this Category?");
+    }
+</script>
 </body>
 </html>

@@ -26,7 +26,12 @@
 
   <div class="container signup-container">
     <h2 class="signup-title">Sign Up</h2>
-    <form action="register.php" method="post">
+      <?php if (!empty($alertMessage))
+      {
+          echo $alertMessage;
+      } ?>
+
+    <form action="?controller=users&method=register" method="post">
       <div class="form-group">
         <label for="username">Username</label>
         <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>

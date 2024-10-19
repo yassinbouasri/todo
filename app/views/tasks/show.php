@@ -1,3 +1,6 @@
+<?php
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,7 +37,7 @@
 </head>
 <body>
 
-<?php require_once "../topmenu.php"; ?>
+<?php require_once __DIR__ . "/../topmenu.php"; ?>
 <div class="container task-container">
   <div class="row">
     <div class="col-md-8 col-md-offset-2">
@@ -44,38 +47,38 @@
         </div>
         <div class="panel-body">
           <!-- Task Title -->
-          <div class="task-title">Finish the Todo List Application</div>
+          <div class="task-title"><?php echo htmlspecialchars( $tasksModel["task_title"], ENT_QUOTES, "UTF-8"); ?></div>
           
           <!-- Task Information -->
           <div class="task-info">
             <strong>Description: </strong> <br>
-            This task involves completing the frontend and backend for the Todo List application, ensuring all features like adding, editing, and deleting tasks work properly.
+              <?php echo htmlspecialchars( $tasksModel["task_description"], ENT_QUOTES, "UTF-8"); ?>
           </div>
           
           <!-- Task Status -->
           <div class="task-info">
             <strong>Status: </strong> 
-            <span class="status completed">Completed</span>
+            <span class="<?php echo htmlspecialchars( $color, ENT_QUOTES, "UTF-8"); ?>"><?php echo htmlspecialchars( $tasksModel["status"], ENT_QUOTES, "UTF-8"); ?></span>
           </div>
           
    
           <div class="task-info">
-            <strong>Due Date: </strong> October 15, 2024
+            <strong>Due Date: </strong> <?php echo htmlspecialchars( $tasksModel["due_date"], ENT_QUOTES, "UTF-8"); ?>
           </div>
           
       
           <div class="task-info">
-            <strong>Category: </strong> Web Development
+            <strong>Category: </strong> <?php echo htmlspecialchars( $category["category_name"], ENT_QUOTES, "UTF-8"); ?>
           </div>
           
     
           <div class="task-info">
-            <strong>Priority: </strong> High
+            <strong>Priority: </strong> <?php echo htmlspecialchars( $tasksModel["priority"], ENT_QUOTES, "UTF-8"); ?>
           </div>
         </div>
   
         <div class="panel-footer">
-          <a href="../home.php" class="btn btn-primary btn-back">Back to Task List</a>
+          <a href="?controller=task&method=index" class="btn btn-primary btn-back">Back to Task List</a>
         </div>
       </div>
     </div>

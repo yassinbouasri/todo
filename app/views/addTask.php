@@ -63,12 +63,13 @@ require_once "topmenu.php";
         <div class="form-group">
             <label for="taskStatus">Task Status</label>
             <select class="form-control" id="status" name="status" required>
-                <option value="in-progress">In Progress</option>
-                <option value="completed">Completed</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+                <option value="Pending">Pending</option>
             </select>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-block">Add Task</button>
+        cs
     </form>
 </div>
 
@@ -78,7 +79,7 @@ require_once "topmenu.php";
 <!-- Initialize Flatpickr -->
 <script>
     $(document).ready(function(){
-        flatpickr("#dueDate", {
+        flatpickr("#due_date", {
             enableTime: true,
             dateFormat: "Y-m-d H:i", // Customize the date-time format
         });

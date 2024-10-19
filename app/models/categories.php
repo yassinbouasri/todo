@@ -30,4 +30,34 @@ class Categories
             "category_name" => $category,
         ));
     }
+
+    public function deleteCategory($id){
+        $sql = "DELETE FROM categories WHERE id = :id";
+
+        $stm = $this->db->prepare($sql);
+        $stm->bindParam(":id", $id, PDO::PARAM_INT);
+        $stm->execute();
+        if ($stm->rowCount() > 0){
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    public function updateCategory($category_name, $id){
+
+        $sql = "UPDATE categories SET category_name = :category_name WHERE id = :id";
+
+        $stm = $this->db->prepare($sql);
+        $stm->execute([
+            "category_name" => $category_name,
+            "id" => $id,
+        ]);
+        if ($stm->rowCount() > 0){
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
