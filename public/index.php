@@ -43,5 +43,7 @@ if($controller == "task"){
     $controller = new UserController();
     if ($method == "register"){
         $controller->register();
+    } else if($method == "login"){
+        $controller->login();
     }
 }

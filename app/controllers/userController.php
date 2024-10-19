@@ -36,4 +36,21 @@ class userController
         }
         require_once __DIR__ . '/../views/login/register.php';
     }
+
+    public function login(){
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $email = $_POST['email'];
+            $password = $_POST['password'];
+            $user = $this->users->loginUser($email, $password);
+            if($user){
+                session_regenerate_id(true);
+                $_SESSION['id'] = $user->id;
+                $_SESSION['username'] = $user->username;
+                header('location: /index.php?controller=task&method=index');
+            } else {
+                $alertMessage = "<div class='alert alert-danger alert-dismissible fade in' role='alert'> Login Error!</div>";
+            }
+        }
+        require_once __DIR__ . '/../views/login/login.php';
+    }
 }

@@ -20,4 +20,20 @@ class Users
                 "password" => $hashedPassword
             ]);
     }
+
+    public function loginUser($username, $password) {
+        $sql = "SELECT * FROM users WHERE username = :username";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            "username" => $username,
+        ]);
+
+        $user = $stmt->fetch();
+        if ($user && password_verify($password, $user['password'])) {
+            return $user;
+        } else {
+            return false;
+        }
+
+    }
 }

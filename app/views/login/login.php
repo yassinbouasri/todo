@@ -13,12 +13,16 @@
 			<div class="row justify-content-sm-center h-100">
 				<div class="col-xxl-4 col-xl-5 col-lg-5 col-md-7 col-sm-9">
 					<div class="text-center my-5">
-						<img src="../images/todo_logo.png" alt="logo" width="100">
+						<img src="https://i.imgur.com/St3huar.png" alt="logo" width="100">
 					</div>
 					<div class="card shadow-lg">
 						<div class="card-body p-5">
 							<h1 class="fs-4 card-title fw-bold mb-4">Login</h1>
-							<form method="POST" class="needs-validation" novalidate="" autocomplete="off">
+                            <?php if (!empty($alertMessage))
+                            {
+                                echo $alertMessage;
+                            } ?>
+							<form action="?controller=users&method=login" method="POST" class="needs-validation" novalidate="" autocomplete="off">
 								<div class="mb-3">
 									<label class="mb-2 text-muted" for="email">E-Mail Address</label>
 									<input id="email" type="email" class="form-control" name="email" value="" required autofocus>
@@ -45,15 +49,13 @@
 										<input type="checkbox" name="remember" id="remember" class="form-check-input">
 										<label for="remember" class="form-check-label">Remember Me</label>
 									</div>
-									<button type="submit" class="btn btn-primary ms-auto">
-										Login
-									</button>
+									<button type="submit" class="btn btn-primary ms-auto">Login</button>
 								</div>
 							</form>
 						</div>
 						<div class="card-footer py-3 border-0">
 							<div class="text-center">
-								Don't have an account? <a href="register.php" class="text-dark">Create One</a>
+								Don't have an account? <a href="?controller=users&method=register" class="text-dark">Create One</a>
 							</div>
 						</div>
 					</div>

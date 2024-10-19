@@ -49,7 +49,7 @@
         <input type="password" class="form-control" id="confirm-password" name="confirm_password" placeholder="Confirm your password" required>
       </div>
       <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
-      <p class="text-center mt-3">Already have an account? <a href="login.php">Login</a></p>
+      <p class="text-center mt-3">Already have an account? <a href="?controller=users&method=login">Login</a></p>
     </form>
   </div>
 
