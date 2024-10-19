@@ -36,4 +36,19 @@ class Users
         }
 
     }
+
+    public function changePassword($email, $newPassword){
+        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+        $sql = "UPDATE users SET password = :password WHERE email = :email";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            "password" => $hashedPassword,
+            "email" => $email,
+        ]);
+
+        if ($stmt->rowCount() > 0) {
+            return true;
+        }
+
+    }
 }

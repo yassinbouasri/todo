@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../models/users.php';
+require_once __DIR__ . '/../helpers.php';
 
 class userController
 {
@@ -68,5 +69,18 @@ class userController
 
         header('location: ?controller=users&method=login');
         exit();
+    }
+
+    public function changePassword(){
+        checkSession();
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $newPassword = $_POST['new_password'];
+            $confirmPassword = $_POST['confirm_password'];
+            if($newPassword == $confirmPassword){
+                $this->users->changePassword($_SESSION['email'], $newPassword);
+                $this->logout();
+            }
+        }
+        require_once __DIR__ . '/../views/login/changePassword.php';
     }
 }
