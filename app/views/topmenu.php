@@ -36,7 +36,7 @@
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="login/register.php"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                <li><a href="?controller=users&method=register"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
                 <li><a href="login/login.php"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
             </ul>
         </div>

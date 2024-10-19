@@ -38,4 +38,10 @@ if($controller == "task"){
     } else if($method == "updateCategory"){
         $catController->edit();
     }
+} else if($controller == "users"){
+    require_once __DIR__ .  '/../app/controllers/userController.php';
+    $controller = new UserController();
+    if ($method == "register"){
+        $controller->register();
+    }
 }
