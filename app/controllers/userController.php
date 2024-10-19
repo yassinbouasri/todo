@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/../models/users.php';
 require_once __DIR__ . '/../helpers.php';
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 class userController
 {
@@ -82,5 +84,36 @@ class userController
             }
         }
         require_once __DIR__ . '/../views/login/changePassword.php';
+    }
+
+    public function sendEmail($to, $subject, $message){
+        $mail = new PHPMailer(true);
+        $mail->isSMTP();
+        $mail->CharSet = 'UTF-8';
+        $mail->Host = 'smtp-mail.outlook.com'; //htestit@hotmail.com **pmol2110
+        $mail->SMTPAuth = true;
+        $mail->SMTPSecure = 'tls';
+        $mail->Port = 587;
+        $mail->Username = 'htestit@hotmail.com';
+        $mail->Password = '**pmol2110';
+
+        $mail->setFrom('htestit@hotmail.com', 'Todo - Tasks Manager');
+        $mail->addAddress($to);
+
+        $mail->isHTML(true);
+        $mail->Subject = $subject;
+        $mail->Body = $message;
+
+        //$mail->AltBody = $message;
+        try {
+            $mail->send();
+        } catch (Exception $e) {
+            echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
+        }
+
+    }
+
+    public function resetPassword(){
+
     }
 }
