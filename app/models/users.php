@@ -21,11 +21,11 @@ class Users
             ]);
     }
 
-    public function loginUser($username, $password) {
-        $sql = "SELECT * FROM users WHERE username = :username";
+    public function loginUser($email, $password) {
+        $sql = "SELECT * FROM users WHERE email = :email";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
-            "username" => $username,
+            "email" => $email,
         ]);
 
         $user = $stmt->fetch();

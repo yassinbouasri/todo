@@ -38,15 +38,21 @@ class userController
     }
 
     public function login(){
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
             $email = $_POST['email'];
             $password = $_POST['password'];
+
             $user = $this->users->loginUser($email, $password);
+
             if($user){
                 session_regenerate_id(true);
-                $_SESSION['id'] = $user->id;
-                $_SESSION['username'] = $user->username;
-                header('location: /index.php?controller=task&method=index');
+                $_SESSION['id'] = $user['id'];
+                $_SESSION['email'] = $user['email'];
+                header('location: ?controller=task&method=index');
+                exit();
             } else {
                 $alertMessage = "<div class='alert alert-danger alert-dismissible fade in' role='alert'> Login Error!</div>";
             }

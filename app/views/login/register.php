@@ -26,11 +26,9 @@
 
   <div class="container signup-container">
     <h2 class="signup-title">Sign Up</h2>
-      <?php if (!empty($alertMessage))
-      {
-          echo $alertMessage;
-      } ?>
-
+      <?php if (!empty($alertMessage)): ?>
+          <?php echo $alertMessage; ?>
+      <?php endif; ?>
     <form action="?controller=users&method=register" method="post">
       <div class="form-group">
         <label for="username">Username</label>
