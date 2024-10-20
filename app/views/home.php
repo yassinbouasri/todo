@@ -4,6 +4,7 @@ require_once  "topmenu.php";
 /* @var array $tasks
  * @var array $categoriesModels
  * @var array $taskController
+ * @var array $notifyTask
  */
 ?>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>

@@ -98,13 +98,13 @@ class Tasks
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-//        if($result){
-//
-//            $sql = "UPDATE tasks SET notification_sent = 1 WHERE id = :task_id";
-//            $stmt = $this->db->prepare($sql);
-//            $stmt->execute(['task_id' => $result['id']]);
-//
-//        }
+        if($result){
+
+            $sql = "UPDATE tasks SET notification_sent = 1 WHERE id = :task_id";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(['task_id' => $result['id']]);
+
+        }
 
         return $result;
     }
