@@ -17,7 +17,7 @@ require_once  "topmenu.php";
       </div>
     </div>
 
-    <!-- List View with Responsive Table -->
+
     <div id="listView" class="table-responsive">
         <table class="table table-striped table-hover">
             <thead>

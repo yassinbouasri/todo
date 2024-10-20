@@ -81,4 +81,13 @@ class Tasks
         return $stmt->fetchColumn();
     }
 
+    public function orderBy($column, $sort){
+        $sql = "SELECT * FROM tasks ORDER BY :column " . strtoupper($sort);
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':column', $column);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    }
+
 }
