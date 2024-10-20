@@ -2,7 +2,10 @@
 require_once __DIR__ .  "/../helpers.php";
 require_once __DIR__ .  "/../models/categories.php";
 require_once __DIR__ .  "/../models/tasks.php";
-class TaskController {
+require_once __DIR__ .  "/../mail/Mailer.php";
+
+class TaskController extends Mailer
+{
     private $task;
     private $categories;
     public function __construct() {
@@ -159,7 +162,22 @@ class TaskController {
      * @throws DateMalformedStringException
      */
     public function sendNotification(){
-        return $this->task->notification();
+        $selectedTasks = $this->task->notification();
+        $email = $_SESSION['email'];
+        $body = "Dear,<br>";
+        $body .= "We hope you're doing well! This is a friendly reminder about your upcoming tasks that are due soon.<br><br>";
+        $body .= "Here are the tasks approaching their deadlines:\<br>";
+
+        foreach ($selectedTasks as $task) {
+            $body .= "- {$task['task_title']}: Due on {$task['due_date']}<br>";
+        }
+        $body .= "<br>Please make sure to complete them before the due date. If you have any questions or need assistance, feel free to reach out to us.<br><br>";
+        $body .= "Best regards,<br>";
+        $body .= "Todo App Team";
+        $subject = "Reminder: Upcoming Tasks Due Soon";
+
+        parent::sendEmail($email,$subject ,$body);
+        return $selectedTasks;
 
 
     }
