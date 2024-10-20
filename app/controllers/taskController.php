@@ -152,4 +152,19 @@ class TaskController {
         require_once __DIR__ . "/../views/tasks/updateTask.php";
     }
 
+    public function orderTasks(){
+        if($_SERVER["REQUEST_METHOD"] == "POST"){
+            $sortOrder = $_POST['sortOrder'];
+            $column = $_POST['column'];
+
+            if ($sortOrder && $column) {
+                $tasks = $this->task->orderBy($column, $sortOrder);
+            } else {
+                $tasks = $this->task->orderBy($column);
+            }
+
+
+        }
+    }
+
 }

@@ -97,4 +97,6 @@ require_once  "topmenu.php";
         function confirmDelete(){
             return "Are you sure you want to delete this Task?";
         }
+
+
     });</script>
