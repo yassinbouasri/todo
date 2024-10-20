@@ -105,12 +105,19 @@ require_once  "topmenu.php";
 
     });
 
-    function notifyTaskDue(taskTitle, dueDate) {
-        toastr.error('Task "' + taskTitle + '" is due on ' + dueDate);
+    function notifyTaskDue(taskTitle, dueDate, priority) {
+        if (priority === "High"){
+            toastr.error('Task "' + taskTitle + '" is due on ' + dueDate);
+        } else if (priority === "Medium") {
+            toastr.warning('Task "' + taskTitle + '" is due on ' + dueDate);
+        } else {
+            toastr.success('Task "' + taskTitle + '" is due on ' + dueDate);
+        }
+
     }
 </script>
 
     <?php foreach ($notifyTask as $notify): ?>
-        <script>notifyTaskDue("<?php echo $notify['task_title'];?>", "<?php echo $notify['due_date'];?>")</script>
+        <script>notifyTaskDue("<?php echo $notify['task_title'];?>", "<?php echo $notify['due_date'];?>", "<?php echo $notify['priority'];?>")</script>
     <?php endforeach; ?>
 
