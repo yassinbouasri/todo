@@ -37,6 +37,7 @@
             <label for="password">Password</label>
             <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" required>
         </div>
+        <p class="mt-3"> <a href="?controller=users&method=forgotPassword">Forgot password?</a></p>
         <button type="submit" class="btn btn-primary btn-block">Login</button>
         <p class="text-center mt-3">Don't have an account? <a href="?controller=users&method=register">Sign Up</a></p>
     </form>

@@ -53,4 +53,9 @@ if($controller == "task"){
     else if($method == "changePassword"){
         $controller->changePassword();
     }
+    else if($method == "forgotPassword"){
+        $controller->resetPassword();
+    } else if($method == "resetPassword"){
+        $controller->resetPasswordByToken();
+    }
 }

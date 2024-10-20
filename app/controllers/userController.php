@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../models/users.php';
 require_once __DIR__ . '/../helpers.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -86,18 +87,29 @@ class userController
         require_once __DIR__ . '/../views/login/changePassword.php';
     }
 
+    /**
+     * @throws Exception
+     */
     public function sendEmail($to, $subject, $message){
         $mail = new PHPMailer(true);
         $mail->isSMTP();
+        $mail->SMTPDebug = 1;
         $mail->CharSet = 'UTF-8';
-        $mail->Host = 'smtp-mail.outlook.com'; //htestit@hotmail.com **pmol2110
+        $mail->Host = 'smtp-relay.brevo.com';
         $mail->SMTPAuth = true;
-        $mail->SMTPSecure = 'tls';
         $mail->Port = 587;
-        $mail->Username = 'htestit@hotmail.com';
-        $mail->Password = '**pmol2110';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Username = '7e4394002@smtp-brevo.com';
+        $mail->Password = 'y2TCKYx0gn51Nkh4';
+        $mail->SMTPOptions = array(
+            'ssl' => array(
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true
+            )
+        );
 
-        $mail->setFrom('htestit@hotmail.com', 'Todo - Tasks Manager');
+        $mail->setFrom('yassinbouasri@gmail.com', 'Todo - Tasks Manager');
         $mail->addAddress($to);
 
         $mail->isHTML(true);
@@ -114,6 +126,60 @@ class userController
     }
 
     public function resetPassword(){
+        $alertMessage = "";
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $email = $_POST['email'];
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $alertMessage = "<div class='alert alert-danger alert-dismissible fade in' role='alert'> Invalid Email!</div>";
+            } else {
+                $user = $this->users->getUserByEmail($email);
 
+                if($user){
+                    $token = bin2hex(random_bytes(32));
+                    $expires = date("U") + 1800;
+                    $expiresDate = date("Y-m-d H:i:s", $expires);
+                    $this->users->storeToken($email, $token, $expiresDate);
+
+                    $resetLink = "http://127.0.0.1:8080/?controller=users&method=resetPassword&token=".$token;
+
+                    $subject = "Password Reset";
+                    $message = "Click on the following link to reset your password: <a href='".$resetLink."'>".$resetLink."</a>";
+
+                    $this->sendEmail($email, $subject, $message);
+
+                    $alertMessage = "<div class='alert alert-success'>Check your email for the password reset link!</div>";
+
+                } else {
+                    $alertMessage = "<div class='alert alert-danger alert-dismissible fade in' role='alert'> Invalid Email!</div>";
+                }
+            }
+
+        }
+        require_once __DIR__ . '/../views/login/forgot.php';
+    }
+
+    public function resetPasswordByToken(){
+        $alertMessage = "";
+        if(isset($_GET['token'])){
+            $token = $_GET['token'];
+            $user = $this->users->getUserByToken($token);
+            if($user){
+                if($_SERVER['REQUEST_METHOD'] == 'POST'){
+                    $newPassword = $_POST['new_password'];
+                    $confirmPassword = $_POST['confirm_password'];
+                    if($newPassword == $confirmPassword){
+                        $this->users->changePassword($user['email'],  $newPassword);
+                        $this->users->deleteToken($token);
+
+                        $alertMessage = "<div class='alert alert-success'>Password reset successfully!</div>";
+                    } else {
+                        $alertMessage = "<div class='alert alert-danger'>Password reset failed!</div>";
+                    }
+                }
+            } else {
+                $alertMessage = "<div class='alert alert-danger'>Invalid reset token!</div>";
+            }
+        }
+        require_once __DIR__ . '/../views/login/newPassword.php';
     }
 }
