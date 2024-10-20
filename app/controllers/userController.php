@@ -93,7 +93,7 @@ class userController
     public function sendEmail($to, $subject, $message){
         $mail = new PHPMailer(true);
         $mail->isSMTP();
-        $mail->SMTPDebug = 1;
+        //$mail->SMTPDebug = 1;
         $mail->CharSet = 'UTF-8';
         $mail->Host = 'smtp-relay.brevo.com';
         $mail->SMTPAuth = true;
