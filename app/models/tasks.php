@@ -81,4 +81,32 @@ class Tasks
         return $stmt->fetchColumn();
     }
 
+    public function orderBy($column, $sortOrder){
+        $sql = "SELECT * FROM tasks ORDER BY :column " . strtoupper($sortOrder);
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':column', $column);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    }
+
+    public function notification(){
+
+        $sql = "SELECT * FROM tasks WHERE notification_sent = 0 AND due_date <= DATE_ADD(NOW(), INTERVAL 24 HOUR) AND status != 'Completed'";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+//        if($result){
+//
+//            $sql = "UPDATE tasks SET notification_sent = 1 WHERE id = :task_id";
+//            $stmt = $this->db->prepare($sql);
+//            $stmt->execute(['task_id' => $result['id']]);
+//
+//        }
+
+        return $result;
+    }
+
 }

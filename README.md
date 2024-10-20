@@ -7,6 +7,7 @@ A simple Todo List application built using **PHP**, **MySQL**, **HTML/CSS**, **J
 1. **User Authentication**
     - Register and login to manage your personal todo list.
     - Password encryption for security.
+    - Password Reset view email.
       
 2. **Task Management**
    - Add, edit, and delete tasks.
@@ -27,4 +28,13 @@ A simple Todo List application built using **PHP**, **MySQL**, **HTML/CSS**, **J
    - Mobile-Friendly interface.
 
 
+## Installation
+
+To use rest password by email functionality, We need PHPMailer in the project, you need to install it via Composer.
+
+### Step 1: Install PHPMailer
+
+Run the following command in your project directory:
+
+```bash
 composer require phpmailer/phpmailer

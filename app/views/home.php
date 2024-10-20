@@ -6,6 +6,8 @@ require_once  "topmenu.php";
  * @var array $taskController
  */
 ?>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
 
 
   <div class="container mt-5">
@@ -17,7 +19,7 @@ require_once  "topmenu.php";
       </div>
     </div>
 
-    <!-- List View with Responsive Table -->
+
     <div id="listView" class="table-responsive">
         <table class="table table-striped table-hover">
             <thead>
@@ -78,7 +80,12 @@ require_once  "topmenu.php";
 
     </div>
   </div>
-<script>// JS function to filter tasks
+
+<script>
+    function confirmDelete(){
+        return confirm("Are you sure you want to delete this Task?");
+    }
+    // JS function to filter tasks
     document.getElementById('searchBar').addEventListener('keyup', function () {
         let searchValue = this.value.toLowerCase();
         let tasks = document.getElementById('taskTable').getElementsByTagName('tr');
@@ -94,7 +101,23 @@ require_once  "topmenu.php";
             }
         }
 
-        function confirmDelete(){
-            return "Are you sure you want to delete this Task?";
+
+
+    });
+
+    function notifyTaskDue(taskTitle, dueDate, priority) {
+        if (priority === "High"){
+            toastr.error('Task "' + taskTitle + '" is due on ' + dueDate);
+        } else if (priority === "Medium") {
+            toastr.warning('Task "' + taskTitle + '" is due on ' + dueDate);
+        } else {
+            toastr.success('Task "' + taskTitle + '" is due on ' + dueDate);
         }
-    });</script>
+
+    }
+</script>
+
+    <?php foreach ($notifyTask as $notify): ?>
+        <script>notifyTaskDue("<?php echo $notify['task_title'];?>", "<?php echo $notify['due_date'];?>", "<?php echo $notify['priority'];?>")</script>
+    <?php endforeach; ?>
+

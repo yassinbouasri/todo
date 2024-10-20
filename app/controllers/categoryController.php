@@ -90,4 +90,6 @@ class categoryController
 
         require_once __DIR__ . "/../views/categories/editCategory.php";
     }
+
+
 }
