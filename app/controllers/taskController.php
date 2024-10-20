@@ -1,10 +1,12 @@
 <?php
+require_once __DIR__ .  "/../helpers.php";
 require_once __DIR__ .  "/../models/categories.php";
 require_once __DIR__ .  "/../models/tasks.php";
 class TaskController {
     private $task;
     private $categories;
     public function __construct() {
+        checkSession();
         $this->task = new tasks();
         $this->categories = new Categories();
     }
@@ -53,6 +55,7 @@ class TaskController {
     }
 
     public function index(){
+
         require_once __DIR__ . "/../models/tasks.php";
         require_once __DIR__ . "/../models/categories.php";
         require_once __DIR__ . "/../controllers/taskController.php";

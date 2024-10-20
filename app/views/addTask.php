@@ -69,7 +69,7 @@ require_once "topmenu.php";
             </select>
         </div>
 
-        cs
+        <button type="submit" class="btn btn-primary btn-block">Add Task</button>
     </form>
 </div>
 

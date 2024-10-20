@@ -25,3 +25,6 @@ A simple Todo List application built using **PHP**, **MySQL**, **HTML/CSS**, **J
 
 6. **Responsive Design**
    - Mobile-Friendly interface.
+
+
+composer require phpmailer/phpmailer

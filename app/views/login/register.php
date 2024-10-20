@@ -26,11 +26,9 @@
 
   <div class="container signup-container">
     <h2 class="signup-title">Sign Up</h2>
-      <?php if (!empty($alertMessage))
-      {
-          echo $alertMessage;
-      } ?>
-
+      <?php if (!empty($alertMessage)): ?>
+          <?php echo $alertMessage; ?>
+      <?php endif; ?>
     <form action="?controller=users&method=register" method="post">
       <div class="form-group">
         <label for="username">Username</label>
@@ -49,7 +47,7 @@
         <input type="password" class="form-control" id="confirm-password" name="confirm_password" placeholder="Confirm your password" required>
       </div>
       <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
-      <p class="text-center mt-3">Already have an account? <a href="login.php">Login</a></p>
+      <p class="text-center mt-3">Already have an account? <a href="?controller=users&method=login">Login</a></p>
     </form>
   </div>
 
