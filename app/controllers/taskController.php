@@ -54,8 +54,11 @@ class TaskController {
         require_once __DIR__ .  "/../views/addTask.php";
     }
 
+    /**
+     * @throws DateMalformedStringException
+     */
     public function index(){
-
+        $notifyTask = $this->sendNotification();
         require_once __DIR__ . "/../models/tasks.php";
         require_once __DIR__ . "/../models/categories.php";
         require_once __DIR__ . "/../controllers/taskController.php";
@@ -152,19 +155,12 @@ class TaskController {
         require_once __DIR__ . "/../views/tasks/updateTask.php";
     }
 
-    public function orderTasks(){
-        if($_SERVER["REQUEST_METHOD"] == "POST"){
-            $sortOrder = $_POST['sortOrder'];
-            $column = $_POST['column'];
-
-            if ($sortOrder && $column) {
-                $tasks = $this->task->orderBy($column, $sortOrder);
-            } else {
-                $tasks = $this->task->orderBy($column);
-            }
+    /**
+     * @throws DateMalformedStringException
+     */
+    public function sendNotification(){
+        return $this->task->notification();
 
 
-        }
     }
-
 }

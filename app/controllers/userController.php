@@ -88,6 +88,10 @@ class userController extends Mailer
         require_once __DIR__ . '/../views/login/changePassword.php';
     }
 
+    /**
+     * @throws Exception
+     * @throws \Random\RandomException
+     */
     public function resetPassword(){
         $alertMessage = "";
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
