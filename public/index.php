@@ -13,6 +13,13 @@ $method = $_GET["method"] ?? null;
 if($controller == "task"){
     $controller = new TaskController();
 
+    $tasksMethods = [
+        "create" => "create",
+        "show" => "show",
+        "remove" => "remove",
+        "update" => "update",
+    ];
+
     if($method == "create"){
         $controller->create();
     } else if($method == "show"){
