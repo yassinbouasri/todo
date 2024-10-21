@@ -104,10 +104,7 @@ class Tasks
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute(['id' => $row['id']]);
             }
-
-
         }
-
         return $result;
     }
 

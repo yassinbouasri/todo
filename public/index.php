@@ -14,55 +14,46 @@ if($controller == "task"){
     $controller = new TaskController();
 
     $tasksMethods = [
-        "create" => "create",
-        "show" => "show",
-        "remove" => "remove",
-        "update" => "update",
+        "create",
+        "show",
+        "remove",
+        "update"
     ];
-
-    if($method == "create"){
-        $controller->create();
-    } else if($method == "show"){
-        $controller->show();
-    } else if($method == "remove"){
-        $controller->remove();
-    }else if($method == "update"){
-        $controller->update();
-    }
-    else{
+    if(in_array($method, $tasksMethods) && method_exists($controller, $method)){
+        $controller->{$method}();
+    } else {
         $controller->index();
     }
+
+
 //categories routers
 } else if($controller == "categories"){
     require_once __DIR__ .  '/../app/controllers/categoryController.php';
     $catController = new CategoryController();
 
-    if($method == "showCategories"){
-        $catController->index();
-    }else if ($method == "saveCategory"){
-        $catController->saveCategory();
-    } else if($method == "removeCategory"){
-        $catController->removeCategory();
-    } else if($method == "updateCategory"){
-        $catController->edit();
-    }
+    $catMethods = [
+        "showCategories" => "index",
+        "saveCategory" => "saveCategory",
+        "removeCategory" => "removeCategory",
+        "updateCategory" => "edit"
+    ];
+
+    $toCall = $catMethods[$method] ?? "index";
+    $catController->{$toCall}();
+
     //users routers
 } else if($controller == "users"){
     require_once __DIR__ .  '/../app/controllers/userController.php';
     $controller = new UserController();
-    if ($method == "register"){
-        $controller->register();
-    } else if($method == "login"){
-        $controller->login();
-    } else if($method == "logout"){
-        $controller->logout();
-    }
-    else if($method == "changePassword"){
-        $controller->changePassword();
-    }
-    else if($method == "forgotPassword"){
-        $controller->resetPassword();
-    } else if($method == "resetPassword"){
-        $controller->resetPasswordByToken();
-    }
+    $usersMethods = [
+        "register" => "register",
+        "logout" => "logout",
+        "changePassword" => "changePassword",
+        "forgotPassword" => "resetPassword",
+        "resetPassword" => "resetPasswordByToken",
+    ];
+
+    $toCall = $usersMethods[$method] ?? "login";
+    $controller->{$toCall}();
+
 }
