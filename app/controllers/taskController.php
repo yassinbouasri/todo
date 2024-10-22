@@ -86,18 +86,22 @@ class TaskController extends Mailer
 
         require_once __DIR__ . "/../views/home.php";
     }
-    public function show(){
+    public function show($id){
+
         require_once __DIR__ . "/../models/tasks.php";
         require_once __DIR__ . "/../models/categories.php";
 
-        $id = $_GET['id'];
+        //$id = $_GET['id'];
+        if ($id) {
+            $tasksModels = new Tasks();
 
-        $tasksModels = new Tasks();
+            $tasksModel = $tasksModels->getTaskById($id);
 
-        $tasksModel = $tasksModels->getTaskById($id);
-        $categoryId = $tasksModel['category_id'];
+        }
+
         $color = '';
-        if (isset($tasksModel)) {
+        if ($tasksModel) {
+            $categoryId = $tasksModel['category_id'];
             $categoriesModels = new Categories();
             $category = $categoriesModels->getCategoryById($categoryId);
 
@@ -108,6 +112,8 @@ class TaskController extends Mailer
             }
             require_once __DIR__ . "/../views/tasks/show.php";
             return $tasksModel;
+        } else {
+            echo "No Tasks Found for this ID";
         }
 
     }
@@ -124,13 +130,13 @@ class TaskController extends Mailer
         }
         $this->index();
     }
-    public  function update(){
+    public  function update($id){
         $statusOptions = ['In Progress', 'Completed', 'Pending'];
         $priorityOptions = ['High', 'Medium', 'Low'];
 
 
 
-        $tasks = $this->task->getTaskById($_GET['id']);
+        $tasks = $this->task->getTaskById($id);
         $AllCategories = $this->categories->getAllCategories();
 
 

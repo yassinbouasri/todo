@@ -10,13 +10,30 @@ $controller = $_GET["controller"] ?? null;
 $method = $_GET["method"] ?? null;
 
 //new router
-$request = $_SERVER['REQUEST_URI'];
+$request = trim($_SERVER['REQUEST_URI'], '/');
+$request = parse_url($request, PHP_URL_PATH);
+$parts = explode('/', $request);
+
+$baseRoute = $parts[0] ?? null;
+$function = $parts[1] ?? null;
+$param = $parts[2] ?? null;
+
 require_once __DIR__ .  '/../app/controllers/userController.php';
 $user = new UserController();
-var_dump($request);
+$tasksFunctionsWithId = [
+    "show",
+    "update"
+];
+
+$tasksFunctionsWithoutId = [
+    "create",
+    "remove",
+];
+
+
 
     //user
-switch ($request) {
+switch ($baseRoute) {
     case "/user/login":
 
         $user->login();
@@ -24,15 +41,25 @@ switch ($request) {
     case "/user/register":
         $user->register();
         break;
-    case "/index":
+    case "index":
         $task = new TaskController();
         $task->index();
         break;
-    case "/task/create":
-        $task = new TaskController();
-        $task->create();
-        break;
+    case "task":
 
+        if (in_array($function, $tasksFunctionsWithId) && $param) {
+            $task = new TaskController();
+            $task->{$function}($param);
+        } elseif (in_array($function,$tasksFunctionsWithoutId) && !$param) {
+            $task = new TaskController();
+            $task->{$function}();
+        } else {
+            echo "Invalid function or missing parameter.";
+        }
+        break;
+    default:
+        http_response_code(404);
+        echo "404 - Page not found.";
 }
 
 
