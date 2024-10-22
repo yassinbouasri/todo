@@ -33,22 +33,24 @@ $functionsWithoutId = [
     "remove",
 ];
 
+$usersFunctionsWithId = [
+    "resetPasswordByToken",
+];
+$usersFunctionsWithoutId = [
+    "register",
+    "logout",
+    "login",
+    "changePassword",
+    "resetPassword",
+];
 
-    //user
+
 switch ($baseRoute) {
-    case "/user/login":
-
-        $user->login();
-        break;
-    case "/user/register":
-        $user->register();
-        break;
-    case "index":
+    case "";
         $task = new TaskController();
         $task->index();
         break;
     case "task":
-
         if (in_array($function, $functionsWithId) && $param) {
             $task = new TaskController();
             $task->{$function}($param);
@@ -60,10 +62,10 @@ switch ($baseRoute) {
         }
         break;
     case "user":
-        if (in_array($function, $functionsWithId) && $param) {
+        if (in_array($function, $usersFunctionsWithId) && $param) {
             $user = new userController();
             $user->{$function}($param);
-        } elseif (in_array($function,$functionsWithoutId) && !$param) {
+        } elseif (in_array($function,$usersFunctionsWithoutId) && !$param) {
             $user = new userController();
             $user->{$function}($param);
         } else {
