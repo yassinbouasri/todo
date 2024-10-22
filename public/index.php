@@ -4,6 +4,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 require_once __DIR__ .  '/../app/controllers/taskController.php';
+require_once __DIR__ .  '/../app/controllers/categoryController.php';
 
 
 $controller = $_GET["controller"] ?? null;
@@ -20,16 +21,17 @@ $param = $parts[2] ?? null;
 
 require_once __DIR__ .  '/../app/controllers/userController.php';
 $user = new UserController();
-$tasksFunctionsWithId = [
+// array for methods
+$functionsWithId = [
     "show",
     "update"
 ];
 
-$tasksFunctionsWithoutId = [
+$functionsWithoutId = [
+    "index",
     "create",
     "remove",
 ];
-
 
 
     //user
@@ -47,12 +49,34 @@ switch ($baseRoute) {
         break;
     case "task":
 
-        if (in_array($function, $tasksFunctionsWithId) && $param) {
+        if (in_array($function, $functionsWithId) && $param) {
             $task = new TaskController();
             $task->{$function}($param);
-        } elseif (in_array($function,$tasksFunctionsWithoutId) && !$param) {
+        } elseif (in_array($function,$functionsWithoutId) && !$param) {
             $task = new TaskController();
             $task->{$function}();
+        } else {
+            echo "Invalid function or missing parameter.";
+        }
+        break;
+    case "user":
+        if (in_array($function, $functionsWithId) && $param) {
+            $user = new userController();
+            $user->{$function}($param);
+        } elseif (in_array($function,$functionsWithoutId) && !$param) {
+            $user = new userController();
+            $user->{$function}($param);
+        } else {
+            echo "Invalid function or missing parameter.";
+        }
+        break;
+    case "category":
+        if (in_array($function, $functionsWithId) && $param) {
+            $category = new CategoryController();
+            $category->{$function}($param);
+        } elseif (in_array($function,$functionsWithoutId) && !$param) {
+            $category = new CategoryController();
+            $category->{$function}();
         } else {
             echo "Invalid function or missing parameter.";
         }
@@ -64,7 +88,7 @@ switch ($baseRoute) {
 
 
 
-
+/*
 // tasks routers
 if($controller == "task"){
     $controller = new TaskController();
@@ -113,3 +137,4 @@ if($controller == "task"){
     $controller->{$toCall}();
 
 }
+*/

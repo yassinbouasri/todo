@@ -14,7 +14,7 @@
         <?php echo $alertMessage; ?>
     <?php endif; ?>
     <h2 class="task-title">Add Category</h2>
-    <form action="?controller=categories&method=saveCategory" method="post">
+    <form action="/category/create" method="post">
         <div class="form-group">
             <label for="categoryName">Category Name</label>
             <input type="text" class="form-control" id="category_name" name="category_name" placeholder="Enter category name" required>

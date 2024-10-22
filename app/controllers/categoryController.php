@@ -5,9 +5,9 @@ require_once __DIR__ . "/../models/categories.php";
 class categoryController
 {
 
-
+    private $categoriesModel;
     public function __construct(){
-        //$categoriesModel = new Categories();
+        $this->categoriesModel = new Categories();
     }
     public function index(){
         $categoryModel = new categories();
@@ -16,7 +16,7 @@ class categoryController
         require_once __DIR__ . "/../views/categories/showCategory.php";
     }
 
-    public function saveCategory(){
+    public function create(){
         $categoryModel = new categories();
         $alertMessage = "";
         if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -32,7 +32,7 @@ class categoryController
         require_once __DIR__ . "/../views/categories/addCategory.php";
     }
 
-    public function removeCategory(){
+    public function remove(){
         $categories = new categories();
         $alertMessage = "";
         if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -40,11 +40,12 @@ class categoryController
 
 
             if($deleted){
-                $alertMessage = "<div class='alert alert-success' role='alert'>Category deleted successfully!</div>";
+                header("location: /category/index");
+                //$alertMessage = "<div class='alert alert-success' role='alert'>Category deleted successfully!</div>";
             } else {
                 $alertMessage = "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
             }
-           // header("location: /?controller=categories&method=showCategories");
+
         }
         require_once __DIR__ . "/../views/categories/showCategory.php";
     }
@@ -64,9 +65,9 @@ class categoryController
         }
     }
 
-    public function edit(){
+    public function update($id){
         $categoryModel = new categories();
-        $category = $this->getCategoryById();
+        $category = $this->categoriesModel->getCategoryById($id);
         $categoryId = $category['id'];
         $categoryName = $category['category_name'];
         $alertMessage = "";
