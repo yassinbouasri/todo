@@ -9,6 +9,35 @@ require_once __DIR__ .  '/../app/controllers/taskController.php';
 $controller = $_GET["controller"] ?? null;
 $method = $_GET["method"] ?? null;
 
+//new router
+$request = $_SERVER['REQUEST_URI'];
+require_once __DIR__ .  '/../app/controllers/userController.php';
+$user = new UserController();
+var_dump($request);
+
+    //user
+switch ($request) {
+    case "/user/login":
+
+        $user->login();
+        break;
+    case "/user/register":
+        $user->register();
+        break;
+    case "/index":
+        $task = new TaskController();
+        $task->index();
+        break;
+    case "/task/create":
+        $task = new TaskController();
+        $task->create();
+        break;
+
+}
+
+
+
+
 // tasks routers
 if($controller == "task"){
     $controller = new TaskController();

@@ -5,7 +5,7 @@ function checkSession(){
     }
 
     if (!isset($_SESSION['id'])) {
-        header('location: /?controller=users&method=login');
+        header('location: /user/login');
         exit();
     }
 }
