@@ -30,7 +30,7 @@ require_once __DIR__ . "/../topmenu.php";
         <?php echo $alertMessage; ?>
     <?php endif; ?>
 
-    <form action="?controller=task&method=update&id=<?php echo htmlspecialchars($tasks['id'], ENT_QUOTES, 'UTF-8'); ?>" method="post">
+    <form action="/task/update/<?php echo htmlspecialchars($tasks['id'], ENT_QUOTES, 'UTF-8'); ?>" method="post">
         <div class="form-group">
             <input type="hidden" name="id" id="id" value="<?php echo $tasks['id']; ?>">
             <label for="taskTitle">Task Title</label>

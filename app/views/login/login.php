@@ -28,7 +28,7 @@
     <?php if (!empty($alertMessage)): ?>
         <?php echo $alertMessage; ?>
     <?php endif; ?>
-    <form action="?controller=users&method=login" method="post">
+    <form action="login" method="post">
         <div class="form-group">
             <label for="email">Email address</label>
             <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
@@ -37,9 +37,9 @@
             <label for="password">Password</label>
             <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" required>
         </div>
-        <p class="mt-3"> <a href="?controller=users&method=forgotPassword">Forgot password?</a></p>
+        <p class="mt-3"> <a href="resetPassword">Forgot password?</a></p>
         <button type="submit" class="btn btn-primary btn-block">Login</button>
-        <p class="text-center mt-3">Don't have an account? <a href="?controller=users&method=register">Sign Up</a></p>
+        <p class="text-center mt-3">Don't have an account? <a href="register">Sign Up</a></p>
     </form>
 </div>
 

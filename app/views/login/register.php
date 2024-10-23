@@ -29,7 +29,7 @@
       <?php if (!empty($alertMessage)): ?>
           <?php echo $alertMessage; ?>
       <?php endif; ?>
-    <form action="?controller=users&method=register" method="post">
+    <form action="/register" method="post">
       <div class="form-group">
         <label for="username">Username</label>
         <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>
@@ -47,7 +47,7 @@
         <input type="password" class="form-control" id="confirm-password" name="confirm_password" placeholder="Confirm your password" required>
       </div>
       <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
-      <p class="text-center mt-3">Already have an account? <a href="?controller=users&method=login">Login</a></p>
+      <p class="text-center mt-3">Already have an account? <a href="login">Login</a></p>
     </form>
   </div>
 

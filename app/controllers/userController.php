@@ -56,7 +56,7 @@ class userController extends Mailer
                 session_regenerate_id(true);
                 $_SESSION['id'] = $user['id'];
                 $_SESSION['email'] = $user['email'];
-                header('location: ?controller=task&method=index');
+                header('location: /');
                 exit();
             } else {
                 $alertMessage = "<div class='alert alert-danger alert-dismissible fade in' role='alert'> Login Error!</div>";
@@ -71,7 +71,7 @@ class userController extends Mailer
 
         session_destroy();
 
-        header('location: ?controller=users&method=login');
+        header('location: /user/login');
         exit();
     }
 
@@ -107,7 +107,7 @@ class userController extends Mailer
                     $expiresDate = date("Y-m-d H:i:s", $expires);
                     $this->users->storeToken($email, $token, $expiresDate);
 
-                    $resetLink = "http://127.0.0.1:8080/?controller=users&method=resetPassword&token=".$token;
+                    $resetLink = "http://127.0.0.1:8080/user/resetPasswordByToken/".$token;
 
                     $subject = "Password Reset";
                     $message = "Click on the following link to reset your password: <a href='".$resetLink."'>".$resetLink."</a>";
@@ -125,10 +125,8 @@ class userController extends Mailer
         require_once __DIR__ . '/../views/login/forgot.php';
     }
 
-    public function resetPasswordByToken(){
+    public function resetPasswordByToken($token){
         $alertMessage = "";
-        if(isset($_GET['token'])){
-            $token = $_GET['token'];
             $user = $this->users->getUserByToken($token);
             if($user){
                 if($_SERVER['REQUEST_METHOD'] == 'POST'){
@@ -146,7 +144,6 @@ class userController extends Mailer
             } else {
                 $alertMessage = "<div class='alert alert-danger'>Invalid reset token!</div>";
             }
-        }
         require_once __DIR__ . '/../views/login/newPassword.php';
     }
 }

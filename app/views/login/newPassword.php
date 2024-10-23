@@ -34,7 +34,7 @@
     <?php if (!empty($alertMessage)): ?>
         <?php echo $alertMessage; ?>
     <?php endif; ?>
-    <form action="?controller=users&method=resetPassword&token=<?php echo $token; ?>" method="post">
+    <form action="resetPasswordByToken/<?php echo $token; ?>" method="post">
         <div class="form-group">
             <label for="email">Email address</label>
             <input type="email" class="form-control" id="email" name="email" value="<?php echo $user['email'];?>" readonly>
@@ -48,7 +48,7 @@
             <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required>
         </div>
         <button type="submit" class="btn btn-primary btn-block">Reset Your Password</button><br>
-        <p>Try to <a href="?controller=users&method=login">Login.</a></p>
+        <p>Try to <a href="login">Login.</a></p>
     </form>
 </div>
 

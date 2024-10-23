@@ -34,9 +34,9 @@
             <td> <?php echo $i ;?></td>
             <td><?php echo $category['category_name']?></td>
             <td>
-                    <a href="?controller=categories&method=updateCategory&category_id=<?php echo $category['id']; ?>"class="btn btn-primary btn-sm">Edit</a>
+                    <a href="/category/update/<?php echo $category['id']; ?>" class="btn btn-primary btn-sm">Edit</a>
                 </form>
-                <form action="?controller=categories&method=removeCategory" method="post" onsubmit="return confirmDelete();" style="display:inline;">
+                <form action="/category/remove" method="post" onsubmit="return confirmDelete();" style="display:inline;">
                     <input type="hidden" name="category_id" value="<?php echo htmlspecialchars($category['id'], ENT_QUOTES, 'UTF-8'); ?>">
                     <button type="submit" class="btn btn-danger btn-sm" >Delete</button>
                 </form>
