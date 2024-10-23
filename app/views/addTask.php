@@ -24,7 +24,7 @@ require_once "topmenu.php";
         <?php echo $alertMessage; ?>
     <?php endif; ?>
 
-    <form action="/index.php?controller=task&method=create" method="post">
+    <form action="/task/create" method="post">
         <div class="form-group">
             <label for="taskTitle">Task Title</label>
             <input type="text" class="form-control" id="task_title" name="task_title" placeholder="Enter task title" required>
