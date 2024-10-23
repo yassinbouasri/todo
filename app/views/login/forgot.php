@@ -28,7 +28,7 @@
     <?php if (!empty($alertMessage)): ?>
         <?php echo $alertMessage; ?>
     <?php endif; ?>
-    <form action="/user/resetPassword" method="post">
+    <form action="/resetPassword" method="post">
         <div class="form-group">
             <label for="email">Email address</label>
             <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>

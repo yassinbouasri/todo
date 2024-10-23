@@ -4,7 +4,7 @@
 function run(string $url, array $routes){
     $request = trim($url, '/');
     $request = parse_url($request, PHP_URL_PATH);
-    $parts = explode('/', $request);
+    $parts = explode('/', $request ?? '');
 
     $baseRoute = $parts[0] ?? null;
     $function = $parts[1] ?? null;

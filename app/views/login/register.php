@@ -29,7 +29,7 @@
       <?php if (!empty($alertMessage)): ?>
           <?php echo $alertMessage; ?>
       <?php endif; ?>
-    <form action="/user/register" method="post">
+    <form action="/register" method="post">
       <div class="form-group">
         <label for="username">Username</label>
         <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>

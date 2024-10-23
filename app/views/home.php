@@ -5,6 +5,8 @@ require_once  "topmenu.php";
  * @var array $categoriesModels
  * @var array $taskController
  * @var array $notifyTask
+ * @var array $totalPages
+ * @var array $currentPage
  */
 ?>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
@@ -46,7 +48,7 @@ require_once  "topmenu.php";
                     <td><span class="<?php echo htmlspecialchars($taskController->badge($task['status'])); ?>"><?php echo htmlspecialchars($task['status']); ?></span></td>
                     <td>
                         <a href="/task/update/<?php echo htmlspecialchars($task['id']); ?>" class="btn btn-primary btn-sm">Edit</a>
-                        <a href="?controller=task&method=show&id=<?php echo htmlspecialchars($task['id'], ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-info btn-back btn-sm">View</a>
+                        <a href="/task/show/<?php echo htmlspecialchars($task['id'], ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-info btn-back btn-sm">View</a>
                         <form action="/task/remove" method="post" onsubmit="return confirmDelete()" style="display:inline;">
                             <input type="hidden" name="id" value="<?php echo htmlspecialchars($task['id'], ENT_QUOTES, 'UTF-8'); ?>">
                             <button type="submit" class="btn btn-danger btn-sm" >Delete</button>
@@ -61,19 +63,19 @@ require_once  "topmenu.php";
             <ul class="pagination justify-content-center">
                 <?php if ($currentPage > 1): ?>
                     <li class="page-item">
-                        <a class="page-link" href="?controller=task&method=index&page=<?php echo $currentPage - 1; ?>">Previous</a>
+                        <a class="page-link" href="?page=<?php echo $currentPage - 1; ?>">Previous</a>
                     </li>
                 <?php endif; ?>
 
                 <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                     <li class="page-item <?php echo ($i == $currentPage) ? 'active' : ''; ?>">
-                        <a class="page-link" href="?controller=task&method=index&page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                        <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
                     </li>
                 <?php endfor; ?>
 
                 <?php if ($currentPage < $totalPages): ?>
                     <li class="page-item">
-                        <a class="page-link" href="?controller=task&method=index&page=<?php echo $currentPage + 1; ?>">Next</a>
+                        <a class="page-link" href="?page=<?php echo $currentPage + 1; ?>">Next</a>
                     </li>
                 <?php endif; ?>
             </ul>
