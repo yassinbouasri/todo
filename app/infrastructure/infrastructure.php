@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types = 1);
 
 function run(string $url, array $routes):void
 {
