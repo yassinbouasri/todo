@@ -24,8 +24,8 @@ class Tasks
     //changing the badge color for priority and status, according to data fetched from DB.
 
     public function insert($data = array()) {
-        $sql = "INSERT INTO tasks (task_title, task_description, due_date, priority, status, category_id) 
-                VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO tasks (task_title, task_description, due_date, priority, status, category_id, notification_sent) 
+                VALUES (?, ?, ?, ?, ?, ?, 0)";
 
         $stmt = $this->db->prepare($sql);
 
