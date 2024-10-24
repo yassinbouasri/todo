@@ -3,10 +3,10 @@ class Database
 {
 
     private static $instance;
-    const HOST = '127.0.0.1';
-    const USER = "root";
-    const PASSWORD = "";
-    const DBNAME = "todo";
+    private const string HOST = '127.0.0.1';
+    private const string USER = "root";
+    private const string PASSWORD = "";
+    private const string DBNAME = "todo";
     private function __construct(){
 
     }
