@@ -21,7 +21,7 @@ require_once __DIR__ . "/../../models/categories.php";
     <?php echo $alertMessage;?>
     <?php endif; ?>
     <h2 class="task-title">Edit Category</h2>
-    <form action="/category/update/" method="post">
+    <form action="/category/update/<?php echo $categoryId ; ?>" method="post">
         <div class="form-group">
             <label for="categoryName">Category Name</label>
             <input type="hidden" name="category_id" value="<?php echo $categoryId ; ?>">

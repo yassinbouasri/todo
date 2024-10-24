@@ -22,15 +22,15 @@
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tasks <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="task/create">Add Task</a></li>
+                        <li><a href="/task/create">Add Task</a></li>
                         <li><a href="/">Show Tasks</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Categories <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="category/show">Show Categories</a></li>
-                        <li><a href="category/create">Add Category</a></li>
+                        <li><a href="/category/show">Show Categories</a></li>
+                        <li><a href="/category/create">Add Category</a></li>
                     </ul>
                 </li>
             </ul>

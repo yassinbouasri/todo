@@ -4,6 +4,8 @@ require_once __DIR__ . '/../helpers.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use Random\RandomException;
+
 require_once __DIR__ . '/../mail/Mailer.php';
 
 class userController extends Mailer
@@ -14,14 +16,14 @@ class userController extends Mailer
         $this->users = new Users();
     }
 
-    public function register(){
+    public function register(): void
+    {
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
-            $username = $_POST['username'];
-            $email = $_POST['email'];
-            $password = $_POST['password'];
-            $confirmPassword = $_POST['confirm_password'];
-
+            $username = $_POST['username'] ?? null;
+            $email = $_POST['email'] ?? null;
+            $password = $_POST['password'] ?? null;
+            $confirmPassword = $_POST['confirm_password'] ?? null;
 
             if($password == $confirmPassword){
                 try {
@@ -42,20 +44,21 @@ class userController extends Mailer
         require_once __DIR__ . '/../views/login/register.php';
     }
 
-    public function login(){
+    public function login(): void
+    {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
-            $email = $_POST['email'];
-            $password = $_POST['password'];
+            $email = $_POST['email'] ?? null;
+            $password = $_POST['password'] ?? null;
 
             $user = $this->users->loginUser($email, $password);
 
             if($user){
                 session_regenerate_id(true);
-                $_SESSION['id'] = $user['id'];
-                $_SESSION['email'] = $user['email'];
+                $_SESSION['id'] = $user['id'] ?? null;
+                $_SESSION['email'] = $user['email'] ?? null;
                 header('location: /');
                 exit();
             } else {
@@ -64,7 +67,8 @@ class userController extends Mailer
         }
         require_once __DIR__ . '/../views/login/login.php';
     }
-    public function logout(){
+    public function logout(): void
+    {
         session_start();
 
         $_SESSION = array();
@@ -75,13 +79,15 @@ class userController extends Mailer
         exit();
     }
 
-    public function changePassword(){
+    public function changePassword(): void
+    {
         checkSession();
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
-            $newPassword = $_POST['new_password'];
-            $confirmPassword = $_POST['confirm_password'];
+            $newPassword = $_POST['new_password'] ?? null;
+            $confirmPassword = $_POST['confirm_password'] ?? null;
+            $email = $_SESSION['email'] ?? null;
             if($newPassword == $confirmPassword){
-                $this->users->changePassword($_SESSION['email'], $newPassword);
+                $this->users->changePassword($email, $newPassword);
                 $this->logout();
             }
         }
@@ -90,12 +96,13 @@ class userController extends Mailer
 
     /**
      * @throws Exception
-     * @throws \Random\RandomException
+     * @throws RandomException
      */
-    public function resetPassword(){
+    public function resetPassword(): void
+    {
         $alertMessage = "";
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
-            $email = $_POST['email'];
+            $email = $_POST['email'] ?? null;
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $alertMessage = "<div class='alert alert-danger alert-dismissible fade in' role='alert'> Invalid Email!</div>";
             } else {

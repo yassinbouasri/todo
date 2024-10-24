@@ -1,7 +1,8 @@
 <?php
+declare(strict_types = 1);
 
-
-function run(string $url, array $routes){
+function run(string $url, array $routes):void
+{
     $request = trim($url, '/');
     $request = parse_url($request, PHP_URL_PATH);
     $parts = explode('/', $request ?? '');
@@ -13,8 +14,6 @@ function run(string $url, array $routes){
     if ($function) {
         $path = $baseRoute . "/" . $function;
     }
-
-
 
     if (false === array_key_exists($path, $routes)) {
         return;

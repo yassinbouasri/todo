@@ -21,7 +21,7 @@
      'resetPassword' => function () use ($user) {
         $user->resetPassword();
      },
-     'resetPasswordByToken' => function ($token) use ($user) {
+     'user/resetPasswordByToken' => function ($token) use ($user) {
         $user->resetPasswordByToken($token);
      },
 
