@@ -1,7 +1,8 @@
 <?php
 
 
-function run(string $url, array $routes){
+function run(string $url, array $routes):void
+{
     $request = trim($url, '/');
     $request = parse_url($request, PHP_URL_PATH);
     $parts = explode('/', $request ?? '');
