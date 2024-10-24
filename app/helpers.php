@@ -5,7 +5,7 @@ function checkSession(){
     }
 
     if (!isset($_SESSION['id'])) {
-        header('location: /user/login');
+        header('location: /login');
         exit();
     }
 }

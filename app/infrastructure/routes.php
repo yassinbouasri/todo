@@ -24,6 +24,7 @@
      'resetPasswordByToken' => function ($token) use ($user) {
         $user->resetPasswordByToken($token);
      },
+
      //task routes
      '' => function () use ($task) {
          $task->index();
@@ -40,6 +41,7 @@
      'task/update' => function ($id) use ($task) {
         $task->update($id);
      },
+
      // category routes
      'category/create' => function () use ($category) {
         $category->create();
