@@ -15,8 +15,6 @@ function run(string $url, array $routes):void
         $path = $baseRoute . "/" . $function;
     }
 
-
-
     if (false === array_key_exists($path, $routes)) {
         return;
     }

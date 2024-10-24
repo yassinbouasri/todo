@@ -3,6 +3,10 @@ class Database
 {
 
     private static $instance;
+    const HOST = '127.0.0.1';
+    const USER = "root";
+    const PASSWORD = "";
+    const DBNAME = "todo";
     private function __construct(){
 
     }
@@ -11,16 +15,13 @@ class Database
         if(isset(self::$instance)){
             return self::$instance;
         }
-        $host = "127.0.0.1";
-        $user = "root";
-        $password = "";
-        $dbname = "todo";
+        try {
+            $dsn = "mysql:host=". self::HOST .";dbname=". self::DBNAME .";charset=utf8mb4";
 
-        $dsn = "mysql:host=$host;dbname=$dbname;charset=utf8mb4";
-
-
-        self::$instance = new PDO($dsn, $user, $password);
-
+            self::$instance = new PDO($dsn, self::USER, self::PASSWORD);
+        } catch (PDOException $e) {
+            die ("Database connection failed: " . $e->getMessage());
+        }
         return self::$instance;
     }
 
