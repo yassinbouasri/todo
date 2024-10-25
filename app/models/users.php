@@ -4,12 +4,12 @@ require_once __DIR__ . "/../config/database.php";
 
 class Users
 {
-    private $db;
+    private PDO $db;
     public function __construct() {
         $this->db = Database::getConnection();
     }
 
-    public function registerUser($username, $email, $password): bool
+    public function registerUser(string $username, string $email, string $password): bool
     {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
@@ -23,7 +23,7 @@ class Users
             ]);
     }
 
-    public function loginUser($email, $password): mixed
+    public function loginUser(string $email, string $password): mixed
     {
         $sql = "SELECT * FROM users WHERE email = :email";
         $stmt = $this->db->prepare($sql);
@@ -40,7 +40,7 @@ class Users
 
     }
 
-    public function changePassword($email, $newPassword): bool
+    public function changePassword(string $email, string $newPassword): bool
     {
         $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
         $sql = "UPDATE users SET password = :password WHERE email = :email";
@@ -54,7 +54,7 @@ class Users
 
     }
 
-    public function getUserByEmail($email):mixed
+    public function getUserByEmail(string $email): mixed
     {
         $sql = "SELECT * FROM users WHERE email = :email";
         $stmt = $this->db->prepare($sql);
@@ -64,9 +64,8 @@ class Users
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function storeToken($email, $reset_token, $token_expires_at): bool
+    public function storeToken(string $email, string $reset_token, string $token_expires_at): bool
     {
-
         $sql = "UPDATE users SET reset_token = :reset_token, token_expires_at = :token_expires_at WHERE email = :email";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
@@ -77,7 +76,8 @@ class Users
         return (bool) $stmt->rowCount();
     }
 
-    public function getUserByToken($token): mixed {
+    public function getUserByToken(string $token): mixed
+    {
         $sql = "SELECT * FROM users WHERE reset_token = :reset_token AND token_expires_at > :now";
         $stmt = $this->db->prepare($sql);
         $now = date("U");
@@ -87,7 +87,7 @@ class Users
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function deleteToken($token): bool
+    public function deleteToken(string $token): bool
     {
         $sql = "UPDATE users SET reset_token = null, token_expires_at = null WHERE reset_token = :token";
         $stmt = $this->db->prepare($sql);

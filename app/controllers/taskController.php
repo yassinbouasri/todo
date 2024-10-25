@@ -6,14 +6,14 @@ require_once __DIR__ .  "/../mail/Mailer.php";
 
 class TaskController extends Mailer
 {
-    private $task;
-    private $categories;
+    private tasks $task;
+    private Categories $categories;
     public function __construct() {
         checkSession();
         $this->task = new tasks();
         $this->categories = new Categories();
     }
-    public function badge($priorityOrStatus)
+    public function badge(string $priorityOrStatus)
     {
         $BadgeClasses = [
             'high' => 'badge badge-high',
@@ -48,11 +48,8 @@ class TaskController extends Mailer
             // Insert task into the database
             $inserted = $this->task->insert($data);
 
-            if ($inserted) {
-                $alertMessage = "<div class='alert alert-success' role='alert'>Task added successfully!</div>";
-            } else {
-                $alertMessage = "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
-            }
+            $alertMessage = ($inserted) ? "<div class='alert alert-success' role='alert'>Task added successfully!</div>" :
+                        "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
 
         }
         require_once __DIR__ .  "/../views/addTask.php";
@@ -88,7 +85,7 @@ class TaskController extends Mailer
 
         require_once __DIR__ . "/../views/home.php";
     }
-    public function show($id):mixed
+    public function show(int $id): mixed
     {
 
         require_once __DIR__ . "/../models/tasks.php";
@@ -102,42 +99,34 @@ class TaskController extends Mailer
             $categoriesModels = new Categories();
             $category = $categoriesModels->getCategoryById($categoryId);
 
-            if ($tasksModel['status'] == 'Completed') {
-                $color = 'status completed';
-            } else if ($tasksModel['status'] == 'In Progress') {
-                $color = 'status in-progress';
-            }
+            $color = ($tasksModel['status'] == 'Completed') ? 'status completed' : $color = 'status in-progress';
             require_once __DIR__ . "/../views/tasks/show.php";
             return $tasksModel;
         } else {
-            return "No Tasks Found for this ID";
+             echo "No Tasks Found for this ID";
+             exit();
         }
 
     }
 
+    /**
+     * @throws DateMalformedStringException
+     */
     public function remove(): void
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $id = $_POST['id'];
-            $result = $this->task->delete($id);
-            if ($result) {
-                $alertMessage = "<div class='alert alert-success' role='alert'>Task deleted successfully!</div>";
-            } else {
-                $alertMessage = "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
-            }
+            $this->task->delete($id);
         }
         $this->index();
     }
-    public  function update($id): void
+    public  function update(int $id): void
     {
         $statusOptions = ['In Progress', 'Completed', 'Pending'];
         $priorityOptions = ['High', 'Medium', 'Low'];
 
-
-
         $tasks = $this->task->getTaskById($id);
         $AllCategories = $this->categories->getAllCategories();
-
 
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -151,12 +140,8 @@ class TaskController extends Mailer
 
             $updated = $this->task->update($id, $task_title, $task_description, $due_date, $priority, $status, $category_id);
 
-            if ($updated) {
-                $alertMessage = "<div class='alert alert-success' role='alert'>Task updated successfully!</div>";
-
-            } else {
-                $alertMessage = "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
-            }
+            $alertMessage = ($updated) ? "<div class='alert alert-success' role='alert'>Task updated successfully!</div>" :
+                            "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
             $tasks = $this->task->getTaskById($id);
         }
 
@@ -165,6 +150,7 @@ class TaskController extends Mailer
 
     /**
      * @throws DateMalformedStringException
+     * @throws \PHPMailer\PHPMailer\Exception
      */
     public function sendNotification(): false|array
     {
@@ -187,7 +173,6 @@ class TaskController extends Mailer
         }
 
         return $selectedTasks;
-
 
     }
 }

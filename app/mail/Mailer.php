@@ -8,10 +8,11 @@ class Mailer {
     /**
      * @throws Exception
      */
-    public function sendEmail($to, $subject, $message){
+    public function sendEmail(string $to, string $subject, string $message): void
+    {
         $mail = new PHPMailer(true);
         $mail->isSMTP();
-        //$mail->SMTPDebug = 1;
+        //$mail->SMTPDebug = 1; // SMTP debugging messages
         $mail->CharSet = 'UTF-8';
         $mail->Host = 'smtp-relay.brevo.com';
         $mail->SMTPAuth = true;

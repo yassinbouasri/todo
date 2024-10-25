@@ -5,7 +5,7 @@ require_once __DIR__ . "/../models/categories.php";
 class categoryController
 {
 
-    private $categoriesModel;
+    private Categories $categoriesModel;
     public function __construct(){
         $this->categoriesModel = new Categories();
     }
@@ -58,11 +58,11 @@ class categoryController
             $category_id = $_GET['category_id'] ?? null;
 
         }
-        return $this->categoriesModel->getCategoryById($category_id);;
+        return $this->categoriesModel->getCategoryById($category_id);
 
     }
 
-    public function update($id): void
+    public function update(int $id): void
     {
         $alertMessage = "";
         $category = $this->categoriesModel->getCategoryById($id);

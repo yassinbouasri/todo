@@ -6,25 +6,24 @@ require_once __DIR__ .  "/../config/database.php";
 
 class Tasks
 {
-    private $db;
+    private PDO $db;
     function __construct(){
         $this->db = Database::getConnection();
     }
-    public function getAllTasks($limit, $offset): false|array
+    public function getAllTasks(int $limit, int $offset): false|array
     {
         $sql = "SELECT * FROM tasks ORDER BY due_date DESC LIMIT :limit OFFSET :offset";
 
         $stmt = $this->db->prepare($sql);
 
-        $stmt->bindValue(':limit', (int) $limit, PDO::PARAM_INT);
-        $stmt->bindValue(':offset', (int) $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    //changing the badge color for priority and status, according to data fetched from DB.
 
-    public function insert($data = array()): bool
+    public function insert(array $data = []): bool
     {
         $sql = "INSERT INTO tasks (task_title, task_description, due_date, priority, status, category_id, notification_sent) 
                 VALUES (?, ?, ?, ?, ?, ?, 0)";
@@ -42,7 +41,7 @@ class Tasks
         ]); // Return true on success, false on failure
     }
 
-    public function getTaskById($id): mixed
+    public function getTaskById(int $id): mixed
     {
         $sql = "SELECT * FROM tasks WHERE id = ?";
         $stmt = $this->db->prepare($sql);
@@ -50,24 +49,21 @@ class Tasks
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function delete($id): bool
+    public function delete(int $id): bool
     {
         $sql = "DELETE FROM tasks WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
-        if($stmt->rowCount() > 0){
-            return true;
-        } else {
-            return false;
-        }
+
+        return (bool) $stmt->rowCount();
     }
 
-    public function update($id, $task_title, $task_description, $due_date, $priority, $status, $category_id): bool
+    public function update(int $id, string $task_title, string $task_description, string $due_date, string $priority, string $status, int $category_id): bool
     {
         $sql = "UPDATE tasks SET task_title = :task_title , task_description = :task_description, due_date = :due_date, priority = :priority, status = :status, category_id = :category_id WHERE id = :id";
 
         $stmt = $this->db->prepare($sql);
-        $result = $stmt->execute([
+        return $stmt->execute([
             'task_title' => $task_title,
             'task_description' => $task_description,
             'due_date' => $due_date,
@@ -76,11 +72,6 @@ class Tasks
             'category_id' => $category_id,
             'id' => $id
             ]);
-        if ($result) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     public function getTotalTasks(): mixed

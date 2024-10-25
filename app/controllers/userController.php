@@ -132,14 +132,14 @@ class userController extends Mailer
         require_once __DIR__ . '/../views/login/forgot.php';
     }
 
-    public function resetPasswordByToken($token): void
+    public function resetPasswordByToken(string $token): void
     {
         $alertMessage = "";
             $user = $this->users->getUserByToken($token);
             if($user){
                 if($_SERVER['REQUEST_METHOD'] == 'POST'){
-                    $newPassword = $_POST['new_password'];
-                    $confirmPassword = $_POST['confirm_password'];
+                    $newPassword = $_POST['new_password'] ?? null;
+                    $confirmPassword = $_POST['confirm_password'] ?? null;
                     if($newPassword == $confirmPassword){
                         $this->users->changePassword($user['email'],  $newPassword);
                         $this->users->deleteToken($token);
