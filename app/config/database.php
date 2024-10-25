@@ -11,7 +11,8 @@ class Database
 
     }
 
-    public static function getConnection(){
+    public static function getConnection(): PDO
+    {
         if(isset(self::$instance)){
             return self::$instance;
         }

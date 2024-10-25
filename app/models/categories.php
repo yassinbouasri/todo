@@ -10,20 +10,23 @@ class Categories
         $this->db = Database::getConnection();
     }
 
-    public function getCategoryById($id){
+    public function getCategoryById($id): mixed
+    {
         $sql = "SELECT * FROM categories WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(array("id" => $id));
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getAllCategories(){
+    public function getAllCategories(): false|array
+    {
         $sql = "SELECT * FROM categories";
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function addCategory($category){
+    public function addCategory($category): bool
+    {
         $sql = "INSERT INTO categories (category_name) VALUES (:category_name)";
         $stm = $this->db->prepare($sql);
 
@@ -32,21 +35,19 @@ class Categories
         ));
     }
 
-    public function deleteCategory($id){
+    public function deleteCategory($id): bool
+    {
         $sql = "DELETE FROM categories WHERE id = :id";
 
         $stm = $this->db->prepare($sql);
         $stm->bindParam(":id", $id, PDO::PARAM_INT);
         $stm->execute();
-        if ($stm->rowCount() > 0){
-            return true;
-        } else {
-            return false;
-        }
+        return (bool) $stm->rowCount();
 
     }
 
-    public function updateCategory($category_name, $id){
+    public function updateCategory($category_name, $id): bool
+    {
 
         $sql = "UPDATE categories SET category_name = :category_name WHERE id = :id";
 
@@ -55,10 +56,6 @@ class Categories
             "category_name" => $category_name,
             "id" => $id,
         ]);
-        if ($stm->rowCount() > 0){
-            return true;
-        } else {
-            return false;
-        }
+        return (bool) $stm->rowCount();
     }
 }

@@ -28,7 +28,8 @@ class TaskController extends Mailer
         }
     }
 
-    public function create(){
+    public function create(): void
+    {
         $categoriesModel = new Categories();
         $categories = $categoriesModel->getAllCategories();
 
@@ -60,7 +61,8 @@ class TaskController extends Mailer
     /**
      * @throws DateMalformedStringException
      */
-    public function index(){
+    public function index(): void
+    {
         $notifyTask = $this->sendNotification();
         require_once __DIR__ . "/../models/tasks.php";
         require_once __DIR__ . "/../models/categories.php";
@@ -86,18 +88,13 @@ class TaskController extends Mailer
 
         require_once __DIR__ . "/../views/home.php";
     }
-    public function show($id){
+    public function show($id):mixed
+    {
 
         require_once __DIR__ . "/../models/tasks.php";
         require_once __DIR__ . "/../models/categories.php";
 
-        //$id = $_GET['id'];
-        if ($id) {
-            $tasksModels = new Tasks();
-
-            $tasksModel = $tasksModels->getTaskById($id);
-
-        }
+        $tasksModel = $this->task->getTaskById($id);
 
         $color = '';
         if ($tasksModel) {
@@ -113,12 +110,13 @@ class TaskController extends Mailer
             require_once __DIR__ . "/../views/tasks/show.php";
             return $tasksModel;
         } else {
-            echo "No Tasks Found for this ID";
+            return "No Tasks Found for this ID";
         }
 
     }
 
-    public function remove(){
+    public function remove(): void
+    {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $id = $_POST['id'];
             $result = $this->task->delete($id);
@@ -130,7 +128,8 @@ class TaskController extends Mailer
         }
         $this->index();
     }
-    public  function update($id){
+    public  function update($id): void
+    {
         $statusOptions = ['In Progress', 'Completed', 'Pending'];
         $priorityOptions = ['High', 'Medium', 'Low'];
 
@@ -167,7 +166,8 @@ class TaskController extends Mailer
     /**
      * @throws DateMalformedStringException
      */
-    public function sendNotification(){
+    public function sendNotification(): false|array
+    {
         $selectedTasks = $this->task->notification();
         $email = $_SESSION['email'] ?? null;
         $body = "Hello,<br><br>";
