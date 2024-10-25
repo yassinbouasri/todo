@@ -44,6 +44,7 @@ class TaskController extends Mailer
                 'priority' => $_POST['priority'],
                 'status' => $_POST['status'],
                 'category_id' => $_POST['category_id'],
+                'user_id' => $_SESSION['id'],
             );
             // Insert task into the database
             $inserted = $this->task->insert($data);
@@ -57,6 +58,7 @@ class TaskController extends Mailer
 
     /**
      * @throws DateMalformedStringException
+     * @throws \PHPMailer\PHPMailer\Exception
      */
     public function index(): void
     {
@@ -76,9 +78,9 @@ class TaskController extends Mailer
         }
 
         $offset = ($currentPage - 1) * $tasksPerPage;
-
+        $user_id = $_SESSION['id'];
         $tasksModel = new Tasks();
-        $tasks = $this->task->getAllTasks($tasksPerPage, $offset);
+        $tasks = $this->task->getAllTasks($tasksPerPage, $offset,$user_id);
         $categoriesModels = new Categories();
         $taskController = new TaskController();
 

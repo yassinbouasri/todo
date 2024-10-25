@@ -10,14 +10,18 @@ class Tasks
     function __construct(){
         $this->db = Database::getConnection();
     }
-    public function getAllTasks(int $limit, int $offset): false|array
+    public function getAllTasks(int $limit, int $offset, int $user_id): false|array
     {
-        $sql = "SELECT * FROM tasks ORDER BY due_date DESC LIMIT :limit OFFSET :offset";
+        $sql = "SELECT tasks.*, users.email FROM tasks 
+                    JOIN users on tasks.user_id = users.id 
+                            WHERE users.id = :user_id 
+                            ORDER BY due_date DESC LIMIT :limit OFFSET :offset";
 
         $stmt = $this->db->prepare($sql);
 
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
 
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -25,8 +29,8 @@ class Tasks
 
     public function insert(array $data = []): bool
     {
-        $sql = "INSERT INTO tasks (task_title, task_description, due_date, priority, status, category_id, notification_sent) 
-                VALUES (?, ?, ?, ?, ?, ?, 0)";
+        $sql = "INSERT INTO tasks (task_title, task_description, due_date, priority, status, category_id, notification_sent, user_id) 
+                VALUES (?, ?, ?, ?, ?, ?, 0,?)";
 
         $stmt = $this->db->prepare($sql);
 
@@ -37,7 +41,8 @@ class Tasks
             $data['due_date'],
             $data['priority'],
             $data['status'],
-            $data['category_id']
+            $data['category_id'],
+            $data['user_id'],
         ]); // Return true on success, false on failure
     }
 
