@@ -10,7 +10,8 @@ class Tasks
     function __construct(){
         $this->db = Database::getConnection();
     }
-    public function getAllTasks($limit, $offset){
+    public function getAllTasks($limit, $offset): false|array
+    {
         $sql = "SELECT * FROM tasks ORDER BY due_date DESC LIMIT :limit OFFSET :offset";
 
         $stmt = $this->db->prepare($sql);
@@ -23,7 +24,8 @@ class Tasks
     }
     //changing the badge color for priority and status, according to data fetched from DB.
 
-    public function insert($data = array()) {
+    public function insert($data = array()): bool
+    {
         $sql = "INSERT INTO tasks (task_title, task_description, due_date, priority, status, category_id, notification_sent) 
                 VALUES (?, ?, ?, ?, ?, ?, 0)";
 
@@ -40,23 +42,28 @@ class Tasks
         ]); // Return true on success, false on failure
     }
 
-    public function getTaskById($id){
+    public function getTaskById($id): mixed
+    {
         $sql = "SELECT * FROM tasks WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function delete($id){
+    public function delete($id): bool
+    {
         $sql = "DELETE FROM tasks WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
         if($stmt->rowCount() > 0){
             return true;
+        } else {
+            return false;
         }
     }
 
-    public function update($id, $task_title, $task_description, $due_date, $priority, $status, $category_id){
+    public function update($id, $task_title, $task_description, $due_date, $priority, $status, $category_id): bool
+    {
         $sql = "UPDATE tasks SET task_title = :task_title , task_description = :task_description, due_date = :due_date, priority = :priority, status = :status, category_id = :category_id WHERE id = :id";
 
         $stmt = $this->db->prepare($sql);
@@ -71,26 +78,21 @@ class Tasks
             ]);
         if ($result) {
             return true;
+        } else {
+            return false;
         }
     }
 
-    public function getTotalTasks(){
+    public function getTotalTasks(): mixed
+    {
         $sql = "SELECT COUNT(*) FROM tasks";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchColumn();
     }
 
-    public function orderBy($column, $sortOrder){
-        $sql = "SELECT * FROM tasks ORDER BY :column " . strtoupper($sortOrder);
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':column', $column);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    }
-
-    public function notification(){
+    public function notification(): false|array
+    {
 
         $sql = "SELECT * FROM tasks WHERE notification_sent = 0 AND due_date <= DATE_ADD(NOW(), INTERVAL 24 HOUR) AND status != 'Completed'";
 
