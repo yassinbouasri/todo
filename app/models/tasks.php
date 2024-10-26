@@ -90,16 +90,22 @@ class Tasks
     public function notification(): false|array
     {
 
-        $sql = "SELECT * FROM tasks WHERE notification_sent = 0 AND due_date <= DATE_ADD(NOW(), INTERVAL 24 HOUR) AND status != 'Completed'";
+        $sql = "SELECT tasks.* FROM tasks JOIN users 
+                    ON tasks.user_id = users.id 
+                         WHERE users.id = tasks.user_id 
+                           AND notification_sent = 0 
+                           AND due_date <= DATE_ADD(NOW(), INTERVAL 24 HOUR) 
+                           AND status != 'Completed'";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if($result){
+            $sql = "UPDATE tasks SET notification_sent = 1 WHERE id = :id";
             foreach($result as $row){
-                $sql = "UPDATE tasks SET notification_sent = 1 WHERE id = :id";
                 $stmt = $this->db->prepare($sql);
+                var_dump($row);
                 $stmt->execute(['id' => $row['id']]);
             }
         }

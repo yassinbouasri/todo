@@ -156,8 +156,9 @@ class TaskController extends Mailer
      */
     public function sendNotification(): false|array
     {
-        $selectedTasks = $this->task->notification();
+
         $email = $_SESSION['email'] ?? null;
+        $selectedTasks = $this->task->notification();
         $body = "Hello,<br><br>";
         $body .= "We hope you're doing well! This is a friendly reminder about your upcoming tasks that are due soon.<br><br>";
         $body .= "Here are the tasks approaching their deadlines:<br><br>";
