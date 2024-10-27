@@ -96,7 +96,6 @@ class UserController extends Controller
             }
         }
         $this->render("login/changePassword", ["email" => $email]);
-        require_once __DIR__ . '/../../views/login/changePassword.tmpl.php';
     }
 
     /**
@@ -134,7 +133,7 @@ class UserController extends Controller
             }
 
         }
-        require_once __DIR__ . '/../../views/login/forgot.tmpl.php';
+        $this->render("login/forgot", ["alertMessage" => $alertMessage]);
     }
 
     public function resetPasswordByToken(string $token): void
@@ -157,6 +156,6 @@ class UserController extends Controller
             } else {
                 $alertMessage = "<div class='alert alert-danger'>Invalid reset token!</div>";
             }
-        require_once __DIR__ . '/../../views/login/newPassword.tmpl.php';
+            $this->render("login/newPassword", ["alertMessage" => $alertMessage, "email" => $user['email']]);
     }
 }

@@ -37,7 +37,7 @@
     <form action="/user/resetPasswordByToken/<?php echo $token; ?>" method="post">
         <div class="form-group">
             <label for="email">Email address</label>
-            <input type="email" class="form-control" id="email" name="email" value="<?php echo $user['email'];?>" readonly>
+            <input type="email" class="form-control" id="email" name="email" value="<?php echo $email; ?>" readonly>
         </div>
         <div class="form-group">
             <label for="password">Password</label>

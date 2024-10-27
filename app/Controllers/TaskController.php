@@ -5,20 +5,28 @@ namespace App\Controllers;
 use App\Mail\Mailer;
 use App\Model\CategoryRepository;
 use App\Model\TaskRepository;
-use App\Model\UserRepository;
+
 use DateTime;
 
 
-class TaskController extends Mailer
+class TaskController extends Controller
 {
     private TaskRepository $taskRepository;
     private CategoryRepository $categoryRepository;
-    private UserRepository $userRepository;
+
+
+    private Mailer $mailer;
+    private CategoryController $categoryController;
     public function __construct() {
         checkSession();
         $this->taskRepository = new TaskRepository();
         $this->categoryRepository = new CategoryRepository();
-        $this->userRepository = new UserRepository();
+        $this->mailer = new Mailer();
+        $this->categoryController = new CategoryController();
+    }
+    public function getCategoryController(): CategoryController
+    {
+        return $this->categoryController;
     }
     public function badge(string $priorityOrStatus)
     {
@@ -60,7 +68,8 @@ class TaskController extends Mailer
                         "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
 
         }
-        require_once __DIR__ . "/../../views/addTask.php";
+        $this->render('addTask', ["alertMessage" => $alertMessage]);
+
     }
 
     /**
@@ -85,9 +94,13 @@ class TaskController extends Mailer
         $user_id = $_SESSION['id'];
         $tasks = $this->taskRepository->getAllTasks($tasksPerPage, $offset,$user_id);
 
+        $this->render("home", [
+            "tasks" => $tasks,
+            "totalPages" => $totalPages,
+            "currentPage" => $currentPage,
+            "totalTasks" => $totalTasks,
+        ]);
 
-
-        require_once __DIR__ . "/../../views/home.php";
     }
     public function show(int $id): mixed
     {
@@ -177,7 +190,7 @@ class TaskController extends Mailer
 
         foreach ($emails as $email) {
 
-            if (parent::sendEmail($email,$subject ,$body)){
+            if ($this->mailer->sendEmail($email,$subject ,$body)){
                 $this->taskRepository->setNotificationSent($taskIds, $email);
             }
 

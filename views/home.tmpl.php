@@ -2,7 +2,7 @@
 require_once "layout.php";
 require_once "topmenu.php";
 /* @var array $tasks
- * @var array $categoriesModels
+ * @var array $categoryRepository
  * @var array $taskController
  * @var array $notifyTask
  * @var array $totalPages
@@ -41,11 +41,11 @@ require_once "topmenu.php";
                 <tr>
                     <td><?php echo htmlspecialchars($task['task_title']); ?></td>
                     <td><?php echo htmlspecialchars($task['task_description']); ?></td>
-                    <?php $category = $categoriesModels->getCategoryById($task['category_id']); ?>
+                    <?php $category = $this->getCategoryController()->getCategoryById($task['category_id']); ?>
                     <td><?php echo htmlspecialchars($category['category_name']); ?></td>
                     <td><?php echo htmlspecialchars($task['due_date']); ?></td>
-                    <td><span class="<?php echo htmlspecialchars($taskController->badge($task['priority'])); ?>"> <?php echo htmlspecialchars($task['priority']); ?></span></td>
-                    <td><span class="<?php echo htmlspecialchars($taskController->badge($task['status'])); ?>"><?php echo htmlspecialchars($task['status']); ?></span></td>
+                    <td><span class="<?php echo htmlspecialchars($this->badge($task['priority'])); ?>"> <?php echo htmlspecialchars($task['priority']); ?></span></td>
+                    <td><span class="<?php echo htmlspecialchars($this->badge($task['status'])); ?>"><?php echo htmlspecialchars($task['status']); ?></span></td>
                     <td>
                         <a href="/task/update/<?php echo htmlspecialchars($task['id']); ?>" class="btn btn-primary btn-sm">Edit</a>
                         <a href="/task/show/<?php echo htmlspecialchars($task['id'], ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-info btn-back btn-sm">View</a>

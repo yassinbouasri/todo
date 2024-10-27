@@ -54,15 +54,13 @@ class CategoryController
         require_once __DIR__ . "/../../views/categories/showCategory.php";
     }
 
-    public function getCategoryById(): mixed
+    public function getCategoryById(int $category_id): array|null
     {
-        if($_SERVER["REQUEST_METHOD"] == "POST"){
-            $category_id = $_POST['category_id'] ?? null;
-        } else {
-            $category_id = $_GET['category_id'] ?? null;
-
+        if($category_id){
+            return $this->categoryRepository->getCategoryById($category_id);
+        }else{
+            return null;
         }
-        return $this->categoryRepository->getCategoryById($category_id);
 
     }
 
