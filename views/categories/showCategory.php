@@ -1,4 +1,4 @@
-<?php require_once __DIR__ .  '/../layout.php';
+<?php require_once __DIR__ . '/../layout.php';
 
 /* @var array $categories */
 

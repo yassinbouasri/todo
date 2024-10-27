@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace App;
+namespace App\Model;
 use App\Type\PriorityType;
 use App\Type\StatusType;
 use DateTime;
@@ -108,9 +108,5 @@ class Task
     {
         $this->user_id = $user_id;
     }
-
-
-
-
 
 }

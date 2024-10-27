@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+namespace App\Mail;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -11,7 +13,6 @@ class Mailer {
     {
         $mail = new PHPMailer(true);
         $mail->isSMTP();
-        //$mail->SMTPDebug = 1; // SMTP debugging messages
         $mail->CharSet = 'UTF-8';
         $mail->Host = 'smtp-relay.brevo.com';
         $mail->SMTPAuth = true;
@@ -34,7 +35,6 @@ class Mailer {
         $mail->Subject = $subject;
         $mail->Body = $message;
 
-        //$mail->AltBody = $message;
         try {
             $mail->send();
             return true;

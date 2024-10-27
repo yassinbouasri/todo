@@ -1,20 +1,24 @@
 <?php
-require_once __DIR__ .  "/../helpers.php";
-require_once __DIR__ .  "/../models/categories.php";
-require_once __DIR__ .  "/../models/tasks.php";
-require_once __DIR__ .  "/../models/users.php";
-require_once __DIR__ .  "/../mail/Mailer.php";
+declare(strict_types=1);
+namespace App\Controllers;
+
+use App\Mail\Mailer;
+use App\Model\CategoryRepository;
+use App\Model\TaskRepository;
+use App\Model\UserRepository;
+use DateTime;
+
 
 class TaskController extends Mailer
 {
-    private tasks $task;
-    private Categories $categories;
-    private Users $user;
+    private TaskRepository $taskRepository;
+    private CategoryRepository $categoryRepository;
+    private UserRepository $userRepository;
     public function __construct() {
         checkSession();
-        $this->task = new tasks();
-        $this->categories = new Categories();
-        $this->user = new users();
+        $this->taskRepository = new TaskRepository();
+        $this->categoryRepository = new CategoryRepository();
+        $this->userRepository = new UserRepository();
     }
     public function badge(string $priorityOrStatus)
     {
@@ -33,8 +37,8 @@ class TaskController extends Mailer
 
     public function create(): void
     {
-        $categoriesModel = new Categories();
-        $categories = $categoriesModel->getAllCategories();
+
+        $categories = $this->categoryRepository->getAllCategories();
 
 
         $alertMessage = "";
@@ -50,13 +54,13 @@ class TaskController extends Mailer
                 'user_id' => $_SESSION['id'],
             );
             // Insert task into the database
-            $inserted = $this->task->insert($data);
+            $inserted = $this->taskRepository->insert($data);
 
             $alertMessage = ($inserted) ? "<div class='alert alert-success' role='alert'>Task added successfully!</div>" :
                         "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
 
         }
-        require_once __DIR__ .  "/../views/addTask.php";
+        require_once __DIR__ . "/../../views/addTask.php";
     }
 
     /**
@@ -66,12 +70,9 @@ class TaskController extends Mailer
     public function index(): void
     {
         $notifyTask = $this->sendNotification();
-        require_once __DIR__ . "/../models/tasks.php";
-        require_once __DIR__ . "/../models/categories.php";
-        require_once __DIR__ . "/../controllers/taskController.php";
 
         $tasksPerPage = 6;
-        $totalTasks = $this->task->getTotalTasks();
+        $totalTasks = $this->taskRepository->getTotalTasks();
 
         $totalPages = ceil($totalTasks / $tasksPerPage);
 
@@ -82,30 +83,25 @@ class TaskController extends Mailer
 
         $offset = ($currentPage - 1) * $tasksPerPage;
         $user_id = $_SESSION['id'];
-        $tasksModel = new Tasks();
-        $tasks = $this->task->getAllTasks($tasksPerPage, $offset,$user_id);
-        $categoriesModels = new Categories();
-        $taskController = new TaskController();
+        $tasks = $this->taskRepository->getAllTasks($tasksPerPage, $offset,$user_id);
 
 
-        require_once __DIR__ . "/../views/home.php";
+
+        require_once __DIR__ . "/../../views/home.php";
     }
     public function show(int $id): mixed
     {
 
-        require_once __DIR__ . "/../models/tasks.php";
-        require_once __DIR__ . "/../models/categories.php";
 
-        $tasksModel = $this->task->getTaskById($id);
+        $tasksModel = $this->taskRepository->getTaskById($id);
 
         $color = '';
         if ($tasksModel) {
             $categoryId = $tasksModel['category_id'];
-            $categoriesModels = new Categories();
-            $category = $categoriesModels->getCategoryById($categoryId);
+            $category = $this->categoryRepository->getCategoryById($categoryId);
 
             $color = ($tasksModel['status'] == 'Completed') ? 'status completed' : $color = 'status in-progress';
-            require_once __DIR__ . "/../views/tasks/show.php";
+            require_once __DIR__ . "/../../views/tasks/show.php";
             return $tasksModel;
         } else {
              echo "No Tasks Found for this ID";
@@ -121,7 +117,7 @@ class TaskController extends Mailer
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $id = $_POST['id'];
-            $this->task->delete($id);
+            $this->taskRepository->delete($id);
         }
         $this->index();
     }
@@ -130,8 +126,8 @@ class TaskController extends Mailer
         $statusOptions = ['In Progress', 'Completed', 'Pending'];
         $priorityOptions = ['High', 'Medium', 'Low'];
 
-        $tasks = $this->task->getTaskById($id);
-        $AllCategories = $this->categories->getAllCategories();
+        $tasks = $this->taskRepository->getTaskById($id);
+        $AllCategories = $this->categoryRepository->getAllCategories();
 
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -143,14 +139,14 @@ class TaskController extends Mailer
             $status = $_POST['status'];
             $category_id = $_POST['category_id'];
 
-            $updated = $this->task->update($id, $task_title, $task_description, $due_date, $priority, $status, $category_id);
+            $updated = $this->taskRepository->update($id, $task_title, $task_description, $due_date, $priority, $status, $category_id);
 
             $alertMessage = ($updated) ? "<div class='alert alert-success' role='alert'>Task updated successfully!</div>" :
                             "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
-            $tasks = $this->task->getTaskById($id);
+            $tasks = $this->taskRepository->getTaskById($id);
         }
 
-        require_once __DIR__ . "/../views/tasks/updateTask.php";
+        require_once __DIR__ . "/../../views/tasks/updateTask.php";
     }
 
     /**
@@ -160,11 +156,9 @@ class TaskController extends Mailer
     public function sendNotification(): false|array
     {
 
-
-        $userIds = [];
         $emails = [];
         $taskIds = [];
-        $selectedTasks = $this->task->notificationTasks();
+        $selectedTasks = $this->taskRepository->notificationTasks();
         $body = "Hello,<br><br>";
         $body .= "We hope you're doing well! This is a friendly reminder about your upcoming tasks that are due soon.<br><br>";
         $body .= "Here are the tasks approaching their deadlines:<br><br>";
@@ -180,15 +174,11 @@ class TaskController extends Mailer
         $subject = "Reminder: Upcoming Tasks Due Soon";
 
 
-        //$emails = $this->user->getUserByIds($userIds);
-
-
-        //echo "<pre>" . print_r($emails,true) .  "</pre>";
 
         foreach ($emails as $email) {
 
             if (parent::sendEmail($email,$subject ,$body)){
-                $this->task->setNotificationSent($taskIds, $email);
+                $this->taskRepository->setNotificationSent($taskIds, $email);
             }
 
         }

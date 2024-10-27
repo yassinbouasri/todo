@@ -1,4 +1,4 @@
-<?php require_once __DIR__ .  '/../layout.php'; ?>
+<?php require_once __DIR__ . '/../layout.php'; ?>
 <head>
     <title>Add Category - Todo App</title>
     <meta charset="utf-8">

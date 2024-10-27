@@ -1,19 +1,23 @@
 <?php
-require_once __DIR__ . "/../models/categories.php";
+declare(strict_types=1);
+namespace App\Controllers;
 
 
-class categoryController
+
+use App\Model\CategoryRepository;
+
+class CategoryController
 {
 
-    private Categories $categoriesModel;
+    private CategoryRepository $categoryRepository;
     public function __construct(){
-        $this->categoriesModel = new Categories();
+        $this->categoryRepository = new CategoryRepository();
     }
     public function index(): void
     {
-        $categories = $this->categoriesModel->getAllCategories();
+        $categories = $this->categoryRepository->getAllCategories();
 
-        require_once __DIR__ . "/../views/categories/showCategory.php";
+        require_once __DIR__ . "/../../views/categories/showCategory.php";
     }
 
     public function create(): void
@@ -26,20 +30,20 @@ class categoryController
                 header("HTTP/1.1 400 Bad Request");
                 exit();
             }
-            $result = $this->categoriesModel->addCategory($categoryName);
+            $result = $this->categoryRepository->addCategory($categoryName);
             $alertMessage = ($result) ? "<div class='alert alert-success' role='alert'>Category added successfully!</div>":
                 "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
 
         }
 
-        require_once __DIR__ . "/../views/categories/addCategory.php";
+        require_once __DIR__ . "/../../views/categories/addCategory.php";
     }
 
     public function remove(): void
     {
         if($_SERVER["REQUEST_METHOD"] == "POST"){
             $categoryId = $_POST['category_id'] ?? null;
-            $deleted = $this->categoriesModel->deleteCategory($categoryId);
+            $deleted = $this->categoryRepository->deleteCategory($categoryId);
 
             if($deleted){
                 header("location: /category/show");
@@ -47,7 +51,7 @@ class categoryController
                 $alertMessage = "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
             }
         }
-        require_once __DIR__ . "/../views/categories/showCategory.php";
+        require_once __DIR__ . "/../../views/categories/showCategory.php";
     }
 
     public function getCategoryById(): mixed
@@ -58,14 +62,14 @@ class categoryController
             $category_id = $_GET['category_id'] ?? null;
 
         }
-        return $this->categoriesModel->getCategoryById($category_id);
+        return $this->categoryRepository->getCategoryById($category_id);
 
     }
 
     public function update(int $id): void
     {
         $alertMessage = "";
-        $category = $this->categoriesModel->getCategoryById($id);
+        $category = $this->categoryRepository->getCategoryById($id);
         $categoryId = $category['id'] ?? null;
         $categoryName = $category['category_name'] ?? null;
 
@@ -74,14 +78,14 @@ class categoryController
             $id = $_POST['category_id'];
             $name = $_POST['category_name'];
 
-            $updated = $this->categoriesModel->updateCategory($name, $id);
+            $updated = $this->categoryRepository->updateCategory($name, $id);
             $category = $this->getCategoryById();
             $categoryId = $category['id'];
             $categoryName = $category['category_name'];
             $alertMessage = ($updated) ? "<div class='alert alert-success' role='alert'>Category updated successfully!</div>":
                             "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
         }
-        require_once __DIR__ . "/../views/categories/editCategory.php";
+        require_once __DIR__ . "/../../views/categories/editCategory.php";
     }
 
 }

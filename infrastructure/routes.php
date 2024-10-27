@@ -1,4 +1,14 @@
 <?php
+declare(strict_types=1);
+
+use App\Controllers\CategoryController;
+use App\Controllers\TaskController;
+use App\Controllers\UserController;
+
+$user = new UserController();
+$task = new TaskController();
+$category = new CategoryController();
+
 /**
  * @var object $user
  * @var object $task
@@ -32,14 +42,14 @@
      'task/create' => function () use ($task) {
         $task->create();
      },
-     'task/show' => function ($id) use ($task) {
-        $task->show($id);
+     'task/show' => function (string $id) use ($task) {
+        $task->show((int) $id);
      },
      'task/remove' => function () use ($task) {
         $task->remove();
      },
-     'task/update' => function ($id) use ($task) {
-        $task->update($id);
+     'task/update' => function (string $id) use ($task) {
+        $task->update((int) $id);
      },
 
      // category routes
@@ -49,8 +59,8 @@
      'category/remove' => function () use ($category) {
         $category->remove();
      },
-     'category/update' => function ($id) use ($category) {
-        $category->update($id);
+     'category/update' => function (string $id) use ($category) {
+        $category->update((int) $id);
      },
      'category/show' => function () use ($category) {
             $category->index();

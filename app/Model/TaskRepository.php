@@ -1,14 +1,14 @@
 <?php
+declare(strict_types=1);
+namespace App\Model;
+use App\Config\Database;
+use PDO;
 
-
-require_once __DIR__ . "/../config/Database.php";
-
-
-class Tasks
+class TaskRepository
 {
-    private PDO $db;
+    private PDO $cnn;
     function __construct(){
-        $this->db = Database::getConnection();
+        $this->cnn = Database::getConnection();
     }
     public function getAllTasks(int $limit, int $offset, int $user_id): false|array
     {
@@ -17,7 +17,7 @@ class Tasks
                             WHERE users.id = :user_id 
                             ORDER BY due_date DESC LIMIT :limit OFFSET :offset";
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->cnn->prepare($sql);
 
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
@@ -32,7 +32,7 @@ class Tasks
         $sql = "INSERT INTO tasks (task_title, task_description, due_date, priority, status, category_id, notification_sent, user_id) 
                 VALUES (?, ?, ?, ?, ?, ?, 0,?)";
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->cnn->prepare($sql);
 
         // Ensure the values are in the correct order
         return $stmt->execute([
@@ -49,7 +49,7 @@ class Tasks
     public function getTaskById(int $id): mixed
     {
         $sql = "SELECT * FROM tasks WHERE id = ?";
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->cnn->prepare($sql);
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
@@ -57,7 +57,7 @@ class Tasks
     public function delete(int $id): bool
     {
         $sql = "DELETE FROM tasks WHERE id = ?";
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->cnn->prepare($sql);
         $stmt->execute([$id]);
 
         return (bool) $stmt->rowCount();
@@ -67,7 +67,7 @@ class Tasks
     {
         $sql = "UPDATE tasks SET task_title = :task_title , task_description = :task_description, due_date = :due_date, priority = :priority, status = :status, category_id = :category_id WHERE id = :id";
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->cnn->prepare($sql);
         return $stmt->execute([
             'task_title' => $task_title,
             'task_description' => $task_description,
@@ -82,7 +82,7 @@ class Tasks
     public function getTotalTasks(): mixed
     {
         $sql = "SELECT COUNT(*) FROM tasks";
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->cnn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchColumn();
     }
@@ -95,7 +95,7 @@ class Tasks
                            AND due_date <= DATE_ADD(NOW(), INTERVAL 24 HOUR) 
                            AND status != 'Completed'";
 
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->cnn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -103,12 +103,12 @@ class Tasks
     public function setNotificationSent(array $ids, string $email): bool
     {
         if(empty($ids)){
-            return [];
+            return false;
         }
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
 
         $sql = "UPDATE tasks SET notification_sent = 1 WHERE id IN ($placeholders) and user_id = (SELECT users.id FROM users WHERE email = ?)";
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->cnn->prepare($sql);
         $params = array_merge($ids, [$email]);
         $stmt->execute($params);
         return (bool) $stmt->rowCount();

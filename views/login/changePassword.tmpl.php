@@ -26,13 +26,13 @@
 <?php require_once __DIR__ . "/../topmenu.php"; ?>
 <div class="container signup-container">
     <h2 class="signup-title">Change Password</h2>
-    <?php if (!empty($alertMessage)): ?>
+    <?php if (isset($alertMessage) && !empty($alertMessage)): ?>
         <?php echo $alertMessage; ?>
     <?php endif; ?>
     <form action="changePassword" method="post">
         <div class="form-group">
             <label for="email">Email address</label>
-            <input type="email" class="form-control" id="email" name="email" value="<?php echo $_SESSION['email'];?>" readonly>
+            <input type="email" class="form-control" id="email" name="email" value="<?php echo $email;?>" readonly>
         </div>
         <div class="form-group">
             <label for="password">New Password</label>

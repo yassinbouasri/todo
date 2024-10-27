@@ -1,6 +1,6 @@
 <?php
 require_once "layout.php";
-require_once  "topmenu.php";
+require_once "topmenu.php";
 /* @var array $tasks
  * @var array $categoriesModels
  * @var array $taskController

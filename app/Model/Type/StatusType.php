@@ -1,6 +1,6 @@
 <?php
-
-namespace App\Type;
+declare(strict_types=1);
+namespace App\Model\Type;
 
 enum StatusType : string
 {

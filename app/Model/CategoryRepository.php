@@ -1,19 +1,23 @@
 <?php
-require_once __DIR__ . "/../config/Database.php";
-require_once __DIR__ .  "/../helpers.php";
-class Categories
+declare(strict_types=1);
+namespace App\Model;
+use App\Config\Database;
+use PDO;
+
+
+class CategoryRepository
 {
-    private $db;
+    private PDO $cnn;
 
     public function __construct(){
         checkSession();
-        $this->db = Database::getConnection();
+        $this->cnn = Database::getConnection();
     }
 
     public function getCategoryById(int $id): mixed
     {
         $sql = "SELECT * FROM categories WHERE id = :id";
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->cnn->prepare($sql);
         $stmt->execute(array("id" => $id));
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
@@ -21,14 +25,14 @@ class Categories
     public function getAllCategories(): false|array
     {
         $sql = "SELECT * FROM categories";
-        $stmt = $this->db->query($sql);
+        $stmt = $this->cnn->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function addCategory(string $category): bool
     {
         $sql = "INSERT INTO categories (category_name) VALUES (:category_name)";
-        $stm = $this->db->prepare($sql);
+        $stm = $this->cnn->prepare($sql);
 
         return $stm->execute(array(
             "category_name" => $category,
@@ -39,7 +43,7 @@ class Categories
     {
         $sql = "DELETE FROM categories WHERE id = :id";
 
-        $stm = $this->db->prepare($sql);
+        $stm = $this->cnn->prepare($sql);
         $stm->bindParam(":id", $id, PDO::PARAM_INT);
         $stm->execute();
         return (bool) $stm->rowCount();
@@ -51,7 +55,7 @@ class Categories
 
         $sql = "UPDATE categories SET category_name = :category_name WHERE id = :id";
 
-        $stm = $this->db->prepare($sql);
+        $stm = $this->cnn->prepare($sql);
         $stm->execute([
             "category_name" => $category_name,
             "id" => $id,
