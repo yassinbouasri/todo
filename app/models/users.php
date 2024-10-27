@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . "/../config/database.php";
+require_once __DIR__ . "/../config/Database.php";
 
 class Users
 {
@@ -95,5 +95,19 @@ class Users
              "token" => $token,
              ]);
 
+    }
+
+    public function getUserByIds(array $ids) : mixed
+    {
+        if (empty($ids)) {
+            return [];
+        }
+        $placeholders = implode(",", array_fill(0, count($ids), "?"));
+
+        $sql = "SELECT * FROM users WHERE id IN ($placeholders)";
+        $stmt = $this->db->prepare($sql);
+
+        $stmt->execute($ids);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

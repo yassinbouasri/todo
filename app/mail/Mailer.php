@@ -1,5 +1,4 @@
 <?php
-require_once __DIR__ . '/../../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -8,7 +7,7 @@ class Mailer {
     /**
      * @throws Exception
      */
-    public function sendEmail(string $to, string $subject, string $message): void
+    public function sendEmail(string $to, string $subject, string $message): bool
     {
         $mail = new PHPMailer(true);
         $mail->isSMTP();
@@ -38,8 +37,10 @@ class Mailer {
         //$mail->AltBody = $message;
         try {
             $mail->send();
+            return true;
         } catch (Exception $e) {
             echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
+            return false;
         }
 
     }

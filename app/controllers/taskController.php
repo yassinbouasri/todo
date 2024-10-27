@@ -2,16 +2,19 @@
 require_once __DIR__ .  "/../helpers.php";
 require_once __DIR__ .  "/../models/categories.php";
 require_once __DIR__ .  "/../models/tasks.php";
+require_once __DIR__ .  "/../models/users.php";
 require_once __DIR__ .  "/../mail/Mailer.php";
 
 class TaskController extends Mailer
 {
     private tasks $task;
     private Categories $categories;
+    private Users $user;
     public function __construct() {
         checkSession();
         $this->task = new tasks();
         $this->categories = new Categories();
+        $this->user = new users();
     }
     public function badge(string $priorityOrStatus)
     {
@@ -157,22 +160,37 @@ class TaskController extends Mailer
     public function sendNotification(): false|array
     {
 
-        $email = $_SESSION['email'] ?? null;
-        $selectedTasks = $this->task->notification();
+
+        $userIds = [];
+        $emails = [];
+        $taskIds = [];
+        $selectedTasks = $this->task->notificationTasks();
         $body = "Hello,<br><br>";
         $body .= "We hope you're doing well! This is a friendly reminder about your upcoming tasks that are due soon.<br><br>";
         $body .= "Here are the tasks approaching their deadlines:<br><br>";
 
         foreach ($selectedTasks as $task) {
             $body .= "- {$task['task_title']}: Due on {$task['due_date']}<br>";
+            $taskIds[] = $task['id'];
+            $emails[] = $task['email'];
         }
         $body .= "<br>Please make sure to complete them before the due date. If you have any questions or need assistance, feel free to reach out to us.<br><br>";
         $body .= "Best regards,<br>";
         $body .= "Todo App Team";
         $subject = "Reminder: Upcoming Tasks Due Soon";
 
-        if ($selectedTasks) {
-            parent::sendEmail($email,$subject ,$body);
+
+        //$emails = $this->user->getUserByIds($userIds);
+
+
+        //echo "<pre>" . print_r($emails,true) .  "</pre>";
+
+        foreach ($emails as $email) {
+
+            if (parent::sendEmail($email,$subject ,$body)){
+                $this->task->setNotificationSent($taskIds, $email);
+            }
+
         }
 
         return $selectedTasks;

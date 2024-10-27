@@ -1,7 +1,7 @@
 <?php
 
 
-require_once __DIR__ .  "/../config/database.php";
+require_once __DIR__ . "/../config/Database.php";
 
 
 class Tasks
@@ -87,29 +87,31 @@ class Tasks
         return $stmt->fetchColumn();
     }
 
-    public function notification(): false|array
+    public function notificationTasks(): false|array
     {
 
-        $sql = "SELECT tasks.* FROM tasks JOIN users 
-                    ON tasks.user_id = users.id 
-                         WHERE users.id = tasks.user_id 
-                           AND notification_sent = 0 
+        $sql = "SELECT tasks.*, users.email FROM tasks JOIN users ON tasks.user_id = users.id 
+						   WHERE notification_sent = 0 
                            AND due_date <= DATE_ADD(NOW(), INTERVAL 24 HOUR) 
                            AND status != 'Completed'";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
-        if($result){
-            $sql = "UPDATE tasks SET notification_sent = 1 WHERE id = :id";
-            foreach($result as $row){
-                $stmt = $this->db->prepare($sql);
-                var_dump($row);
-                $stmt->execute(['id' => $row['id']]);
-            }
+    public function setNotificationSent(array $ids, string $email): bool
+    {
+        if(empty($ids)){
+            return [];
         }
-        return $result;
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+
+        $sql = "UPDATE tasks SET notification_sent = 1 WHERE id IN ($placeholders) and user_id = (SELECT users.id FROM users WHERE email = ?)";
+        $stmt = $this->db->prepare($sql);
+        $params = array_merge($ids, [$email]);
+        $stmt->execute($params);
+        return (bool) $stmt->rowCount();
     }
 
 }
