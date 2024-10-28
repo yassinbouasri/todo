@@ -28,7 +28,7 @@ class TaskController extends Controller
     {
         return $this->categoryController;
     }
-    public function badge(string $priorityOrStatus)
+    public function badge(string $priorityOrStatus): ?string
     {
         $BadgeClasses = [
             'high' => 'badge badge-high',
@@ -38,9 +38,8 @@ class TaskController extends Controller
             'completed' => 'badge badge-success',
             'pending' => 'badge',
         ];
-        if (isset($BadgeClasses[strtolower($priorityOrStatus)])) {
-            return $BadgeClasses[strtolower($priorityOrStatus)];
-        }
+
+        return (isset($BadgeClasses[strtolower($priorityOrStatus)])) ? $BadgeClasses[strtolower($priorityOrStatus)] : null;
     }
 
     public function create(): void
@@ -86,9 +85,8 @@ class TaskController extends Controller
         $totalPages = ceil($totalTasks / $tasksPerPage);
 
         $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        if ($currentPage < 1) {
-            $currentPage = 1;
-        }
+
+        $currentPage = ($currentPage < 1) ? 1 : $currentPage;
 
         $offset = ($currentPage - 1) * $tasksPerPage;
         $user_id = $_SESSION['id'];
