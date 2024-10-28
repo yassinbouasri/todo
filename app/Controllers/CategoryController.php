@@ -65,12 +65,7 @@ class CategoryController extends Controller
 
     public function getCategoryById(int $category_id): array|null
     {
-        if($category_id){
-            return $this->categoryRepository->getCategoryById($category_id);
-        }else{
-            return null;
-        }
-
+            return ($category_id) ? $this->categoryRepository->getCategoryById($category_id): null;
     }
 
     public function update(int $id): void
