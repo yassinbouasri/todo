@@ -68,7 +68,7 @@ class TaskController extends Controller
                         "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
 
         }
-        $this->render('addTask', ["alertMessage" => $alertMessage]);
+        $this->render('addTask', ["alertMessage" => $alertMessage, "categories" => $categories]);
 
     }
 
@@ -99,6 +99,7 @@ class TaskController extends Controller
             "totalPages" => $totalPages,
             "currentPage" => $currentPage,
             "totalTasks" => $totalTasks,
+            "notifyTask" => $notifyTask,
         ]);
 
     }
@@ -114,7 +115,12 @@ class TaskController extends Controller
             $category = $this->categoryRepository->getCategoryById($categoryId);
 
             $color = ($tasksModel['status'] == 'Completed') ? 'status completed' : $color = 'status in-progress';
-            require_once __DIR__ . "/../../views/tasks/show.php";
+            $this->render("tasks/show", [
+                "tasksModel" => $tasksModel,
+                "category" => $category,
+                "color" => $color
+            ]);
+
             return $tasksModel;
         } else {
              echo "No Tasks Found for this ID";
@@ -136,6 +142,7 @@ class TaskController extends Controller
     }
     public  function update(int $id): void
     {
+        $alertMessage = "";
         $statusOptions = ['In Progress', 'Completed', 'Pending'];
         $priorityOptions = ['High', 'Medium', 'Low'];
 
@@ -144,13 +151,13 @@ class TaskController extends Controller
 
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $id = $_POST['id'];
+            $id = (int)$_POST['id'];
             $task_title = $_POST['task_title'];
             $task_description = $_POST['task_description'];
             $due_date = DateTime::createFromFormat('Y-m-d H:i', $_POST['due_date'])->format('Y-m-d H:i:s');
             $priority = $_POST['priority'];
             $status = $_POST['status'];
-            $category_id = $_POST['category_id'];
+            $category_id = (int)$_POST['category_id'];
 
             $updated = $this->taskRepository->update($id, $task_title, $task_description, $due_date, $priority, $status, $category_id);
 
@@ -158,8 +165,14 @@ class TaskController extends Controller
                             "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
             $tasks = $this->taskRepository->getTaskById($id);
         }
+        $this->render("tasks/updateTask", [
+            "statusOptions" => $statusOptions,
+            "priorityOptions" => $priorityOptions,
+            "tasks" => $tasks,
+            "alertMessage" => $alertMessage,
+            "AllCategories" => $AllCategories,
+        ]);
 
-        require_once __DIR__ . "/../../views/tasks/updateTask.php";
     }
 
     /**
