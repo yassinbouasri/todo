@@ -15,18 +15,29 @@ abstract class Model
         $this->cnn = Database::getConnection();
     }
 
-    public static function all()
+    public static function findBy($where = [], $orderBy = []): array
     {
+
         $instance = new static();
-        $sql = "SELECT * FROM {$instance->table}";
-        $stmt = $instance->cnn->query($sql);
-        $tasks = $stmt->fetchAll(PDO::FETCH_CLASS,get_called_class());
-        return $tasks;
+        $sql = "SELECT * FROM {$instance->table} WHERE 1=1";
+        if(!empty($where)){
+            $sql .= " AND ";
+            foreach ($where as $key => $value) {
+                $sql .= "{$key} = :{$key}";
+            }
+        }
+        $stmt = $instance->cnn->prepare($sql);
+        $stmt->execute($where);
+        return static::mapAll($stmt->fetchAll(PDO::FETCH_ASSOC));
     }
 
     public function save(array $attributes = []): bool
     {
-
+        return true;
     }
+
+    protected abstract static function mapAll(array $data): array;
+
+    protected abstract static function mapOne(array $data): static;
 
 }

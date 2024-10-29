@@ -13,25 +13,16 @@ class Task extends Model
     protected int $id;
     private string $task_title;
     private string $task_description;
-    private string $due_date;
+    private DateTime $due_date;
     private string $priority;
     private StatusType $status;
     private int $category_id;
     private int $user_id;
-    protected $notification_sent;
-
+    protected bool $notification_sent;
 
 
     public function __construct() {
         parent::__construct($this->table);
-    }
-    public function select()
-    {
-
-       $tasks =  parent::all();
-        $this->setStatus(StatusType::COMPLETED);
-
-        return $tasks;
     }
 
     public function getId(): int
@@ -69,12 +60,12 @@ class Task extends Model
         return $this->due_date;
     }
 
-    public function setDueDate($due_date): void
+    public function setDueDate(DateTime $due_date): void
     {
         $this->due_date = $due_date;
     }
 
-    public function getPriority(): PriorityType
+    public function getPriority(): string
     {
         return $this->priority;
     }
@@ -124,13 +115,38 @@ class Task extends Model
     {
         $this->table = $table;
     }
-    public function getNotificationSent()
+    public function getNotificationSent(): bool
     {
         return $this->notification_sent;
     }
 
-    public function setNotificationSent( $notification_sent): void
+    public function setNotificationSent(bool $notification_sent): void
     {
         $this->notification_sent = $notification_sent;
+    }
+
+    protected static function mapAll(array $data): array
+    {
+        $tasks = [];
+        foreach ($data as $row) {
+            $tasks[] =  static::mapOne($row);
+
+        }
+        return $tasks;
+    }
+
+    protected static function mapOne(array $data): static
+    {
+        $task = new self();
+        $task->setId($data["id"]);
+        $task->setTaskTitle($data["task_title"]);
+        $task->setTaskDescription($data["task_description"]);
+        $task->setDueDate(DateTime::createFromFormat("Y-m-d H:i:s",$data["due_date"]));
+        $task->setPriority($data["priority"]);
+        $task->setStatus(StatusType::from($data["status"]));
+        $task->setCategoryId($data["category_id"]);
+        $task->setUserId($data["user_id"]);
+        $task->setNotificationSent((bool)$data["notification_sent"]);
+        return $task;
     }
 }

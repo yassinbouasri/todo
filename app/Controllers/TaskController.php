@@ -4,8 +4,11 @@ namespace App\Controllers;
 
 use App\Mail\Mailer;
 use App\Model\CategoryRepository;
+use App\Model\Task;
 use App\Model\TaskRepository;
 
+use App\Model\Type\PriorityType;
+use App\Model\Type\StatusType;
 use DateTime;
 
 
@@ -77,6 +80,10 @@ class TaskController extends Controller
      */
     public function index(): void
     {
+
+       $tasks = Task::findBy();
+       dd($tasks);
+
         $notifyTask = $this->sendNotification();
 
         $tasksPerPage = 6;
