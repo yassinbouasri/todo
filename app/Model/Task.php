@@ -2,31 +2,36 @@
 declare(strict_types = 1);
 
 namespace App\Model;
-use App\Type\PriorityType;
-use App\Type\StatusType;
+use App\Model\Type\StatusType;
+use App\Model\Type\PriorityType;
 use DateTime;
 
 
-class Task
+class Task extends Model
 {
-    private int $id;
+    protected string $table = "tasks";
+    protected int $id;
     private string $task_title;
     private string $task_description;
-    private DateTime $due_date;
-    private PriorityType $priority;
+    private string $due_date;
+    private string $priority;
     private StatusType $status;
     private int $category_id;
     private int $user_id;
+    protected $notification_sent;
 
-    public function __construct(int $id, string $task_title, string $task_description, DateTime $due_date, PriorityType $priority, StatusType $status, int $category_id, int $user_id) {
-        $this->id = $id;
-        $this->task_title = $task_title;
-        $this->task_description = $task_description;
-        $this->due_date = $due_date;
-        $this->priority = $priority;
-        $this->status = $status;
-        $this->category_id = $category_id;
-        $this->user_id = $user_id;
+
+
+    public function __construct() {
+        parent::__construct($this->table);
+    }
+    public function select()
+    {
+
+       $tasks =  parent::all();
+        $this->setStatus(StatusType::COMPLETED);
+
+        return $tasks;
     }
 
     public function getId(): int
@@ -64,7 +69,7 @@ class Task
         return $this->due_date;
     }
 
-    public function setDueDate(DateTime $due_date): void
+    public function setDueDate($due_date): void
     {
         $this->due_date = $due_date;
     }
@@ -74,7 +79,7 @@ class Task
         return $this->priority;
     }
 
-    public function setPriority(PriorityType $priority): void
+    public function setPriority( $priority): void
     {
         $this->priority = $priority;
     }
@@ -88,6 +93,7 @@ class Task
     {
         $this->status = $status;
     }
+
 
     public function getCategoryId(): int
     {
@@ -109,4 +115,22 @@ class Task
         $this->user_id = $user_id;
     }
 
+    public function getTable(): string
+    {
+        return $this->table;
+    }
+
+    public function setTable(string $table): void
+    {
+        $this->table = $table;
+    }
+    public function getNotificationSent()
+    {
+        return $this->notification_sent;
+    }
+
+    public function setNotificationSent( $notification_sent): void
+    {
+        $this->notification_sent = $notification_sent;
+    }
 }
