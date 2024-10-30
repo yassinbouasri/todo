@@ -3,20 +3,33 @@ declare(strict_types=1);
 namespace App\Model;
 use App\Config\Database;
 use DateTime;
+use mysql_xdevapi\Exception;
 use PDO;
+use ReflectionClass;
+use ReflectionProperty;
 
 abstract class Model
 {
-    private PDO $cnn;
-    protected static string $table;
+    private static $cnn;
+    protected static ?string $table = null;
+
+    //TODO fix id in task entity
+    protected static  $id = "id";
 
     public function __construct(){
-        $this->cnn = Database::getConnection();
+        self::$cnn = Database::getConnection();
+    }
+
+    public static function getTable(): string
+    {
+        if (static::$table === null) {
+            throw new Exception("Table not defined" . static::$table);
+        }
+        return static::$table;
     }
 
     public static function findBy($where = [], $orderBy = []): array
     {
-
         $instance = new static();
         $sql = "SELECT * FROM {$instance::$table} WHERE 1=1";
         if(!empty($where)){
@@ -30,25 +43,47 @@ abstract class Model
                 $sql .= " ORDER BY {$key} {$value}";
             }
         }
-        $stmt = $instance->cnn->prepare($sql);
+        $stmt = self::$cnn->prepare($sql);
         $stmt->execute($where);
         return $stmt->fetchAll(PDO::FETCH_CLASS);
     }
 
-    public function save(array $data): bool
+    public function save(): bool
     {
-        if (isset($data["id"])) {
+        $table = static::getTable();
+        $attributes = implode(", ", array_keys( $this->getters()));
+        $values = implode(", :", array_keys($this->getters()));
+
+        if (isset($this->{self::$id})) {
             //Update task with given id
-            $setPart = [];
-            foreach ($data as $key => $value) {
-                if ($key !== "id") {
-                    $setPart[] = "{$key} = :{$key}";
-                }
-            }
-            $setStr = implode(', ', $setPart);
+            $setParts = implode(', ', array_map(fn($col) => "{$col} = :{$col}", array_keys($this->getters())));
+            $sql = "UPDATE " . $table . " SET " . $setParts . " WHERE " . self::$id . "  = :" . self::$id;
+            echo $sql;
+            $stmt = self::$cnn->prepare($sql);
+            $stmt->bindValue(':'.self::$id, $this->getters()[self::$id]); // Bind primary key
+
+        } else {
+            $sql = "INSERT INTO " . $table . " (" . $attributes . ") VALUES (:" . $values . ")";
+            $stmt = self::$cnn->prepare($sql);
 
         }
-        return true;
+        foreach ($this->getters() as $key => $value) {
+            $stmt->bindValue(":{$key}", $value);
+        }
+        return $stmt->execute();
+    }
+
+    public function getters(): array
+    {
+        $reflection = new ReflectionClass($this);
+        $properties = [];
+        foreach ($reflection->getProperties(ReflectionProperty::IS_PRIVATE) as $property) {
+
+            $property->setAccessible(true);
+            $properties[$property->getName()] = $property->getValue($this);
+        }
+
+        return $properties;
     }
 
     protected abstract static function mapAll(array $data): array;

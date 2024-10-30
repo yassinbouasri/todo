@@ -9,18 +9,23 @@ use DateTime;
 
 class Task extends Model
 {
-    protected static string $table = "tasks";
-    protected int $id;
+    protected static ?string $table = "tasks";
+
+    protected static $id;
     private string $task_title;
     private string $task_description;
-    private DateTime $due_date;
+    private string $due_date;
     private string $priority;
-    private StatusType $status;
+    private string $status;
     private int $category_id;
     private int $user_id;
     protected bool $notification_sent;
 
 
+    public function savetest()
+    {
+        return parent::getters();
+    }
     public function getId(): int
     {
         return $this->id;
@@ -51,12 +56,12 @@ class Task extends Model
         $this->task_description = $task_description;
     }
 
-    public function getDueDate(): DateTime
+    public function getDueDate(): string
     {
         return $this->due_date;
     }
 
-    public function setDueDate(DateTime $due_date): void
+    public function setDueDate(string $due_date): void
     {
         $this->due_date = $due_date;
     }
@@ -66,17 +71,17 @@ class Task extends Model
         return $this->priority;
     }
 
-    public function setPriority( $priority): void
+    public function setPriority(string $priority): void
     {
         $this->priority = $priority;
     }
 
-    public function getStatus(): StatusType
+    public function getStatus(): string
     {
         return $this->status;
     }
 
-    public function setStatus(StatusType $status): void
+    public function setStatus(string $status): void
     {
         $this->status = $status;
     }
@@ -102,15 +107,7 @@ class Task extends Model
         $this->user_id = $user_id;
     }
 
-    public function getTable(): string
-    {
-        return $this->table;
-    }
 
-    public function setTable(string $table): void
-    {
-        $this->table = $table;
-    }
     public function getNotificationSent(): bool
     {
         return $this->notification_sent;
@@ -133,16 +130,16 @@ class Task extends Model
 
     protected static function mapOne( $data)
     {
-        $task = new self();
-        $task->setId($data["id"]);
-        $task->setTaskTitle($data["task_title"]);
-        $task->setTaskDescription($data["task_description"]);
-        $task->setDueDate(DateTime::createFromFormat("Y-m-d H:i:s",$data["due_date"]));
-        $task->setPriority($data["priority"]);
-        $task->setStatus(StatusType::from($data["status"]));
-        $task->setCategoryId($data["category_id"]);
-        $task->setUserId($data["user_id"]);
-        $task->setNotificationSent((bool)$data["notification_sent"]);
-        return $task;
+//        $task = new self();
+//        $task->setId($data["id"]);
+//        $task->setTaskTitle($data["task_title"]);
+//        $task->setTaskDescription($data["task_description"]);
+//        $task->setDueDate(DateTime::createFromFormat("Y-m-d H:i:s",$data["due_date"]));
+//        $task->setPriority($data["priority"]);
+//        $task->setStatus(StatusType::from($data["status"]));
+//        $task->setCategoryId($data["category_id"]);
+//        $task->setUserId($data["user_id"]);
+//        $task->setNotificationSent((bool)$data["notification_sent"]);
+//        return $task;
     }
 }

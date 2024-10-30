@@ -81,18 +81,17 @@ class TaskController extends Controller
     public function index(): void
     {
 
-       $tasks = Task::findBy([
-           "status" => "Pending",
-       ],
-       [
-           "id" => "ASC",
-       ]
-       );
-
-       foreach ($tasks as $task) {
-           dd($task);
-       }
-       //dd($tasks);
+       $tasks = new Task();
+       $tasks->setId(27);
+        $tasks->setTaskTitle("qcdqwd");
+        $tasks->setTaskDescription("All Tasks");
+        $tasks->setDueDate("2024-10-28 12:00:00");
+        $tasks->setPriority("Low");
+        $tasks->setStatus("Pending");
+        $tasks->setCategoryId(1);
+        $tasks->setUserId(15);
+        //$tasks->save();
+        dd($tasks->save());
 
         $notifyTask = $this->sendNotification();
 
