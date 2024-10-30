@@ -8,10 +8,9 @@ use PDO;
 abstract class Model
 {
     private PDO $cnn;
-    protected string $table;
+    protected static string $table;
 
-    public function __construct($table){
-        $this->table = $table;
+    public function __construct(){
         $this->cnn = Database::getConnection();
     }
 
@@ -19,25 +18,41 @@ abstract class Model
     {
 
         $instance = new static();
-        $sql = "SELECT * FROM {$instance->table} WHERE 1=1";
+        $sql = "SELECT * FROM {$instance::$table} WHERE 1=1";
         if(!empty($where)){
             $sql .= " AND ";
             foreach ($where as $key => $value) {
                 $sql .= "{$key} = :{$key}";
             }
         }
+        if(!empty($orderBy)){
+            foreach ($orderBy as $key => $value) {
+                $sql .= " ORDER BY {$key} {$value}";
+            }
+        }
         $stmt = $instance->cnn->prepare($sql);
         $stmt->execute($where);
-        return static::mapAll($stmt->fetchAll(PDO::FETCH_ASSOC));
+        return $stmt->fetchAll(PDO::FETCH_CLASS);
     }
 
-    public function save(array $attributes = []): bool
+    public function save(array $data): bool
     {
+        if (isset($data["id"])) {
+            //Update task with given id
+            $setPart = [];
+            foreach ($data as $key => $value) {
+                if ($key !== "id") {
+                    $setPart[] = "{$key} = :{$key}";
+                }
+            }
+            $setStr = implode(', ', $setPart);
+
+        }
         return true;
     }
 
     protected abstract static function mapAll(array $data): array;
 
-    protected abstract static function mapOne(array $data): static;
+    protected abstract static function mapOne($data) ;
 
 }

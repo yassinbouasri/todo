@@ -9,7 +9,7 @@ use DateTime;
 
 class Task extends Model
 {
-    protected string $table = "tasks";
+    protected static string $table = "tasks";
     protected int $id;
     private string $task_title;
     private string $task_description;
@@ -20,10 +20,6 @@ class Task extends Model
     private int $user_id;
     protected bool $notification_sent;
 
-
-    public function __construct() {
-        parent::__construct($this->table);
-    }
 
     public function getId(): int
     {
@@ -135,7 +131,7 @@ class Task extends Model
         return $tasks;
     }
 
-    protected static function mapOne(array $data): static
+    protected static function mapOne( $data)
     {
         $task = new self();
         $task->setId($data["id"]);
