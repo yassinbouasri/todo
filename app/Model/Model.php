@@ -52,33 +52,56 @@ abstract class Model
         $attributes = implode(", ", array_keys( $this->getters()));
         $values = implode(", :", array_keys($this->getters()));
         $idName = "";
+
+        //Getting id name from the getters method
         foreach (array_keys($this->getters()) as $key) {
             echo $key;
             $idName .= ($key === 'id') ? $key : "";
         }
-
-
+        //Update the table if the id is found in returned properties if no id is found then it is an insert
         if (!empty($idName)) {
             $idValue = array_values($this->getters())[0];
-            //Update task with given id
             $setParts = implode(', ', array_map(fn($col) => "{$col} = :{$col}", array_keys($this->getters())));
             $sql = "UPDATE " . $table . " SET " . $setParts . " WHERE ". $idName . " = :" . $idName;
             $stmt = self::$cnn->prepare($sql);
-            $stmt->bindValue(':'.$idName, $idValue); // Bind primary key
+            $stmt->bindValue(':'.$idName, $idValue); // Bind id
 
         } else {
             $sql = "INSERT INTO " . $table . " (" . $attributes . ") VALUES (:" . $values . ")";
             $stmt = self::$cnn->prepare($sql);
 
         }
+        //Binding the values
         foreach ($this->getters() as $key => $value) {
             $stmt->bindValue(":{$key}", $value);
         }
         return $stmt->execute();
     }
+    public function delete(): bool
+    {
+        $table = static::getTable();
+        $attributes = implode(", ", array_keys( $this->getters()));
+        $values = implode(", :", array_keys($this->getters()));
+        $idName = "";
+        foreach (array_keys( $this->getters()) as $key) {
+            $idName .= ($key === 'id') ? $key : "";
+        }
+        if (!empty($idName)) {
+            $idValue = array_values($this->getters())[0];
+            $sql = "DELETE FROM " . $table . " WHERE " . $idName . " = :" . $idName;
+            $stmt = self::$cnn->prepare($sql);
+            $stmt->bindValue(':'.$idName, $idValue);
+        } else {
+            echo "No id property has been found!";
+            return false;
+        }
+        return $stmt->execute();
+
+    }
 
     public  function getters(): array
     {
+        //using Reflecrion class to return an array of properties and values of the child class //TODO: make this method static
         $reflection = new ReflectionClass($this);
         $properties = [];
         foreach ($reflection->getProperties(ReflectionProperty::IS_PRIVATE) as $property) {
@@ -86,7 +109,7 @@ abstract class Model
             if ($property->isInitialized($this)) {
                 $value = $property->getValue($this);
 
-                // Add only non-null initialized properties
+                // Add only non-null initialized properties, avoiding the "\Child::$property must not be accessed before initialization" error
                 if ($value !== null) {
                     $properties[$property->getName()] = $value;
                 }
@@ -95,6 +118,8 @@ abstract class Model
 
         return $properties;
     }
+
+
 
     protected abstract static function mapAll(array $data): array;
 
