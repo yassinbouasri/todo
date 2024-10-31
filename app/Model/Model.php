@@ -13,8 +13,6 @@ abstract class Model
     private static $cnn;
     protected static ?string $table = null;
 
-    //TODO fix id in task entity
-    protected static  $id = "id";
 
     public function __construct(){
         self::$cnn = Database::getConnection();
@@ -53,14 +51,16 @@ abstract class Model
         $table = static::getTable();
         $attributes = implode(", ", array_keys( $this->getters()));
         $values = implode(", :", array_keys($this->getters()));
+        $idName = array_keys($this->getters())[0];
+        $idValue = array_values($this->getters())[0];
 
-        if (isset($this->{self::$id})) {
+        if (isset($idName)) {
             //Update task with given id
             $setParts = implode(', ', array_map(fn($col) => "{$col} = :{$col}", array_keys($this->getters())));
-            $sql = "UPDATE " . $table . " SET " . $setParts . " WHERE " . self::$id . "  = :" . self::$id;
+            $sql = "UPDATE " . $table . " SET " . $setParts . " WHERE ". $idName . " = :" . $idName;
             echo $sql;
             $stmt = self::$cnn->prepare($sql);
-            $stmt->bindValue(':'.self::$id, $this->getters()[self::$id]); // Bind primary key
+            $stmt->bindValue(':'.$idName, $idValue); // Bind primary key
 
         } else {
             $sql = "INSERT INTO " . $table . " (" . $attributes . ") VALUES (:" . $values . ")";
