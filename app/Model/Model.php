@@ -51,15 +51,18 @@ abstract class Model
         $table = static::getTable();
         $attributes = implode(", ", array_keys( $this->getters()));
         $values = implode(", :", array_keys($this->getters()));
-        $idName = array_keys($this->getters())[0];
+        $idName = "";
+        foreach (array_keys($this->getters()) as $key) {
+            echo $key;
+            $idName .= ($key === 'id') ? $key : "";
+        }
 
 
-        if ($idName === "id") {
+        if (!empty($idName)) {
             $idValue = array_values($this->getters())[0];
             //Update task with given id
             $setParts = implode(', ', array_map(fn($col) => "{$col} = :{$col}", array_keys($this->getters())));
             $sql = "UPDATE " . $table . " SET " . $setParts . " WHERE ". $idName . " = :" . $idName;
-            echo $sql;
             $stmt = self::$cnn->prepare($sql);
             $stmt->bindValue(':'.$idName, $idValue); // Bind primary key
 
