@@ -6,6 +6,7 @@ use App\Mail\Mailer;
 use App\Model\CategoryRepository;
 use App\Model\Task;
 use App\Model\TaskRepository;
+use App\Model\Category;
 
 use App\Model\Type\PriorityType;
 use App\Model\Type\StatusType;
@@ -81,17 +82,22 @@ class TaskController extends Controller
     public function index(): void
     {
 
-       $tasks = new Task();
-        $tasks->setId(27);
-        $tasks->setTaskTitle("qcdqssswd");
-        $tasks->setTaskDescription("All Tasks");
-        $tasks->setDueDate("2024-10-28 12:00:00");
-        $tasks->setPriority("Low");
-        $tasks->setStatus("Pending");
-        $tasks->setCategoryId(1);
-        $tasks->setUserId(15);
-        $tasks->save();
+//       $tasks = new Task();
+//        $tasks->setId(27);
+//        $tasks->setTaskTitle("scsc");
+//        $tasks->setTaskDescription("All Tasks");
+//        $tasks->setDueDate("2024-10-28 12:00:00");
+//        $tasks->setPriority("Low");
+//        $tasks->setStatus("Pending");
+//        $tasks->setCategoryId(1);
+//        $tasks->setUserId(15);
+//        dd($tasks->savetest());
         //dd(isset(array_values($tasks->savetest())[0]));
+
+        $cat = new Category();
+        $cat->setId(30);
+        $cat->setCategoryName("test34");
+        dd($cat->save());
 
         $notifyTask = $this->sendNotification();
 
