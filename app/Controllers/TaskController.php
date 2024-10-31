@@ -82,16 +82,16 @@ class TaskController extends Controller
     {
 
        $tasks = new Task();
-       $tasks->setId(27);
-        $tasks->setTaskTitle("qcdqwd");
+        $tasks->setId(27);
+        $tasks->setTaskTitle("qcdqssswd");
         $tasks->setTaskDescription("All Tasks");
         $tasks->setDueDate("2024-10-28 12:00:00");
         $tasks->setPriority("Low");
         $tasks->setStatus("Pending");
         $tasks->setCategoryId(1);
         $tasks->setUserId(15);
-        //$tasks->save();
-        dd($tasks->save());
+        $tasks->save();
+        //dd(isset(array_values($tasks->savetest())[0]));
 
         $notifyTask = $this->sendNotification();
 

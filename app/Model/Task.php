@@ -11,7 +11,7 @@ class Task extends Model
 {
     protected static ?string $table = "tasks";
 
-    protected static $id;
+    private int $id;
     private string $task_title;
     private string $task_description;
     private string $due_date;
