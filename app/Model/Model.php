@@ -5,6 +5,7 @@ use App\Config\Database;
 use DateTime;
 use mysql_xdevapi\Exception;
 use PDO;
+use PDOException;
 use ReflectionClass;
 use ReflectionProperty;
 
@@ -97,6 +98,19 @@ abstract class Model
         }
         return $stmt->execute();
 
+    }
+
+    public static function findAll(): array
+    {
+        $table = static::getTable();
+        $sql = "SELECT * FROM {$table} WHERE 1 = 1";
+        try {
+            $stmt = self::$cnn->prepare($sql);
+            $stmt->execute();
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+        return $stmt->fetchAll(PDO::FETCH_CLASS);
     }
 
     public  function getters(): array
