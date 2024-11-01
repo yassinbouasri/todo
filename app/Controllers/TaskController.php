@@ -21,12 +21,16 @@ class TaskController extends Controller
 
     private Mailer $mailer;
     private CategoryController $categoryController;
+    private Task $task;
+    public Category $category;
     public function __construct() {
         checkSession();
         $this->taskRepository = new TaskRepository();
         $this->categoryRepository = new CategoryRepository();
         $this->mailer = new Mailer();
         $this->categoryController = new CategoryController();
+        $this->task = new Task();
+        $this->category = new Category();
     }
     public function getCategoryController(): CategoryController
     {
@@ -81,29 +85,11 @@ class TaskController extends Controller
      */
     public function index(): void
     {
-
-//       $tasks = new Task();
-//        $tasks->setId(27);
-//        $tasks->setTaskTitle("scsc");
-//        $tasks->setTaskDescription("All Tasks");
-//        $tasks->setDueDate("2024-10-28 12:00:00");
-//        $tasks->setPriority("Low");
-//        $tasks->setStatus("Pending");
-//        $tasks->setCategoryId(1);
-//        $tasks->setUserId(15);
-//        dd($tasks->savetest());
-        //dd(isset(array_values($tasks->savetest())[0]));
-
-        $cat = new Category();
-        $cat->setId(30);
-        $cat->setCategoryName("test34");
-        dd($cat->save());
-
         $notifyTask = $this->sendNotification();
 
         $tasksPerPage = 6;
-        $totalTasks = $this->taskRepository->getTotalTasks();
 
+        $totalTasks = $this->task::count();
         $totalPages = ceil($totalTasks / $tasksPerPage);
 
         $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -112,7 +98,8 @@ class TaskController extends Controller
 
         $offset = ($currentPage - 1) * $tasksPerPage;
         $user_id = $_SESSION['id'];
-        $tasks = $this->taskRepository->getAllTasks($tasksPerPage, $offset,$user_id);
+        //$tasks = $this->taskRepository->getAllTasks($tasksPerPage, $offset,$user_id);
+        $tasks = $this->task::findBy([],["due_date" => "ASC"],$currentPage,$tasksPerPage);
 
         $this->render("home", [
             "tasks" => $tasks,

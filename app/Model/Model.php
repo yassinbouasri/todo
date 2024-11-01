@@ -27,24 +27,39 @@ abstract class Model
         return static::$table;
     }
 
-    public static function findBy($where = [], $orderBy = []): array
+    public static function findBy($where = [], $orderBy = [], int $offset = null, int $limit = null): array
     {
         $instance = new static();
         $sql = "SELECT * FROM {$instance::$table} WHERE 1=1";
+        $stmt = self::$cnn;
         if(!empty($where)){
             //ex: ["id","=",1]
             $sql .= " AND ";
             foreach ($where as $key) {
                 $sql .= "{$key}";
+                $stmt = self::$cnn->prepare($sql);
             }
+
         }
         if(!empty($orderBy)){
             foreach ($orderBy as $key => $value) {
                 $sql .= " ORDER BY {$key} {$value}";
+                $stmt = self::$cnn->prepare($sql);
             }
         }
-        $stmt = self::$cnn->prepare($sql);
-        $stmt->execute();
+        if (isset($limit) && isset($offset)) {
+            $sql .= " LIMIT {$limit} OFFSET {$offset}";
+            $stmt = self::$cnn->prepare($sql);
+            $stmt->bindValue(":limit", $limit, PDO::PARAM_INT);
+            $stmt->bindValue(":offset", $offset, PDO::PARAM_INT);
+        }
+        try {
+            $stmt = self::$cnn->prepare($sql);
+            $stmt->execute();
+        } catch (PDOException $e) {
+            echo "Error: ".$e->getMessage();
+        }
+
         return $stmt->fetchAll(PDO::FETCH_CLASS);
     }
 
@@ -57,7 +72,6 @@ abstract class Model
 
         //Getting id name from the getters method
         foreach (array_keys($this->getters()) as $key) {
-            echo $key;
             $idName .= ($key === 'id') ? $key : "";
         }
         //Update the table if the id is found in returned properties if no id is found then it is an insert
@@ -114,6 +128,14 @@ abstract class Model
         return $stmt->fetchAll(PDO::FETCH_CLASS);
     }
 
+    public static function count(): mixed
+    {
+        $table = static::getTable();
+        $sql = "SELECT COUNT(*) FROM {$table}";
+        $stmt = self::$cnn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
     public  function getters(): array
     {
         //using Reflection class to return an array of properties and values of the child class //TODO: make this method static
@@ -133,6 +155,7 @@ abstract class Model
 
         return $properties;
     }
+
 
 
 
