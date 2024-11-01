@@ -32,9 +32,10 @@ abstract class Model
         $instance = new static();
         $sql = "SELECT * FROM {$instance::$table} WHERE 1=1";
         if(!empty($where)){
+            //ex: ["id","=",1]
             $sql .= " AND ";
-            foreach ($where as $key => $value) {
-                $sql .= "{$key} = :{$key}";
+            foreach ($where as $key) {
+                $sql .= "{$key}";
             }
         }
         if(!empty($orderBy)){
@@ -43,7 +44,7 @@ abstract class Model
             }
         }
         $stmt = self::$cnn->prepare($sql);
-        $stmt->execute($where);
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_CLASS);
     }
 
@@ -115,7 +116,7 @@ abstract class Model
 
     public  function getters(): array
     {
-        //using Reflecrion class to return an array of properties and values of the child class //TODO: make this method static
+        //using Reflection class to return an array of properties and values of the child class //TODO: make this method static
         $reflection = new ReflectionClass($this);
         $properties = [];
         foreach ($reflection->getProperties(ReflectionProperty::IS_PRIVATE) as $property) {
