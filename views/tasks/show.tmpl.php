@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @var array $tasks
+ * @var array $category
+ */
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -47,33 +50,33 @@
         </div>
         <div class="panel-body">
           <!-- Task Title -->
-          <div class="task-title"><?php echo htmlspecialchars( $tasksModel["task_title"], ENT_QUOTES, "UTF-8"); ?></div>
+          <div class="task-title"><?php echo htmlspecialchars( $tasks->task_title, ENT_QUOTES, "UTF-8"); ?></div>
           
           <!-- Task Information -->
           <div class="task-info">
             <strong>Description: </strong> <br>
-              <?php echo htmlspecialchars( $tasksModel["task_description"], ENT_QUOTES, "UTF-8"); ?>
+              <?php echo htmlspecialchars( $tasks->task_description, ENT_QUOTES, "UTF-8"); ?>
           </div>
           
           <!-- Task Status -->
           <div class="task-info">
             <strong>Status: </strong> 
-            <span class="<?php echo htmlspecialchars( $color, ENT_QUOTES, "UTF-8"); ?>"><?php echo htmlspecialchars( $tasksModel["status"], ENT_QUOTES, "UTF-8"); ?></span>
+            <span class="<?php echo htmlspecialchars( $color, ENT_QUOTES, "UTF-8"); ?>"><?php echo htmlspecialchars( $tasks->status, ENT_QUOTES, "UTF-8"); ?></span>
           </div>
           
    
           <div class="task-info">
-            <strong>Due Date: </strong> <?php echo htmlspecialchars( $tasksModel["due_date"], ENT_QUOTES, "UTF-8"); ?>
+            <strong>Due Date: </strong> <?php echo htmlspecialchars( $tasks->due_date, ENT_QUOTES, "UTF-8"); ?>
           </div>
           
       
           <div class="task-info">
-            <strong>Category: </strong> <?php echo htmlspecialchars( $category["category_name"], ENT_QUOTES, "UTF-8"); ?>
+            <strong>Category: </strong> <?php echo htmlspecialchars( $category->category_name, ENT_QUOTES, "UTF-8"); ?>
           </div>
           
     
           <div class="task-info">
-            <strong>Priority: </strong> <?php echo htmlspecialchars( $tasksModel["priority"], ENT_QUOTES, "UTF-8"); ?>
+            <strong>Priority: </strong> <?php echo htmlspecialchars( $tasks->priority, ENT_QUOTES, "UTF-8"); ?>
           </div>
         </div>
   

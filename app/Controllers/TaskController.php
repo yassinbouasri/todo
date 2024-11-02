@@ -11,6 +11,7 @@ use App\Model\Category;
 use App\Model\Type\PriorityType;
 use App\Model\Type\StatusType;
 use DateTime;
+use PHPMailer\PHPMailer\Exception;
 
 
 class TaskController extends Controller
@@ -97,9 +98,7 @@ class TaskController extends Controller
         $currentPage = ($currentPage < 1) ? 1 : $currentPage;
 
         $offset = ($currentPage - 1) * $tasksPerPage;
-        $user_id = $_SESSION['id'];
-        //$tasks = $this->taskRepository->getAllTasks($tasksPerPage, $offset,$user_id);
-        $tasks = $this->task::findBy([],["due_date" => "ASC"],$currentPage,$tasksPerPage);
+        $tasks = $this->task::findBy([],["due_date" => "ASC"],$offset,$tasksPerPage,);
 
         $this->render("home", [
             "tasks" => $tasks,
@@ -114,21 +113,23 @@ class TaskController extends Controller
     {
 
 
-        $tasksModel = $this->taskRepository->getTaskById($id);
+        //$tasks = $this->taskRepository->getTaskById($id);
+        $tasks = $this->task::findBy(["id", "=", $id])[0];
 
         $color = '';
-        if ($tasksModel) {
-            $categoryId = $tasksModel['category_id'];
-            $category = $this->categoryRepository->getCategoryById($categoryId);
+        if ($tasks) {
+            $categoryId = $tasks->category_id;
+            //$category = $this->categoryRepository->getCategoryById($categoryId);
+            $category = $this->category::findBy(["id", "=", $categoryId])[0];
 
-            $color = ($tasksModel['status'] == 'Completed') ? 'status completed' : $color = 'status in-progress';
+            $color = ($tasks->status == 'Completed') ? 'status completed' : 'status in-progress';
             $this->render("tasks/show", [
-                "tasksModel" => $tasksModel,
+                "tasks" => $tasks,
                 "category" => $category,
                 "color" => $color
             ]);
 
-            return $tasksModel;
+            return $tasks;
         } else {
              echo "No Tasks Found for this ID";
              exit();
@@ -138,12 +139,14 @@ class TaskController extends Controller
 
     /**
      * @throws DateMalformedStringException
+     * @throws Exception
      */
     public function remove(): void
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $id = $_POST['id'];
-            $this->taskRepository->delete($id);
+            $id = (int)$_POST['id'];
+            $this->task->setId($id);
+            $this->task->delete();
         }
         $this->index();
     }
