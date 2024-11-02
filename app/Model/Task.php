@@ -19,7 +19,7 @@ class Task extends Model
     private string $status;
     private int $category_id;
     private int $user_id;
-    protected bool $notification_sent;
+    private int $notification_sent;
 
 
     public function savetest()
@@ -108,12 +108,12 @@ class Task extends Model
     }
 
 
-    public function getNotificationSent(): bool
+    public function getNotificationSent(): int
     {
         return $this->notification_sent;
     }
 
-    public function setNotificationSent(bool $notification_sent): void
+    public function setNotificationSent(int $notification_sent): void
     {
         $this->notification_sent = $notification_sent;
     }

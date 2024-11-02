@@ -96,8 +96,6 @@ abstract class Model
     public function delete(): bool
     {
         $table = static::getTable();
-        $attributes = implode(", ", array_keys( $this->getters()));
-        $values = implode(", :", array_keys($this->getters()));
         $idName = "";
         foreach (array_keys( $this->getters()) as $key) {
             $idName .= ($key === 'id') ? $key : "";
