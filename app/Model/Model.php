@@ -89,7 +89,7 @@ abstract class Model
         }
         //Binding the values
         foreach ($this->getters() as $key => $value) {
-            $stmt->bindValue(":{$key}", $value);
+            $stmt->bindValue(":{$key}", $value instanceof \BackedEnum ? $value->value : $value);
         }
         return $stmt->execute();
     }

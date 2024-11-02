@@ -15,8 +15,8 @@ class Task extends Model
     private string $task_title;
     private string $task_description;
     private string $due_date;
-    private string $priority;
-    private string $status;
+    private PriorityType $priority;
+    private StatusType $status;
     private int $category_id;
     private int $user_id;
     private int $notification_sent;
@@ -66,22 +66,22 @@ class Task extends Model
         $this->due_date = $due_date;
     }
 
-    public function getPriority(): string
+    public function getPriority(): PriorityType
     {
         return $this->priority;
     }
 
-    public function setPriority(string $priority): void
+    public function setPriority(PriorityType $priority): void
     {
         $this->priority = $priority;
     }
 
-    public function getStatus(): string
+    public function getStatus(): StatusType
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): void
+    public function setStatus(StatusType $status): void
     {
         $this->status = $status;
     }
