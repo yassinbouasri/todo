@@ -60,13 +60,7 @@ class TaskController extends Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
-            $this->task->setTaskTitle($_POST['task_title']);
-            $this->task->setTaskDescription($_POST['task_description']);
-            $this->task->setDueDate($_POST['due_date']);
-            $this->task->setPriority($_POST['priority']);
-            $this->task->setStatus($_POST['status']);
-            $this->task->setCategoryId((int)$_POST['category_id']);
-            $this->task->setUserId((int)$_SESSION['id']);
+            $this->extracted();
             $this->task->setNotificationSent(1);
 
             // Insert task into the database
@@ -161,16 +155,9 @@ class TaskController extends Controller
 
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $id = (int)$_POST['id'];
-            $task_title = $_POST['task_title'];
-            $task_description = $_POST['task_description'];
-            $due_date = DateTime::createFromFormat('Y-m-d H:i', $_POST['due_date'])->format('Y-m-d H:i:s');
-            $priority = $_POST['priority'];
-            $status = $_POST['status'];
-            $category_id = (int)$_POST['category_id'];
-
-            $updated = $this->taskRepository->update($id, $task_title, $task_description, $due_date, $priority, $status, $category_id);
-
+            $this->task->setId((int)$_POST['id']);
+            $this->extracted();
+            $updated = $this->task->save();
             $alertMessage = ($updated) ? "<div class='alert alert-success' role='alert'>Task updated successfully!</div>" :
                             "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
             $tasks = $this->taskRepository->getTaskById($id);
@@ -221,5 +208,19 @@ class TaskController extends Controller
 
         return $selectedTasks;
 
+    }
+
+    /**
+     * @return void
+     */
+    public function extracted(): void
+    {
+        $this->task->setTaskTitle($_POST['task_title']);
+        $this->task->setTaskDescription($_POST['task_description']);
+        $this->task->setDueDate($_POST['due_date']);
+        $this->task->setPriority($_POST['priority']);
+        $this->task->setStatus($_POST['status']);
+        $this->task->setCategoryId((int)$_POST['category_id']);
+        $this->task->setUserId((int)$_SESSION['id']);
     }
 }
