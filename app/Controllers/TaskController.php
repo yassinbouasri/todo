@@ -92,7 +92,7 @@ class TaskController extends Controller
         $currentPage = ($currentPage < 1) ? 1 : $currentPage;
 
         $offset = ($currentPage - 1) * $tasksPerPage;
-        $tasks = $this->task::findBy([],["due_date" => "ASC"],$offset,$tasksPerPage,);
+        $tasks = $this->task::findBy([],["id" => "DESC"],$offset,$tasksPerPage,);
 
         $this->render("home", [
             "tasks" => $tasks,

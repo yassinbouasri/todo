@@ -29,38 +29,7 @@ abstract class Model
 
     public static function findBy($where = [], $orderBy = [], int $offset = null, int $limit = null): array
     {
-        $instance = new static();
-        $sql = "SELECT * FROM {$instance::$table} WHERE 1=1";
-        $stmt = self::$cnn;
-        if(!empty($where)){
-            //ex: ["id","=",1]
-            $sql .= " AND ";
-            foreach ($where as $key) {
-                $sql .= "{$key}";
-                $stmt = self::$cnn->prepare($sql);
-            }
-
-        }
-        if(!empty($orderBy)){
-            foreach ($orderBy as $key => $value) {
-                $sql .= " ORDER BY {$key} {$value}";
-                $stmt = self::$cnn->prepare($sql);
-            }
-        }
-        if (isset($limit) && isset($offset)) {
-            $sql .= " LIMIT {$limit} OFFSET {$offset}";
-            $stmt = self::$cnn->prepare($sql);
-            $stmt->bindValue(":limit", $limit, PDO::PARAM_INT);
-            $stmt->bindValue(":offset", $offset, PDO::PARAM_INT);
-        }
-        try {
-            $stmt = self::$cnn->prepare($sql);
-            $stmt->execute();
-        } catch (PDOException $e) {
-            echo "Error: ".$e->getMessage();
-        }
-
-        return $stmt->fetchAll(PDO::FETCH_CLASS);
+        return [];
     }
 
     public function save(): bool
@@ -89,6 +58,7 @@ abstract class Model
         }
         //Binding the values
         foreach ($this->getters() as $key => $value) {
+            //if it is an instance of enum then get the value
             $stmt->bindValue(":{$key}", $value instanceof \BackedEnum ? $value->value : $value);
         }
         return $stmt->execute();
@@ -116,7 +86,7 @@ abstract class Model
     public static function findAll(): array
     {
         $table = static::getTable();
-        $sql = "SELECT * FROM {$table} WHERE 1 = 1";
+        $sql = "SELECT * FROM {$table}";
         try {
             $stmt = self::$cnn->prepare($sql);
             $stmt->execute();
@@ -140,7 +110,6 @@ abstract class Model
         $reflection = new ReflectionClass($this);
         $properties = [];
         foreach ($reflection->getProperties(ReflectionProperty::IS_PRIVATE) as $property) {
-
             if ($property->isInitialized($this)) {
                 $value = $property->getValue($this);
 

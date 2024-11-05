@@ -22,10 +22,6 @@ class Task extends Model
     private int $notification_sent;
 
 
-    public function savetest()
-    {
-        return parent::getters();
-    }
     public function getId(): int
     {
         return $this->id;
