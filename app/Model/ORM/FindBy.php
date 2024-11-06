@@ -7,13 +7,13 @@ use PDO;
 use PDOException;
 use PDOStatement;
 
-class findBy
+class FindBy
 {
 
     private const string ORDER_BY_KEY = ":orderByKey";
     private const string ORDER_BY_VALUE = ":orderByValue";
 
-    public function get(Database $db, string $tableName, array $where = [], array $orderBy = [], ?int $offset = null, ?int $limit = null): array
+    public static function get(Database $db, string $tableName, array $where = [], array $orderBy = [], ?int $offset = null, ?int $limit = null): array
     {
         $sql = "SELECT * FROM {$tableName}";
         $sql .= self::getSqlClauses($where, $orderBy, $limit, $offset);

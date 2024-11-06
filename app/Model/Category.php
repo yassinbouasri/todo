@@ -6,8 +6,8 @@ class Category extends Model
 {
 
     protected static ?string $table = 'categories';
-    private int $id;
-    private string $category_name;
+    public int $id;
+    public string $category_name;
     
 
     public function getId(): int

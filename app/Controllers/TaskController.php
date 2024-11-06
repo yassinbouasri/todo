@@ -63,8 +63,6 @@ class TaskController extends Controller
             $this->extracted();
             $this->task->setNotificationSent(1);
 
-            // Insert task into the database
-            //$inserted = $this->taskRepository->insert($data);
             $inserted = $this->task->save();
             $alertMessage = ($inserted) ? "<div class='alert alert-success' role='alert'>Task added successfully!</div>" :
                         "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
@@ -217,7 +215,7 @@ class TaskController extends Controller
     {
         $this->task->setTaskTitle($_POST['task_title']);
         $this->task->setTaskDescription($_POST['task_description']);
-        $this->task->setDueDate($_POST['due_date']);
+        $this->task->setDueDate(DateTime::createFromFormat('y-m-d H:i', $_POST['due_date'] ?? null));
         $this->task->setPriority(PriorityType::from(ucfirst($_POST['priority'])));
         $this->task->setStatus(StatusType::from(ucfirst($_POST['status'])));
         $this->task->setCategoryId((int)$_POST['category_id']);

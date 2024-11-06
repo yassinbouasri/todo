@@ -11,7 +11,7 @@ class CategoryRepository
 
     public function __construct(){
         checkSession();
-        $this->cnn = Database::getConnection();
+        $this->cnn = Database::getInstance()->getConnection();
     }
 
     public function getCategoryById(int $id): mixed

@@ -11,18 +11,32 @@ class Task extends Model
 {
     protected static ?string $table = "tasks";
 
-    private int $id;
-    private string $task_title;
-    private string $task_description;
-    private string $due_date;
-    private PriorityType $priority;
-    private StatusType $status;
-    private int $category_id;
-    private int $user_id;
-    private int $notification_sent;
+    public ?int $id;
+    public ?string $task_title;
+    public ?string $task_description;
+    public ?DateTime $due_date;
+    public ?PriorityType $priority;
+    public ?StatusType $status;
+    public ?int $category_id;
+    public ?int $user_id;
+    public ?int $notification_sent;
+
+    public function __construct(?int $id = null, ?string $task_title = "", ?string $task_description = "", ?string $due_date = null, ?PriorityType $priority = PriorityType::NONE, $status = StatusType::NONE, int $category_id = null, int $user_id = null)
+    {
+        parent::__construct();
+        $this->id = $id ?? null;
+        $this->task_title = $task_title ?? "";
+        $this->task_description = $task_description ?? "";
+        $this->due_date = $due_date ?? null;
+        $this->priority = $priority ?? PriorityType::NONE;
+        $this->status = $status ?? StatusType::NONE;
+        $this->category_id = $category_id ?? 0;
+        $this->user_id = $user_id ?? 0;
+        $this->notification_sent = $notification_sent ?? 0;
+    }
 
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -52,12 +66,12 @@ class Task extends Model
         $this->task_description = $task_description;
     }
 
-    public function getDueDate(): string
+    public function getDueDate(): DateTime
     {
         return $this->due_date;
     }
 
-    public function setDueDate(string $due_date): void
+    public function setDueDate(DateTime $due_date): void
     {
         $this->due_date = $due_date;
     }

@@ -1,94 +1,42 @@
 <?php
 declare(strict_types=1);
+
 namespace App\Model;
+
 use App\Config\Database;
+use App\Model\ORM\FindBy;
+use App\Model\ORM\QueryBuilder;
+use App\Model\Type\PriorityType;
+use App\Model\Type\StatusType;
 use DateTime;
 use mysql_xdevapi\Exception;
 use PDO;
 use PDOException;
-use ReflectionClass;
-use ReflectionProperty;
+use BackedEnum;
+use PDOStatement;
 
 abstract class Model
 {
-    private static $cnn;
     protected static ?string $table = null;
+    private static Database $db;
 
-
-    public function __construct(){
-        self::$cnn = Database::getConnection();
+    public function __construct()
+    {
+        self::$db = Database::getInstance();
     }
 
-    public static function getTable(): string
+    public static function findBy(array $where = [], array $orderBy = [], ?int $offset = null, ?int $limit = null): array
     {
-        if (static::$table === null) {
-            throw new Exception("Table not defined" . static::$table);
-        }
-        return static::$table;
-    }
-
-    public static function findBy($where = [], $orderBy = [], int $offset = null, int $limit = null): array
-    {
-        return [];
-    }
-
-    public function save(): bool
-    {
-        $table = static::getTable();
-        $attributes = implode(", ", array_keys( $this->getters()));
-        $values = implode(", :", array_keys($this->getters()));
-        $idName = "";
-
-        //Getting id name from the getters method
-        foreach (array_keys($this->getters()) as $key) {
-            $idName .= ($key === 'id') ? $key : "";
-        }
-        //Update the table if the id is found in returned properties if no id is found then it is an insert
-        if (!empty($idName)) {
-            $idValue = array_values($this->getters())[0];
-            $setParts = implode(', ', array_map(fn($col) => "{$col} = :{$col}", array_keys($this->getters())));
-            $sql = "UPDATE " . $table . " SET " . $setParts . " WHERE ". $idName . " = :" . $idName;
-            $stmt = self::$cnn->prepare($sql);
-            $stmt->bindValue(':'.$idName, $idValue); // Bind id
-
-        } else {
-            $sql = "INSERT INTO " . $table . " (" . $attributes . ") VALUES (:" . $values . ")";
-            $stmt = self::$cnn->prepare($sql);
-
-        }
-        //Binding the values
-        foreach ($this->getters() as $key => $value) {
-            //if it is an instance of enum then get the value
-            $stmt->bindValue(":{$key}", $value instanceof \BackedEnum ? $value->value : $value);
-        }
-        return $stmt->execute();
-    }
-    public function delete(): bool
-    {
-        $table = static::getTable();
-        $idName = "";
-        foreach (array_keys( $this->getters()) as $key) {
-            $idName .= ($key === 'id') ? $key : "";
-        }
-        if (!empty($idName)) {
-            $idValue = array_values($this->getters())[0];
-            $sql = "DELETE FROM " . $table . " WHERE " . $idName . " = :" . $idName;
-            $stmt = self::$cnn->prepare($sql);
-            $stmt->bindValue(':'.$idName, $idValue);
-        } else {
-            echo "No id property has been found!";
-            return false;
-        }
-        return $stmt->execute();
-
+        $instance = new static();
+        return FindBy::get(self::$db, $instance::$table, $where, $orderBy, $offset, $limit);
     }
 
     public static function findAll(): array
     {
         $table = static::getTable();
         $sql = "SELECT * FROM {$table}";
+        $stmt = self::$db->getConnection()->prepare($sql);
         try {
-            $stmt = self::$cnn->prepare($sql);
             $stmt->execute();
         } catch (PDOException $e) {
             echo $e->getMessage();
@@ -100,34 +48,86 @@ abstract class Model
     {
         $table = static::getTable();
         $sql = "SELECT COUNT(*) FROM {$table}";
-        $stmt = self::$cnn->prepare($sql);
+        $stmt = self::$db->getConnection()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchColumn();
     }
-    public  function getters(): array
-    {
-        //using Reflection class to return an array of properties and values of the child class //TODO: make this method static
-        $reflection = new ReflectionClass($this);
-        $properties = [];
-        foreach ($reflection->getProperties(ReflectionProperty::IS_PRIVATE) as $property) {
-            if ($property->isInitialized($this)) {
-                $value = $property->getValue($this);
-
-                // Add only non-null initialized properties, avoiding the "\Child::$property must not be accessed before initialization" error
-                if ($value !== null) {
-                    $properties[$property->getName()] = $value;
-                }
-            }
-        }
-
-        return $properties;
-    }
-
-
-
 
     protected abstract static function mapAll(array $data): array;
 
-    protected abstract static function mapOne($data) ;
+    protected abstract static function mapOne($data);
+
+
+
+    public function save(): bool
+    {
+        $table = static::getTable();
+        if ($this->getId() !== null){
+            list($sql, $attr) = QueryBuilder::build(self::$db, $table, self::attributes() ,"id");
+        } else {
+            list($sql, $attr) = QueryBuilder::build(self::$db, $table, self::attributes());
+            unset($attr[0]);
+        }
+        $stmt = self::$db->getConnection()->prepare($sql);
+        $this->bindValues($stmt, $attr);
+        try {
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            die();
+        }
+
+    }
+
+
+    public static function getTable(): string
+    {
+        if (static::$table === null) {
+            throw new Exception("Table not defined" . static::$table);
+        }
+        return static::$table;
+    }
+
+    public static function attributes(): array
+    {
+        $instance = new static();
+        $sql = "SELECT * FROM information_schema.columns WHERE table_schema = 'todo' AND table_name = '{$instance::$table}'";
+        $stmt = self::$db->getConnection()->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function delete(): bool
+    {
+        $table = static::getTable();
+        $idName = "";
+        foreach (array_keys($this->attributes()) as $key) {
+            $idName .= ($key === 'id') ? $key : "";
+        }
+        if (!empty($idName)) {
+            $idValue = array_values($this->attributes())[0];
+            $sql = "DELETE FROM " . $table . " WHERE " . $idName . " = :" . $idName;
+            $stmt = self::$db->getConnection()->prepare($sql);
+            $stmt->bindValue(':' . $idName, $idValue);
+        } else {
+            echo "No id property has been found!";
+            return false;
+        }
+        return $stmt->execute();
+
+    }
+    private function bindValues(PDOStatement $stmt, array $attr): void
+    {
+        foreach ($attr as $key) {
+            $parts = explode("_", $key);
+            $getter = "get" . ucfirst($parts[0]) . ucfirst($parts[1] ?? "");
+            if (!$this->{$getter}() instanceof DateTime){
+                $stmt->bindValue(":{$key}", ($this->{$getter}() instanceof BackedEnum) ? ($this->{$getter}()->value) : $this->{$getter}());
+            } else {
+                $stmt->bindValue(":{$key}", $this->{$getter()}()->format('yyyy-mm-dd H:i'));
+            }
+        }
+
+    }
 
 }

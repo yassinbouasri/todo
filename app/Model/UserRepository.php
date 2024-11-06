@@ -9,7 +9,7 @@ class UserRepository
 {
     private PDO $cnn;
     public function __construct() {
-        $this->cnn = Database::getConnection();
+        $this->cnn = Database::getInstance()->getConnection();
     }
 
     public function registerUser(string $username, string $email, string $password): bool
