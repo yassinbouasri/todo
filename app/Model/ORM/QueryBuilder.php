@@ -2,9 +2,6 @@
 
 namespace App\Model\ORM;
 
-use App\Config\Database;
-use PDO;
-
 class QueryBuilder
 {
     public function __construct()
@@ -12,7 +9,7 @@ class QueryBuilder
 
     }
 
-    public static function build(Database $db,string $table, array $columns, ?string $idName = ""): array
+    public static function buildSave(string $table, array $columns, ?string $idName = ""): array
     {
         $query = "";
         $attributes = "";
@@ -20,9 +17,9 @@ class QueryBuilder
         $setPart = "";
         $att = [];
         foreach ($columns as $attribute) {
-            $attributes .= ($attribute["COLUMN_NAME"] != 'id') ? $attribute["COLUMN_NAME"].", ":'';
-            $values .= ($attribute["COLUMN_NAME"] != 'id') ? ":".$attribute["COLUMN_NAME"].", ":'';
-            $setPart .= ($attribute["COLUMN_NAME"] != 'id') ? $attribute["COLUMN_NAME"]." = :".$attribute["COLUMN_NAME"] . ", " :'';
+            $attributes .= ($attribute["COLUMN_NAME"] != 'id') ? $attribute["COLUMN_NAME"] . ", " : '';
+            $values .= ($attribute["COLUMN_NAME"] != 'id') ? ":" . $attribute["COLUMN_NAME"] . ", " : '';
+            $setPart .= ($attribute["COLUMN_NAME"] != 'id') ? $attribute["COLUMN_NAME"] . " = :" . $attribute["COLUMN_NAME"] . ", " : '';
             $att[] = $attribute["COLUMN_NAME"];
         }
 
@@ -34,5 +31,10 @@ class QueryBuilder
         return [$query, $att];
     }
 
+    public static function buildDelete(string $table): string
+    {
+        $query = "DELETE FROM {$table} WHERE id = :id";
+        return $query;
+    }
 
 }

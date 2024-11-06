@@ -6,13 +6,11 @@ namespace App\Model;
 use App\Config\Database;
 use App\Model\ORM\FindBy;
 use App\Model\ORM\QueryBuilder;
-use App\Model\Type\PriorityType;
-use App\Model\Type\StatusType;
+use BackedEnum;
 use DateTime;
 use mysql_xdevapi\Exception;
 use PDO;
 use PDOException;
-use BackedEnum;
 use PDOStatement;
 
 abstract class Model
@@ -40,8 +38,17 @@ abstract class Model
             $stmt->execute();
         } catch (PDOException $e) {
             echo $e->getMessage();
+            die();
         }
         return $stmt->fetchAll(PDO::FETCH_CLASS);
+    }
+
+    public static function getTable(): string
+    {
+        if (static::$table === null) {
+            throw new Exception("Table not defined" . static::$table);
+        }
+        return static::$table;
     }
 
     public static function count(): mixed
@@ -57,15 +64,13 @@ abstract class Model
 
     protected abstract static function mapOne($data);
 
-
-
     public function save(): bool
     {
         $table = static::getTable();
-        if ($this->getId() !== null){
-            list($sql, $attr) = QueryBuilder::build(self::$db, $table, self::attributes() ,"id");
+        if ($this->getId() !== null) {
+            list($sql, $attr) = QueryBuilder::buildSave($table, self::attributes(), "id");
         } else {
-            list($sql, $attr) = QueryBuilder::build(self::$db, $table, self::attributes());
+            list($sql, $attr) = QueryBuilder::buildSave($table, self::attributes());
             unset($attr[0]);
         }
         $stmt = self::$db->getConnection()->prepare($sql);
@@ -79,15 +84,6 @@ abstract class Model
 
     }
 
-
-    public static function getTable(): string
-    {
-        if (static::$table === null) {
-            throw new Exception("Table not defined" . static::$table);
-        }
-        return static::$table;
-    }
-
     public static function attributes(): array
     {
         $instance = new static();
@@ -97,35 +93,38 @@ abstract class Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function delete(): bool
-    {
-        $table = static::getTable();
-        $idName = "";
-        foreach (array_keys($this->attributes()) as $key) {
-            $idName .= ($key === 'id') ? $key : "";
-        }
-        if (!empty($idName)) {
-            $idValue = array_values($this->attributes())[0];
-            $sql = "DELETE FROM " . $table . " WHERE " . $idName . " = :" . $idName;
-            $stmt = self::$db->getConnection()->prepare($sql);
-            $stmt->bindValue(':' . $idName, $idValue);
-        } else {
-            echo "No id property has been found!";
-            return false;
-        }
-        return $stmt->execute();
-
-    }
     private function bindValues(PDOStatement $stmt, array $attr): void
     {
         foreach ($attr as $key) {
             $parts = explode("_", $key);
             $getter = "get" . ucfirst($parts[0]) . ucfirst($parts[1] ?? "");
-            if (!$this->{$getter}() instanceof DateTime){
+            if (!$this->{$getter}() instanceof DateTime) {
                 $stmt->bindValue(":{$key}", ($this->{$getter}() instanceof BackedEnum) ? ($this->{$getter}()->value) : $this->{$getter}());
             } else {
-                $stmt->bindValue(":{$key}", $this->{$getter()}()->format('yyyy-mm-dd H:i'));
+
+                $stmt->bindValue(":{$key}", $this->{$getter}()->format('Y-m-d H:i'));
             }
+        }
+
+    }
+
+    public function delete(): bool
+    {
+        $table = static::getTable();
+        $id = $this->getId() ?? null;
+        if ($id !== null) {
+            $sql = QueryBuilder::buildDelete($table);
+            $stmt = self::$db->getConnection()->prepare($sql);
+            $stmt->bindValue(':id', $id);
+        } else {
+            echo "No id property has been found!";
+            return false;
+        }
+        try {
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            die();
         }
 
     }

@@ -215,7 +215,7 @@ class TaskController extends Controller
     {
         $this->task->setTaskTitle($_POST['task_title']);
         $this->task->setTaskDescription($_POST['task_description']);
-        $this->task->setDueDate(DateTime::createFromFormat('y-m-d H:i', $_POST['due_date'] ?? null));
+        $this->task->setDueDate(DateTime::createFromFormat('Y-m-d H:i', $_POST['due_date']));
         $this->task->setPriority(PriorityType::from(ucfirst($_POST['priority'])));
         $this->task->setStatus(StatusType::from(ucfirst($_POST['status'])));
         $this->task->setCategoryId((int)$_POST['category_id']);
