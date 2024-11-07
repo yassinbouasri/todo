@@ -20,7 +20,7 @@ readonly class WhereClause
                 $whereSql = sprintf("%s %s %s", self::WHERE_COLUMN.$counter, $value->operator->value, self::WHERE_VALUE.$counter); ;
                 ++$counter;
             }
-            return trim($whereSql, 'AND');
+            return rtrim($whereSql, 'AND');
         }
         return "";
     }

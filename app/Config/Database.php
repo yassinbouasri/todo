@@ -38,7 +38,7 @@ class Database
         return self::$cnn;
     }
 
-    public function __clone()
+    private function __clone()
     {
     }
 

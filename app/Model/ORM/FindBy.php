@@ -46,7 +46,7 @@ class FindBy
                 $orderBySql .= sprintf(" %s %s,", (self::ORDER_BY_KEY . $counter), (self::ORDER_BY_VALUE . $counter));
                 ++$counter;
             }
-            return trim($orderBySql, ",");
+            return rtrim($orderBySql, ",");
         }
 
     }

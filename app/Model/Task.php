@@ -5,6 +5,7 @@ namespace App\Model;
 use App\Model\Type\StatusType;
 use App\Model\Type\PriorityType;
 use DateTime;
+use mysql_xdevapi\Exception;
 
 
 class Task extends Model
@@ -138,6 +139,7 @@ class Task extends Model
         return $tasks;
     }
 
+
     protected static function mapOne( $data)
     {
 //        $task = new self();
@@ -151,5 +153,13 @@ class Task extends Model
 //        $task->setUserId($data["user_id"]);
 //        $task->setNotificationSent((bool)$data["notification_sent"]);
 //        return $task;
+    }
+
+    protected static function getTable(): string
+    {
+        if (static::$table !== null) {
+            return static::$table;
+        }
+        return "Table not defined!";
     }
 }

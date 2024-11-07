@@ -43,13 +43,7 @@ abstract class Model
         return $stmt->fetchAll(PDO::FETCH_CLASS);
     }
 
-    public static function getTable(): string
-    {
-        if (static::$table === null) {
-            throw new Exception("Table not defined" . static::$table);
-        }
-        return static::$table;
-    }
+    abstract protected static function getTable(): string;
 
     public static function count(): mixed
     {
