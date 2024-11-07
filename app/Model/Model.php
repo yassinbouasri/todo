@@ -91,7 +91,7 @@ abstract class Model
         foreach ($attr as $key) {
             $parts = explode("_", $key);
             $getter = "get" . ucfirst($parts[0]) . ucfirst($parts[1] ?? "");
-            if (!$this->{$getter}() instanceof DateTime && !is_array($this->{$getter}())) {
+            if (!$this->{$getter}() instanceof DateTime || !is_array($this->{$getter}())) {
                 $stmt->bindValue(":{$key}", ($this->{$getter}() instanceof BackedEnum) ? ($this->{$getter}()->value) : $this->{$getter}());
             } else {
                 $stmt->bindValue(":{$key}", (!$this->{$getter}() instanceof DateTime) ? ($this->{$getter}()->format('Y-m-d H:i')) : (json_encode($this->{$getter}(), JSON_UNESCAPED_UNICODE)));
