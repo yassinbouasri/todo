@@ -39,4 +39,12 @@ class Category extends Model
     {
 
     }
+
+    protected static function getTable(): string
+    {
+        if (static::$table !== null) {
+            return static::$table;
+        }
+        return "Table not defined!";
+    }
 }
