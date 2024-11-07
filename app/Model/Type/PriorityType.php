@@ -7,4 +7,5 @@ enum PriorityType : string
     case HIGH = 'High';
     case MEDIUM = 'Medium';
     case LOW = 'Low';
+    case NONE = '';
 }

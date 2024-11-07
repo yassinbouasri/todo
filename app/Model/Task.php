@@ -2,34 +2,42 @@
 declare(strict_types = 1);
 
 namespace App\Model;
-use App\Type\PriorityType;
-use App\Type\StatusType;
+use App\Model\Type\StatusType;
+use App\Model\Type\PriorityType;
 use DateTime;
+use mysql_xdevapi\Exception;
 
 
-class Task
+class Task extends Model
 {
-    private int $id;
-    private string $task_title;
-    private string $task_description;
-    private DateTime $due_date;
-    private PriorityType $priority;
-    private StatusType $status;
-    private int $category_id;
-    private int $user_id;
+    protected static ?string $table = "tasks";
 
-    public function __construct(int $id, string $task_title, string $task_description, DateTime $due_date, PriorityType $priority, StatusType $status, int $category_id, int $user_id) {
-        $this->id = $id;
-        $this->task_title = $task_title;
-        $this->task_description = $task_description;
-        $this->due_date = $due_date;
-        $this->priority = $priority;
-        $this->status = $status;
-        $this->category_id = $category_id;
-        $this->user_id = $user_id;
+    public ?int $id;
+    public ?string $task_title;
+    public ?string $task_description;
+    public ?DateTime $due_date;
+    public ?PriorityType $priority;
+    public ?StatusType $status;
+    public ?int $category_id;
+    public ?int $user_id;
+    public ?int $notification_sent;
+
+    public function __construct(?int $id = null, ?string $task_title = "", ?string $task_description = "", ?string $due_date = null, ?PriorityType $priority = PriorityType::NONE, $status = StatusType::NONE, int $category_id = null, int $user_id = null)
+    {
+        parent::__construct();
+        $this->id = $id ?? null;
+        $this->task_title = $task_title ?? "";
+        $this->task_description = $task_description ?? "";
+        $this->due_date = $due_date ?? null;
+        $this->priority = $priority ?? PriorityType::NONE;
+        $this->status = $status ?? StatusType::NONE;
+        $this->category_id = $category_id ?? 0;
+        $this->user_id = $user_id ?? 0;
+        $this->notification_sent = $notification_sent ?? 0;
     }
 
-    public function getId(): int
+
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -89,6 +97,7 @@ class Task
         $this->status = $status;
     }
 
+
     public function getCategoryId(): int
     {
         return $this->category_id;
@@ -109,4 +118,48 @@ class Task
         $this->user_id = $user_id;
     }
 
+
+    public function getNotificationSent(): int
+    {
+        return $this->notification_sent;
+    }
+
+    public function setNotificationSent(int $notification_sent): void
+    {
+        $this->notification_sent = $notification_sent;
+    }
+
+    protected static function mapAll(array $data): array
+    {
+        $tasks = [];
+        foreach ($data as $row) {
+            $tasks[] =  static::mapOne($row);
+
+        }
+        return $tasks;
+    }
+
+
+    protected static function mapOne( $data)
+    {
+//        $task = new self();
+//        $task->setId($data["id"]);
+//        $task->setTaskTitle($data["task_title"]);
+//        $task->setTaskDescription($data["task_description"]);
+//        $task->setDueDate(DateTime::createFromFormat("Y-m-d H:i:s",$data["due_date"]));
+//        $task->setPriority($data["priority"]);
+//        $task->setStatus(StatusType::from($data["status"]));
+//        $task->setCategoryId($data["category_id"]);
+//        $task->setUserId($data["user_id"]);
+//        $task->setNotificationSent((bool)$data["notification_sent"]);
+//        return $task;
+    }
+
+    protected static function getTable(): string
+    {
+        if (static::$table !== null) {
+            return static::$table;
+        }
+        return "Table not defined!";
+    }
 }

@@ -40,7 +40,7 @@ require_once "topmenu.php";
             <select class="form-control" id="category_id" name="category_id" required>
                 <option value="">Select Category</option>
                 <?php foreach ($categories as $category): ?>
-                    <option value="<?php echo htmlspecialchars($category['id'], HTML_ENTITIES, 'UTF-8') ?>"><?php echo htmlspecialchars($category['category_name'], HTML_ENTITIES, 'UTF-8') ?></option>
+                    <option value="<?php echo htmlspecialchars($category->id, HTML_ENTITIES, 'UTF-8') ?>"><?php echo htmlspecialchars($category->category_name, HTML_ENTITIES, 'UTF-8') ?></option>
                 <?php endforeach;?>
             </select>
         </div>

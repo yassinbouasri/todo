@@ -4,9 +4,14 @@ namespace App\Controllers;
 
 use App\Mail\Mailer;
 use App\Model\CategoryRepository;
+use App\Model\Task;
 use App\Model\TaskRepository;
+use App\Model\Category;
 
+use App\Model\Type\PriorityType;
+use App\Model\Type\StatusType;
 use DateTime;
+use PHPMailer\PHPMailer\Exception;
 
 
 class TaskController extends Controller
@@ -17,12 +22,16 @@ class TaskController extends Controller
 
     private Mailer $mailer;
     private CategoryController $categoryController;
+    private Task $task;
+    public Category $category;
     public function __construct() {
         checkSession();
         $this->taskRepository = new TaskRepository();
         $this->categoryRepository = new CategoryRepository();
         $this->mailer = new Mailer();
         $this->categoryController = new CategoryController();
+        $this->task = new Task();
+        $this->category = new Category();
     }
     public function getCategoryController(): CategoryController
     {
@@ -45,24 +54,16 @@ class TaskController extends Controller
     public function create(): void
     {
 
-        $categories = $this->categoryRepository->getAllCategories();
-
+        $categories = $this->category::findAll();
 
         $alertMessage = "";
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-            $data = array(
-                'task_title' => $_POST['task_title'],
-                'task_description' => $_POST['task_description'],
-                'due_date' => DateTime::createFromFormat('Y-m-d H:i', $_POST['due_date'])->format('Y-m-d H:i:s'),
-                'priority' => $_POST['priority'],
-                'status' => $_POST['status'],
-                'category_id' => $_POST['category_id'],
-                'user_id' => $_SESSION['id'],
-            );
-            // Insert task into the database
-            $inserted = $this->taskRepository->insert($data);
 
+            $this->extracted();
+            $this->task->setNotificationSent(1);
+
+            $inserted = $this->task->save();
             $alertMessage = ($inserted) ? "<div class='alert alert-success' role='alert'>Task added successfully!</div>" :
                         "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
 
@@ -80,8 +81,8 @@ class TaskController extends Controller
         $notifyTask = $this->sendNotification();
 
         $tasksPerPage = 6;
-        $totalTasks = $this->taskRepository->getTotalTasks();
 
+        $totalTasks = $this->task::count();
         $totalPages = ceil($totalTasks / $tasksPerPage);
 
         $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -89,8 +90,7 @@ class TaskController extends Controller
         $currentPage = ($currentPage < 1) ? 1 : $currentPage;
 
         $offset = ($currentPage - 1) * $tasksPerPage;
-        $user_id = $_SESSION['id'];
-        $tasks = $this->taskRepository->getAllTasks($tasksPerPage, $offset,$user_id);
+        $tasks = $this->task::findBy([],["id" => "DESC"],$offset,$tasksPerPage,);
 
         $this->render("home", [
             "tasks" => $tasks,
@@ -105,21 +105,23 @@ class TaskController extends Controller
     {
 
 
-        $tasksModel = $this->taskRepository->getTaskById($id);
+        //$tasks = $this->taskRepository->getTaskById($id);
+        $tasks = $this->task::findBy(["id", "=", $id])[0];
 
         $color = '';
-        if ($tasksModel) {
-            $categoryId = $tasksModel['category_id'];
-            $category = $this->categoryRepository->getCategoryById($categoryId);
+        if ($tasks) {
+            $categoryId = $tasks->category_id;
+            //$category = $this->categoryRepository->getCategoryById($categoryId);
+            $category = $this->category::findBy(["id", "=", $categoryId])[0];
 
-            $color = ($tasksModel['status'] == 'Completed') ? 'status completed' : $color = 'status in-progress';
+            $color = ($tasks->status == 'Completed') ? 'status completed' : 'status in-progress';
             $this->render("tasks/show", [
-                "tasksModel" => $tasksModel,
+                "tasks" => $tasks,
                 "category" => $category,
                 "color" => $color
             ]);
 
-            return $tasksModel;
+            return $tasks;
         } else {
              echo "No Tasks Found for this ID";
              exit();
@@ -129,12 +131,14 @@ class TaskController extends Controller
 
     /**
      * @throws DateMalformedStringException
+     * @throws Exception
      */
     public function remove(): void
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $id = $_POST['id'];
-            $this->taskRepository->delete($id);
+            $id = (int)$_POST['id'];
+            $this->task->setId($id);
+            $this->task->delete();
         }
         $this->index();
     }
@@ -149,16 +153,9 @@ class TaskController extends Controller
 
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $id = (int)$_POST['id'];
-            $task_title = $_POST['task_title'];
-            $task_description = $_POST['task_description'];
-            $due_date = DateTime::createFromFormat('Y-m-d H:i', $_POST['due_date'])->format('Y-m-d H:i:s');
-            $priority = $_POST['priority'];
-            $status = $_POST['status'];
-            $category_id = (int)$_POST['category_id'];
-
-            $updated = $this->taskRepository->update($id, $task_title, $task_description, $due_date, $priority, $status, $category_id);
-
+            $this->task->setId((int)$_POST['id']);
+            $this->extracted();
+            $updated = $this->task->save();
             $alertMessage = ($updated) ? "<div class='alert alert-success' role='alert'>Task updated successfully!</div>" :
                             "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
             $tasks = $this->taskRepository->getTaskById($id);
@@ -209,5 +206,19 @@ class TaskController extends Controller
 
         return $selectedTasks;
 
+    }
+
+    /**
+     * @return void
+     */
+    public function extracted(): void
+    {
+        $this->task->setTaskTitle($_POST['task_title']);
+        $this->task->setTaskDescription($_POST['task_description']);
+        $this->task->setDueDate(DateTime::createFromFormat('Y-m-d H:i', $_POST['due_date']));
+        $this->task->setPriority(PriorityType::from(ucfirst($_POST['priority'])));
+        $this->task->setStatus(StatusType::from(ucfirst($_POST['status'])));
+        $this->task->setCategoryId((int)$_POST['category_id']);
+        $this->task->setUserId((int)$_SESSION['id']);
     }
 }

@@ -8,7 +8,7 @@ class TaskRepository
 {
     private PDO $cnn;
     function __construct(){
-        $this->cnn = Database::getConnection();
+        $this->cnn = Database::getInstance()->getConnection();
     }
     public function getAllTasks(int $limit, int $offset, int $user_id): false|array
     {

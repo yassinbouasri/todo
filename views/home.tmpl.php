@@ -39,18 +39,18 @@ require_once "topmenu.php";
             <tbody id="taskTable">
             <?php foreach ($tasks as $task): ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($task['task_title']); ?></td>
-                    <td><?php echo htmlspecialchars($task['task_description']); ?></td>
-                    <?php $category = $this->getCategoryController()->getCategoryById($task['category_id']); ?>
-                    <td><?php echo htmlspecialchars($category['category_name']); ?></td>
-                    <td><?php echo htmlspecialchars($task['due_date']); ?></td>
-                    <td><span class="<?php echo htmlspecialchars($this->badge($task['priority'])); ?>"> <?php echo htmlspecialchars($task['priority']); ?></span></td>
-                    <td><span class="<?php echo htmlspecialchars($this->badge($task['status'])); ?>"><?php echo htmlspecialchars($task['status']); ?></span></td>
+                    <td><?php echo htmlspecialchars($task->task_title); ?></td>
+                    <td><?php echo htmlspecialchars($task->task_description); ?></td>
+                    <?php  $categories = $this->category::findBy(["id", "=",$task->category_id])[0]; ?>
+                    <td><?php echo htmlspecialchars($categories->category_name); ?></td>
+                    <td><?php echo htmlspecialchars($task->due_date); ?></td>
+                    <td><span class="<?php echo htmlspecialchars($this->badge($task->priority));  ?>"> <?php echo htmlspecialchars($task->priority); ?></span></td>
+                    <td><span class="<?php echo htmlspecialchars($this->badge($task->status)); ?>"><?php echo htmlspecialchars($task->status); ?></span></td>
                     <td>
-                        <a href="/task/update/<?php echo htmlspecialchars($task['id']); ?>" class="btn btn-primary btn-sm">Edit</a>
-                        <a href="/task/show/<?php echo htmlspecialchars($task['id'], ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-info btn-back btn-sm">View</a>
+                        <a href="/task/update/<?php echo htmlspecialchars($task->id); ?>" class="btn btn-primary btn-sm">Edit</a>
+                        <a href="/task/show/<?php echo htmlspecialchars($task->id, ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-info btn-back btn-sm">View</a>
                         <form action="/task/remove" method="post" onsubmit="return confirmDelete()" style="display:inline;">
-                            <input type="hidden" name="id" value="<?php echo htmlspecialchars($task['id'], ENT_QUOTES, 'UTF-8'); ?>">
+                            <input type="hidden" name="id" value="<?php echo htmlspecialchars($task->id, ENT_QUOTES, 'UTF-8'); ?>">
                             <button type="submit" class="btn btn-danger btn-sm" >Delete</button>
                         </form>
                     </td>
