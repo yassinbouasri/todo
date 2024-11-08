@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace App\Controllers;
 use App\Mail\Mailer;
+use App\Model\User;
 use App\Model\UserRepository;
 use PHPMailer\PHPMailer\Exception;
 use Random\RandomException;
@@ -11,34 +12,25 @@ class UserController extends Controller
 {
     private UserRepository $userRepository;
     private Mailer $mailer;
+    private User $user;
 
     public function __construct(){
         $this->userRepository = new UserRepository();
         $this->mailer = new Mailer();
+        $this->user = new User();
     }
 
     public function register(): void
     {
-        $alertMessage = null;
+        $alertMessage = "";
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
-            $username = $_POST['username'] ?? null;
-            $email = $_POST['email'] ?? null;
-            $password = $_POST['password'] ?? null;
-            $confirmPassword = $_POST['confirm_password'] ?? null;
+            $this->extracted();
+            if($_POST['username'] == $_POST['confirm_password']){
 
-            if($password == $confirmPassword){
-                try {
-                    $registered = $this->userRepository->registerUser($username, $email, $password);
-                    if($registered){
-                        $alertMessage = "<div class='alert alert-success alert-dismissible fade in' role='alert'> You are registered successfully.</div>";
-                    } else {
-                        $alertMessage = "<div class='alert alert-danger alert-dismissible fade in' role='alert'> Something went wrong.</div>";
-                    }
-                } catch (PDOException $e) {
-                    $alertMessage = "<div class='alert alert-danger alert-dismissible fade in' role='alert'> User already exists!. Try logging</div>";
-                }
-
+                $registered = $this->user->save();
+                $alertMessage = ($registered) ? "<div class='alert alert-success alert-dismissible fade in' role='alert'> You are registered successfully.</div>"
+                        : "<div class='alert alert-danger alert-dismissible fade in' role='alert'> Something went wrong.</div>";
             } else {
                 $alertMessage = "<div class='alert alert-danger alert-dismissible fade in' role='alert'> Password did not match!</div>";
             }
@@ -157,5 +149,15 @@ class UserController extends Controller
                 $alertMessage = "<div class='alert alert-danger'>Invalid reset token!</div>";
             }
             $this->render("login/newPassword", ["alertMessage" => $alertMessage, "email" => $user['email']]);
+    }
+
+    /**
+     * @return void
+     */
+    public function extracted(): void
+    {
+        $this->user->setUsername($_POST['username']);
+        $this->user->setEmail($_POST['email']);
+        $this->user->setPassword($_POST['password']);
     }
 }
