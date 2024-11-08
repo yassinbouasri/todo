@@ -17,7 +17,9 @@ class CategoryController extends Controller
     {
         $categories = $this->categoryRepository->getAllCategories();
 
-        require_once __DIR__ . "/../../views/categories/showCategory.tmpl.php";
+        $this->render("categories/showCategory", [
+            "categories" => $categories
+        ]);
     }
 
     public function create(): void

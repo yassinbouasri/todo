@@ -36,5 +36,10 @@ class QueryBuilder
         $query = "DELETE FROM {$table} WHERE id = :id";
         return $query;
     }
+    public static function buildAll(string $table): string
+    {
+        $query = "SELECT COUNT(*) FROM {$table}";
+        return $query;
+    }
 
 }

@@ -31,7 +31,7 @@ abstract class Model
     public static function findAll(): array
     {
         $table = static::getTable();
-        $sql = "SELECT * FROM {$table}";
+        $sql = QueryBuilder::buildAll($table);
         $stmt = self::$db->getConnection()->prepare($sql);
         try {
             $stmt->execute();
@@ -62,10 +62,10 @@ abstract class Model
         $table = static::getTable();
         if ($this->getId() !== null) {
             list($sql, $attr) = QueryBuilder::buildSave($table, self::attributes(), "id");
-        } else {
-            list($sql, $attr) = QueryBuilder::buildSave($table, self::attributes());
-            unset($attr[0]);
         }
+        list($sql, $attr) = QueryBuilder::buildSave($table, self::attributes());
+        unset($attr[0]);
+
         $stmt = self::$db->getConnection()->prepare($sql);
         $this->bindValues($stmt, $attr);
         try {
@@ -88,16 +88,20 @@ abstract class Model
 
     private function bindValues(PDOStatement $stmt, array $attr): void
     {
-        foreach ($attr as $key) {
-            $parts = explode("_", $key);
-            $getter = "get" . ucfirst($parts[0]) . ucfirst($parts[1] ?? "");
-            if (!$this->{$getter}() instanceof DateTime || !is_array($this->{$getter}())) {
-                $stmt->bindValue(":{$key}", ($this->{$getter}() instanceof BackedEnum) ? ($this->{$getter}()->value) : $this->{$getter}());
-            } else {
-                $stmt->bindValue(":{$key}", (!$this->{$getter}() instanceof DateTime) ? ($this->{$getter}()->format('Y-m-d H:i')) : (json_encode($this->{$getter}(), JSON_UNESCAPED_UNICODE)));
+        foreach ($attr as $paramName) {
+            $getter = $this->generateGetter($paramName);
+            $value = $this->{$getter}();
+            if ($value instanceof DateTime) {
+                $value = $value->format('Y-m-d H:i');
             }
+            if (is_array($value)) {
+                $value = json_encode($value, JSON_UNESCAPED_UNICODE);
+            }
+            if ($value instanceof BackedEnum) {
+                $value = $value->value;
+            }
+            $stmt->bindValue(":{$paramName}", $value);
         }
-
     }
 
     public function delete(): bool
@@ -119,6 +123,12 @@ abstract class Model
             die();
         }
 
+    }
+
+    public function generateGetter(string $paramName): string
+    {
+        $parts = explode("_", $paramName);
+        return "get" . ucfirst($parts[0]) . ucfirst($parts[1] ?? "");
     }
 
 }
