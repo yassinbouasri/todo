@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
+
 namespace App\Controllers;
 
 use App\Mail\Mailer;
+use App\Model\Category;
 use App\Model\CategoryRepository;
 use App\Model\Task;
 use App\Model\TaskRepository;
-use App\Model\Category;
-
 use App\Model\Type\PriorityType;
 use App\Model\Type\StatusType;
 use DateTime;
@@ -16,15 +16,15 @@ use PHPMailer\PHPMailer\Exception;
 
 class TaskController extends Controller
 {
+    public Category $category;
     private TaskRepository $taskRepository;
     private CategoryRepository $categoryRepository;
-
-
     private Mailer $mailer;
     private CategoryController $categoryController;
     private Task $task;
-    public Category $category;
-    public function __construct() {
+
+    public function __construct()
+    {
         checkSession();
         $this->taskRepository = new TaskRepository();
         $this->categoryRepository = new CategoryRepository();
@@ -33,20 +33,15 @@ class TaskController extends Controller
         $this->task = new Task();
         $this->category = new Category();
     }
+
     public function getCategoryController(): CategoryController
     {
         return $this->categoryController;
     }
+
     public function badge(string $priorityOrStatus): ?string
     {
-        $BadgeClasses = [
-            'high' => 'badge badge-high',
-            'medium' => 'badge badge-medium',
-            'low' => 'badge',
-            'in progress' => 'badge badge-medium',
-            'completed' => 'badge badge-success',
-            'pending' => 'badge',
-        ];
+        $BadgeClasses = ['high' => 'badge badge-high', 'medium' => 'badge badge-medium', 'low' => 'badge', 'in progress' => 'badge badge-medium', 'completed' => 'badge badge-success', 'pending' => 'badge',];
 
         return (isset($BadgeClasses[strtolower($priorityOrStatus)])) ? $BadgeClasses[strtolower($priorityOrStatus)] : null;
     }
@@ -64,8 +59,7 @@ class TaskController extends Controller
             $this->task->setNotificationSent(1);
 
             $inserted = $this->task->save();
-            $alertMessage = ($inserted) ? "<div class='alert alert-success' role='alert'>Task added successfully!</div>" :
-                        "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
+            $alertMessage = ($inserted) ? "<div class='alert alert-success' role='alert'>Task added successfully!</div>" : "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
 
         }
         $this->render('addTask', ["alertMessage" => $alertMessage, "categories" => $categories]);
@@ -73,34 +67,19 @@ class TaskController extends Controller
     }
 
     /**
-     * @throws DateMalformedStringException
-     * @throws \PHPMailer\PHPMailer\Exception
+     * @return void
      */
-    public function index(): void
+    public function extracted(): void
     {
-        $notifyTask = $this->sendNotification();
-
-        $tasksPerPage = 6;
-
-        $totalTasks = $this->task::count();
-        $totalPages = ceil($totalTasks / $tasksPerPage);
-
-        $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-
-        $currentPage = ($currentPage < 1) ? 1 : $currentPage;
-
-        $offset = ($currentPage - 1) * $tasksPerPage;
-        $tasks = $this->task::findBy([],["id" => "DESC"],$offset,$tasksPerPage,);
-
-        $this->render("home", [
-            "tasks" => $tasks,
-            "totalPages" => $totalPages,
-            "currentPage" => $currentPage,
-            "totalTasks" => $totalTasks,
-            "notifyTask" => $notifyTask,
-        ]);
-
+        $this->task->setTaskTitle($_POST['task_title']);
+        $this->task->setTaskDescription($_POST['task_description']);
+        $this->task->setDueDate(DateTime::createFromFormat('Y-m-d H:i', $_POST['due_date']));
+        $this->task->setPriority(PriorityType::from(ucfirst($_POST['priority'])));
+        $this->task->setStatus(StatusType::from(ucfirst($_POST['status'])));
+        $this->task->setCategoryId((int)$_POST['category_id']);
+        $this->task->setUserId((int)$_SESSION['id']);
     }
+
     public function show(int $id): mixed
     {
 
@@ -115,16 +94,12 @@ class TaskController extends Controller
             $category = $this->category::findBy(["id", "=", $categoryId])[0];
 
             $color = ($tasks->status == 'Completed') ? 'status completed' : 'status in-progress';
-            $this->render("tasks/show", [
-                "tasks" => $tasks,
-                "category" => $category,
-                "color" => $color
-            ]);
+            $this->render("tasks/show", ["tasks" => $tasks, "category" => $category, "color" => $color]);
 
             return $tasks;
         } else {
-             echo "No Tasks Found for this ID";
-             exit();
+            echo "No Tasks Found for this ID";
+            exit();
         }
 
     }
@@ -142,37 +117,34 @@ class TaskController extends Controller
         }
         $this->index();
     }
-    public  function update(int $id): void
+
+    /**
+     * @throws DateMalformedStringException
+     * @throws Exception
+     */
+    public function index(): void
     {
-        $alertMessage = "";
-        $statusOptions = ['In Progress', 'Completed', 'Pending'];
-        $priorityOptions = ['High', 'Medium', 'Low'];
+        $notifyTask = $this->sendNotification();
 
-        $tasks = $this->taskRepository->getTaskById($id);
-        $AllCategories = $this->categoryRepository->getAllCategories();
+        $tasksPerPage = 6;
 
+        $totalTasks = $this->task::count();
+        $totalPages = ceil($totalTasks / $tasksPerPage);
 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $this->task->setId((int)$_POST['id']);
-            $this->extracted();
-            $updated = $this->task->save();
-            $alertMessage = ($updated) ? "<div class='alert alert-success' role='alert'>Task updated successfully!</div>" :
-                            "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
-            $tasks = $this->taskRepository->getTaskById($id);
-        }
-        $this->render("tasks/updateTask", [
-            "statusOptions" => $statusOptions,
-            "priorityOptions" => $priorityOptions,
-            "tasks" => $tasks,
-            "alertMessage" => $alertMessage,
-            "AllCategories" => $AllCategories,
-        ]);
+        $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+
+        $currentPage = ($currentPage < 1) ? 1 : $currentPage;
+
+        $offset = ($currentPage - 1) * $tasksPerPage;
+        $tasks = $this->task::findBy([], ["id" => "DESC"], $offset, $tasksPerPage);
+
+        $this->render("home", ["tasks" => $tasks, "totalPages" => $totalPages, "currentPage" => $currentPage, "totalTasks" => $totalTasks, "notifyTask" => $notifyTask,]);
 
     }
 
     /**
      * @throws DateMalformedStringException
-     * @throws \PHPMailer\PHPMailer\Exception
+     * @throws Exception
      */
     public function sendNotification(): false|array
     {
@@ -195,10 +167,9 @@ class TaskController extends Controller
         $subject = "Reminder: Upcoming Tasks Due Soon";
 
 
-
         foreach ($emails as $email) {
 
-            if ($this->mailer->sendEmail($email,$subject ,$body)){
+            if ($this->mailer->sendEmail($email, $subject, $body)) {
                 $this->taskRepository->setNotificationSent($taskIds, $email);
             }
 
@@ -208,17 +179,24 @@ class TaskController extends Controller
 
     }
 
-    /**
-     * @return void
-     */
-    public function extracted(): void
+    public function update(int $id): void
     {
-        $this->task->setTaskTitle($_POST['task_title']);
-        $this->task->setTaskDescription($_POST['task_description']);
-        $this->task->setDueDate(DateTime::createFromFormat('Y-m-d H:i', $_POST['due_date']));
-        $this->task->setPriority(PriorityType::from(ucfirst($_POST['priority'])));
-        $this->task->setStatus(StatusType::from(ucfirst($_POST['status'])));
-        $this->task->setCategoryId((int)$_POST['category_id']);
-        $this->task->setUserId((int)$_SESSION['id']);
+        $alertMessage = "";
+        $statusOptions = ['In Progress', 'Completed', 'Pending'];
+        $priorityOptions = ['High', 'Medium', 'Low'];
+
+        $tasks = $this->taskRepository->getTaskById($id);
+        $AllCategories = $this->categoryRepository->getAllCategories();
+
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $this->task->setId((int)$_POST['id']);
+            $this->extracted();
+            $updated = $this->task->save();
+            $alertMessage = ($updated) ? "<div class='alert alert-success' role='alert'>Task updated successfully!</div>" : "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
+            $tasks = $this->taskRepository->getTaskById($id);
+        }
+        $this->render("tasks/updateTask", ["statusOptions" => $statusOptions, "priorityOptions" => $priorityOptions, "tasks" => $tasks, "alertMessage" => $alertMessage, "AllCategories" => $AllCategories,]);
+
     }
 }
