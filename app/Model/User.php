@@ -125,7 +125,7 @@ class User extends Model
         // TODO: Implement mapAll() method.
         return [];
     }
-    protected static function mapOne(array $data): array
+    protected static function mapOne( $data): array
     {
         return [];
     }
@@ -137,4 +137,5 @@ class User extends Model
         }
         return 'Table not defined!';
     }
+
 }

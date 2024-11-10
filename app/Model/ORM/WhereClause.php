@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Model\ORM;
+use mysql_xdevapi\Exception;
 use PDOStatement;
 
 readonly class WhereClause
@@ -11,16 +12,19 @@ readonly class WhereClause
     {
     }
 
+
     public static function addWhere(array $where):string
     {
         $whereSql = "";
-        if(!empty($where)){
-            $counter = 0;
-            foreach($where as $value){
-                $whereSql = sprintf("%s %s %s", self::WHERE_COLUMN.$counter, $value->operator->value, self::WHERE_VALUE.$counter); ;
-                ++$counter;
+        if(count($where) === 3){
+            $columName = $where[0] ;
+            $operator = $where[1];
+            if(!$operator instanceof Operator){
+                throw new Exception("Invalid operator");
             }
-            return rtrim($whereSql, 'AND');
+            $value = $where[2];
+            $whereSql = sprintf("%s %s %s", self::WHERE_COLUMN, $operator->value, self::WHERE_VALUE);
+            return $whereSql;
         }
         return "";
     }

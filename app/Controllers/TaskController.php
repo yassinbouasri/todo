@@ -6,6 +6,7 @@ namespace App\Controllers;
 use App\Mail\Mailer;
 use App\Model\Category;
 use App\Model\CategoryRepository;
+use App\Model\ORM\Operator;
 use App\Model\Task;
 use App\Model\TaskRepository;
 use App\Model\Type\PriorityType;
@@ -136,7 +137,8 @@ class TaskController extends Controller
         $currentPage = ($currentPage < 1) ? 1 : $currentPage;
 
         $offset = ($currentPage - 1) * $tasksPerPage;
-        $tasks = $this->task::findBy([], ["id" => "DESC"], $offset, $tasksPerPage);
+        $tasks = $this->task::findBy(["id",  Operator::EQUALS, 21], ["id" => "DESC"]);
+
 
         $this->render("home", ["tasks" => $tasks, "totalPages" => $totalPages, "currentPage" => $currentPage, "totalTasks" => $totalTasks, "notifyTask" => $notifyTask,]);
 
