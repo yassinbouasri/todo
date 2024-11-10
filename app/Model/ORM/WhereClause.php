@@ -8,20 +8,21 @@ readonly class WhereClause
 {
     private const string WHERE_COLUMN = ":wherecolumn";
     private const string WHERE_VALUE = ":wherevalue";
-    public function __construct(public string $column, public Operator $operator,public string|float|int $value)
+    public function __construct()
     {
     }
 
-    public function andWhere(Where $where):self
+    public function andWhere(Where $where): self
     {
         $sql = " WHERE ";
         foreach ($where as $field => $value) {
-            $operator = $this->operator;
-            if ($value instanceof Operator) {
-                $operator = $value->operator->value;
+            $operator = $where->operator;
+            if ($operator instanceof Operator) {
+                $operator = $operator->value;
             }
-            $sql .= $field->column . $operator . $field->value ." OR ";
+            $sql .= sprintf("%s %s %s", $field, $operator, $value);
         }
+
         return $this;
     }
     public function orWhere(Where $where):self
