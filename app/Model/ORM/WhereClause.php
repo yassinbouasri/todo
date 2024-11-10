@@ -4,25 +4,36 @@ namespace App\Model\ORM;
 use mysql_xdevapi\Exception;
 use PDOStatement;
 
-readonly class WhereClause
+class WhereClause
 {
-    private const string WHERE_COLUMN = ":wherecolumn";
-    private const string WHERE_VALUE = ":wherevalue";
+    private const string COLUMN = ":column";
+    private const string VALUE = ":value";
+    private array $wheres = [];
     public function __construct()
     {
     }
 
     public function andWhere(Where $where): self
     {
+        $this->wheres[] = $where;
+        return $this;
+    }
+
+    public function build(): string
+    {
+
         $sql = " WHERE ";
-        foreach ($where as $field => $value) {
-            $operator = $where->operator;
+        foreach ($this->wheres as $field => $value) {
+            $operator = $value->operator;
             if ($operator instanceof Operator) {
                 $operator = $operator->value;
             }
-            $sql .= sprintf("%s %s %s", $field, $operator, $value);
+            $sql .= sprintf(":%s %s :%s AND ", $field, $operator, $field);
+            dd($operator);
         }
 
+        $sql = rtrim($sql, "AND ");
+        dd($this->wheres);
         return $this;
     }
     public function orWhere(Where $where):self
@@ -42,7 +53,7 @@ readonly class WhereClause
                 throw new Exception("Invalid operator");
             }
             $value = $where[2];
-            $whereSql = sprintf("%s %s %s", self::WHERE_COLUMN, $operator->value, self::WHERE_VALUE);
+            $whereSql = sprintf("%s %s %s", self::COLUMN, $operator->value, self::VALUE);
             return $whereSql;
         }
         return "";
@@ -53,8 +64,8 @@ readonly class WhereClause
         if(!empty($where)){
             $counter = 0;
             foreach($where as $value){
-                $stmt->bindValue(self::WHERE_COLUMN.$counter, $value->column);
-                $stmt->bindValue(self::WHERE_VALUE.$counter, $value->value);
+                $stmt->bindValue(self::COLUMN.$counter, $value->column);
+                $stmt->bindValue(self::VALUE.$counter, $value->value);
                 ++$counter;
             }
         }

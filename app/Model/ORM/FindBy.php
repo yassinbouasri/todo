@@ -61,9 +61,15 @@ class FindBy
 
     private static function bindParams(array $where, array $orderBy, ?int $offset, ?int $limit, false|PDOStatement $stmt)
     {
-        $where = new Where("id",Operator::EQUALS, 21);
+        $where = new Where("id", Operator::GREATER ,21);
+        $where2 = new Where("id", Operator::GREATER,22);
         $whereClause = new WhereClause();
-        $whereClause->andWhere( $where);
+        $whereClause
+            ->andWhere($where)
+            ->andWhere($where2);
+        $sql = $whereClause->build();
+        echo $sql;
+        exit();
         WhereClause::bindWhere($where, $stmt);
 
 
