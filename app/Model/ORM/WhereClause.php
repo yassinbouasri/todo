@@ -12,6 +12,24 @@ readonly class WhereClause
     {
     }
 
+    public function andWhere(Where $where):self
+    {
+        $sql = " WHERE ";
+        foreach ($where as $field => $value) {
+            $operator = $this->operator;
+            if ($value instanceof Operator) {
+                $operator = $value->operator->value;
+            }
+            $sql .= $field->column . $operator . $field->value ." OR ";
+        }
+        return $this;
+    }
+    public function orWhere(Where $where):self
+    {
+        $sql = " WHERE ";
+
+        return $this;
+    }
 
     public static function addWhere(array $where):string
     {
