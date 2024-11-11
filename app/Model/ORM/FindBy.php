@@ -13,12 +13,12 @@ class FindBy
     private const string ORDER_BY_KEY = ":orderByKey";
     private const string ORDER_BY_VALUE = ":orderByValue";
 
-    public static function get(Database $db, string $tableName, array $where = [], array $orderBy = [], ?int $offset = null, ?int $limit = null): array
+    public static function get(Database $db, string $tableName, Where $where, array $orderBy = [], ?int $offset = null, ?int $limit = null): array
     {
         $sql = "SELECT * FROM {$tableName}";
         $sql .= self::getSqlClauses($where, $orderBy, $limit, $offset);
         $stmt = $db->getConnection()->prepare($sql);
-        self::bindParams($where, $orderBy, $limit, $offset, $stmt);
+        self::bindParams($orderBy, $limit, $offset, $stmt);
         try {
             $stmt->execute();
         } catch (PDOException $e) {
@@ -29,9 +29,11 @@ class FindBy
         return $stmt->fetchAll(PDO::FETCH_CLASS);
     }
 
-    private static function getSqlClauses(array $where, array $orderBy, ?int $limit, ?int $offset): string
+    private static function getSqlClauses(Where $where, array $orderBy, ?int $limit, ?int $offset): string
     {
-        $sqlClause = WhereClause::addWhere($where);
+        $whereClauses = new WhereClause();
+        $whereClauses->andWhere($where);
+        $sqlClause = $whereClauses->build();
         $sqlClause .= self::addOrderBy($orderBy);
         $sqlClause .= self::addOffsetAndLimit($offset, $limit);
         return $sqlClause;
@@ -59,22 +61,10 @@ class FindBy
         return '';
     }
 
-    private static function bindParams(array $where, array $orderBy, ?int $offset, ?int $limit, false|PDOStatement $stmt)
+    private static function bindParams(array $orderBy, ?int $offset, ?int $limit, false|PDOStatement $stmt): void
     {
-        $where = new Where("id", Operator::EQUALS ,21);
-        $where2 = new Where("id", Operator::GREATER,22);
-        $where3 = new Where("name", Operator::LIKE,"yassi");
-        $where4 = new Where("name", Operator::LIKE,"yassi");
         $whereClause = new WhereClause();
-        $whereClause
-            ->andWhere($where)
-            ->orWhere($where3);
-        $sql = $whereClause->build();
-        echo $sql;
-        exit();
-        WhereClause::bindWhere($where, $stmt);
-
-
+        $whereClause->bind($stmt);
         self::bindOrderBy($orderBy, $stmt);
         self::bindLimitAndOffset($offset, $limit, $stmt);
     }

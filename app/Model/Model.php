@@ -6,6 +6,7 @@ namespace App\Model;
 use App\Config\Database;
 use App\Model\ORM\FindBy;
 use App\Model\ORM\QueryBuilder;
+use App\Model\ORM\Where;
 use BackedEnum;
 use DateTime;
 use PDO;
@@ -22,7 +23,7 @@ abstract class Model
         self::$db = Database::getInstance();
     }
 
-    public static function findBy(array $where = [], array $orderBy = [], ?int $offset = null, ?int $limit = null): array
+    public static function findBy(Where $where, array $orderBy = [], ?int $offset = null, ?int $limit = null): array
     {
         $instance = new static();
         return FindBy::get(self::$db, $instance::$table, $where, $orderBy, $offset, $limit);

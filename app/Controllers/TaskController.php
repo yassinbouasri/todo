@@ -7,6 +7,7 @@ use App\Mail\Mailer;
 use App\Model\Category;
 use App\Model\CategoryRepository;
 use App\Model\ORM\Operator;
+use App\Model\ORM\Where;
 use App\Model\Task;
 use App\Model\TaskRepository;
 use App\Model\Type\PriorityType;
@@ -83,16 +84,13 @@ class TaskController extends Controller
 
     public function show(int $id): mixed
     {
-
-
-        //$tasks = $this->taskRepository->getTaskById($id);
-        $tasks = $this->task::findBy(["id", "=", $id])[0];
-
+        $where = new Where("id", Operator::EQUALS, $id);
+        $tasks = $this->task::findBy($where)[0];
         $color = '';
         if ($tasks) {
             $categoryId = $tasks->category_id;
-            //$category = $this->categoryRepository->getCategoryById($categoryId);
-            $category = $this->category::findBy(["id", "=", $categoryId])[0];
+            $where = new Where("category_id",Operator::EQUALS ,$categoryId);
+            $category = $this->category::findBy($where)[0];
 
             $color = ($tasks->status == 'Completed') ? 'status completed' : 'status in-progress';
             $this->render("tasks/show", ["tasks" => $tasks, "category" => $category, "color" => $color]);
@@ -137,8 +135,9 @@ class TaskController extends Controller
         $currentPage = ($currentPage < 1) ? 1 : $currentPage;
 
         $offset = ($currentPage - 1) * $tasksPerPage;
-        $tasks = $this->task::findBy(["id",  Operator::EQUALS, 21], ["id" => "DESC"]);
-
+//        $where = new Where("id");
+//        $tasks = $this->task::findBy(["id",  Operator::EQUALS, 21], ["id" => "DESC"]);
+        $tasks = $this->task::findAll();
 
         $this->render("home", ["tasks" => $tasks, "totalPages" => $totalPages, "currentPage" => $currentPage, "totalTasks" => $totalTasks, "notifyTask" => $notifyTask,]);
 

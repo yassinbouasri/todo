@@ -31,7 +31,7 @@ class WhereClause
         return "";
     }
 
-    public static function bindWhere(array $where, PDOStatement $stmt): void
+    public static function bindWhere(array $where, false|PDOStatement $stmt): void
     {
         if (!empty($where)) {
             $counter = 0;
@@ -64,7 +64,7 @@ class WhereClause
         return $this->getOrs($sql);
     }
 
-    public function getAnds(string $sql): string
+    private function getAnds(string $sql): string
     {
         if (empty($this->andWheres)) {
             return "";
@@ -79,7 +79,7 @@ class WhereClause
         return rtrim($sql, "AND ");
     }
 
-    public function getOrs(string $sql): string
+    private function getOrs(string $sql): string
     {
         if (empty($this->orWheres)) {
             return "";
@@ -94,17 +94,17 @@ class WhereClause
         return $sql;
     }
 
-    public function bind(PDOStatement $stmt): void
+    public function bind(false|PDOStatement $stmt): void
     {
         $this->bindAnds($stmt);
         $this->bindOrs($stmt);
     }
 
     /**
-     * @param PDOStatement $stmt
+     * @param false|PDOStatement $stmt
      * @return void
      */
-    public function bindAnds(PDOStatement $stmt): void
+    public function bindAnds(false|PDOStatement $stmt): void
     {
         if (empty($this->andWheres)) {
             return;
@@ -115,10 +115,10 @@ class WhereClause
     }
 
     /**
-     * @param PDOStatement $stmt
+     * @param false|PDOStatement $stmt
      * @return void
      */
-    public function bindOrs(PDOStatement $stmt): void
+    public function bindOrs(false|PDOStatement $stmt): void
     {
         if (empty($this->orWheres)) {
             return;
