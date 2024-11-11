@@ -41,7 +41,7 @@ require_once "topmenu.php";
                 <tr>
                     <td><?php echo htmlspecialchars($task->task_title); ?></td>
                     <td><?php echo htmlspecialchars($task->task_description); ?></td>
-                    <?php  $categories = $this->category::findBy(["id", "=",$task->category_id])[0]; ?>
+                    <?php $where = new \App\Model\ORM\Where("id", \App\Model\ORM\Operator::EQUALS, $task->category_id); $categories = $this->category::findBy($where)[0]; ?>
                     <td><?php echo htmlspecialchars($categories->category_name); ?></td>
                     <td><?php echo htmlspecialchars($task->due_date); ?></td>
                     <td><span class="<?php echo htmlspecialchars($this->badge($task->priority));  ?>"> <?php echo htmlspecialchars($task->priority); ?></span></td>

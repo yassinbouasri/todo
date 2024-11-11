@@ -135,9 +135,9 @@ class TaskController extends Controller
         $currentPage = ($currentPage < 1) ? 1 : $currentPage;
 
         $offset = ($currentPage - 1) * $tasksPerPage;
-//        $where = new Where("id");
-//        $tasks = $this->task::findBy(["id",  Operator::EQUALS, 21], ["id" => "DESC"]);
-        $tasks = $this->task::findAll();
+        $where = new Where("user_id", Operator::EQUALS, $_SESSION['id']);
+        $tasks = $this->task::findBy($where, ["due_date" => "DESC"], $tasksPerPage, $offset);
+
 
         $this->render("home", ["tasks" => $tasks, "totalPages" => $totalPages, "currentPage" => $currentPage, "totalTasks" => $totalTasks, "notifyTask" => $notifyTask,]);
 
