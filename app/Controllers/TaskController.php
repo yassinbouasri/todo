@@ -8,6 +8,7 @@ use App\Model\Category;
 use App\Model\CategoryRepository;
 use App\Model\ORM\Operator;
 use App\Model\ORM\Where;
+use App\Model\ORM\WhereClause;
 use App\Model\Task;
 use App\Model\TaskRepository;
 use App\Model\Type\PriorityType;
@@ -84,14 +85,13 @@ class TaskController extends Controller
 
     public function show(int $id): mixed
     {
-        $where = new Where("id", Operator::EQUALS, $id);
+        $where = new Where("id", Operator::EQUALS,$id);
         $tasks = $this->task::findBy($where)[0];
         $color = '';
         if ($tasks) {
             $categoryId = $tasks->category_id;
-            $where = new Where("category_id",Operator::EQUALS ,$categoryId);
+            $where = new Where("id",Operator::EQUALS ,$categoryId);
             $category = $this->category::findBy($where)[0];
-
             $color = ($tasks->status == 'Completed') ? 'status completed' : 'status in-progress';
             $this->render("tasks/show", ["tasks" => $tasks, "category" => $category, "color" => $color]);
 
@@ -135,9 +135,9 @@ class TaskController extends Controller
         $currentPage = ($currentPage < 1) ? 1 : $currentPage;
 
         $offset = ($currentPage - 1) * $tasksPerPage;
-        $where = new Where("user_id", Operator::EQUALS, $_SESSION['id']);
+        $where = new Where("id", Operator::EQUALS, 2);
         $tasks = $this->task::findBy($where, ["due_date" => "DESC"], $tasksPerPage, $offset);
-
+        dd($tasks);
 
         $this->render("home", ["tasks" => $tasks, "totalPages" => $totalPages, "currentPage" => $currentPage, "totalTasks" => $totalTasks, "notifyTask" => $notifyTask,]);
 

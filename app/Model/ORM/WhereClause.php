@@ -16,34 +16,6 @@ class WhereClause
     {
     }
 
-    public static function addWhere(array $where): string
-    {
-        $whereSql = "";
-        if (count($where) === 3) {
-            $columName = $where[0];
-            $operator = $where[1];
-            if (!$operator instanceof Operator) {
-                throw new Exception("Invalid operator");
-            }
-            $value = $where[2];
-            return sprintf("%s %s %s", self::COLUMN, $operator->value, self::VALUE);
-        }
-        return "";
-    }
-
-    public static function bindWhere(array $where, false|PDOStatement $stmt): void
-    {
-        if (!empty($where)) {
-            $counter = 0;
-            foreach ($where as $value) {
-                $stmt->bindValue(self::COLUMN . $counter, $value->column);
-                $stmt->bindValue(self::VALUE . $counter, $value->value);
-                ++$counter;
-            }
-        }
-    }
-
-
     public function andWhere(Where $where): self
     {
         $this->andWheres[] = $where;
@@ -61,7 +33,8 @@ class WhereClause
 
         $sql = " WHERE ";
         $sql = $this->getAnds($sql);
-        return $this->getOrs($sql);
+        $sql .= $this->getOrs($sql);
+        return $sql;
     }
 
     private function getAnds(string $sql): string
@@ -74,7 +47,7 @@ class WhereClause
             if ($operator instanceof Operator) {
                 $operator = $operator->value;
             }
-            $sql .= sprintf(":%s %s :%s AND ", $value->column, $operator, $value->column);
+            $sql .= sprintf("%s %s :%s AND ", $value->column, $operator, $value->column);
         }
         return rtrim($sql, "AND ");
     }
@@ -89,7 +62,7 @@ class WhereClause
             if ($operator instanceof Operator) {
                 $operator = $operator->value;
             }
-            $sql .= sprintf(" OR :%s %s :%s ", $value->column, $operator, $value->column);
+            $sql .= sprintf(" OR %s %s :%s ", $value->column, $operator, $value->column);
         }
         return $sql;
     }
@@ -104,13 +77,15 @@ class WhereClause
      * @param false|PDOStatement $stmt
      * @return void
      */
-    public function bindAnds(false|PDOStatement $stmt): void
+    private function bindAnds(false|PDOStatement $stmt): void
     {
         if (empty($this->andWheres)) {
             return;
         }
-        foreach ($this->andWheres as $where => $value) {
-            $stmt->bindvalue(":" . $value->column, $value->column);
+
+        foreach ($this->andWheres as $where) {
+            $stmt->bindvalue(":" . $where->column, $where->value);
+
         }
     }
 
@@ -118,13 +93,13 @@ class WhereClause
      * @param false|PDOStatement $stmt
      * @return void
      */
-    public function bindOrs(false|PDOStatement $stmt): void
+    private function bindOrs(false|PDOStatement $stmt): void
     {
         if (empty($this->orWheres)) {
             return;
         }
-        foreach ($this->orWheres as $where => $value) {
-            $stmt->bindvalue(":" . $value->column, $value->column);
+        foreach ($this->orWheres as $where) {
+            $stmt->bindvalue(":" . $where->column, $where->column);
         }
     }
 

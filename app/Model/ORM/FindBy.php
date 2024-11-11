@@ -3,6 +3,7 @@
 namespace App\Model\ORM;
 
 use App\Config\Database;
+use App\Model\ORM\Where;
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -16,25 +17,30 @@ class FindBy
     public static function get(Database $db, string $tableName, Where $where, array $orderBy = [], ?int $offset = null, ?int $limit = null): array
     {
         $sql = "SELECT * FROM {$tableName}";
-        $sql .= self::getSqlClauses($where, $orderBy, $limit, $offset);
+        $whereClauses = new WhereClause();
+
+
+        $whereClauses->andWhere($where);
+
+        $sql .= $whereClauses->build();
+        $sql .= self::getSqlClauses($orderBy, $limit, $offset);
         $stmt = $db->getConnection()->prepare($sql);
         self::bindParams($orderBy, $limit, $offset, $stmt);
+        $whereClauses->bind($stmt);
+       // $stmt->bindValue(":id",14);
+
         try {
             $stmt->execute();
         } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
             die();
         }
-
         return $stmt->fetchAll(PDO::FETCH_CLASS);
     }
 
-    private static function getSqlClauses(Where $where, array $orderBy, ?int $limit, ?int $offset): string
+    private static function getSqlClauses(array $orderBy, ?int $limit, ?int $offset): string
     {
-        $whereClauses = new WhereClause();
-        $whereClauses->andWhere($where);
-        $sqlClause = $whereClauses->build();
-        $sqlClause .= self::addOrderBy($orderBy);
+        $sqlClause = self::addOrderBy($orderBy);
         $sqlClause .= self::addOffsetAndLimit($offset, $limit);
         return $sqlClause;
     }
@@ -63,8 +69,6 @@ class FindBy
 
     private static function bindParams(array $orderBy, ?int $offset, ?int $limit, false|PDOStatement $stmt): void
     {
-        $whereClause = new WhereClause();
-        $whereClause->bind($stmt);
         self::bindOrderBy($orderBy, $stmt);
         self::bindLimitAndOffset($offset, $limit, $stmt);
     }
