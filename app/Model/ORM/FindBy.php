@@ -61,12 +61,16 @@ class FindBy
 
     private static function bindParams(array $where, array $orderBy, ?int $offset, ?int $limit, false|PDOStatement $stmt)
     {
-        $where = new Where("id", Operator::GREATER ,21);
+        $where = new Where("id", Operator::EQUALS ,21);
         $where2 = new Where("id", Operator::GREATER,22);
+        $where3 = new Where("name", Operator::LIKE,"yassi");
+        $where4 = new Where("name", Operator::LIKE,"yassi");
         $whereClause = new WhereClause();
         $whereClause
             ->andWhere($where)
-            ->andWhere($where2);
+            ->andWhere($where2)
+            ->orWhere($where3)
+            ->andWhere($where4);
         $sql = $whereClause->build();
         echo $sql;
         exit();
