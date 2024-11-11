@@ -26,8 +26,7 @@ class WhereClause
                 throw new Exception("Invalid operator");
             }
             $value = $where[2];
-            $whereSql = sprintf("%s %s %s", self::COLUMN, $operator->value, self::VALUE);
-            return $whereSql;
+            return sprintf("%s %s %s", self::COLUMN, $operator->value, self::VALUE);
         }
         return "";
     }
@@ -43,6 +42,7 @@ class WhereClause
             }
         }
     }
+
 
     public function andWhere(Where $where): self
     {
@@ -69,7 +69,7 @@ class WhereClause
         if (empty($this->andWheres)) {
             return "";
         }
-        foreach ($this->andWheres as $field => $value) {
+        foreach ($this->andWheres as $where => $value) {
             $operator = $value->operator;
             if ($operator instanceof Operator) {
                 $operator = $operator->value;
@@ -94,9 +94,38 @@ class WhereClause
         return $sql;
     }
 
+    public function bind(PDOStatement $stmt): void
+    {
+        $this->bindAnds($stmt);
+        $this->bindOrs($stmt);
+    }
+
     /**
-     * @param string $sql
-     * @return string
+     * @param PDOStatement $stmt
+     * @return void
      */
+    public function bindAnds(PDOStatement $stmt): void
+    {
+        if (empty($this->andWheres)) {
+            return;
+        }
+        foreach ($this->andWheres as $where => $value) {
+            $stmt->bindvalue(":" . $value->column, $value->column);
+        }
+    }
+
+    /**
+     * @param PDOStatement $stmt
+     * @return void
+     */
+    public function bindOrs(PDOStatement $stmt): void
+    {
+        if (empty($this->orWheres)) {
+            return;
+        }
+        foreach ($this->orWheres as $where => $value) {
+            $stmt->bindvalue(":" . $value->column, $value->column);
+        }
+    }
 
 }

@@ -68,9 +68,7 @@ class FindBy
         $whereClause = new WhereClause();
         $whereClause
             ->andWhere($where)
-            ->andWhere($where2)
-            ->orWhere($where3)
-            ->andWhere($where4);
+            ->orWhere($where3);
         $sql = $whereClause->build();
         echo $sql;
         exit();
