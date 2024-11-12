@@ -59,7 +59,7 @@ class TaskController extends Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
-            $this->extracted();
+            $this->setValues();
             $this->task->setNotificationSent(1);
 
             $inserted = $this->task->save();
@@ -73,7 +73,7 @@ class TaskController extends Controller
     /**
      * @return void
      */
-    public function extracted(): void
+    public function setValues(): void
     {
         $this->task->setTaskTitle($_POST['task_title']);
         $this->task->setTaskDescription($_POST['task_description']);
@@ -126,8 +126,8 @@ class TaskController extends Controller
     public function index(): void
     {
         $notifyTask = $this->sendNotification();
-
         $tasksPerPage = 6;
+
 
         $totalTasks = $this->task::count();
         $totalPages = ceil($totalTasks / $tasksPerPage);
@@ -137,10 +137,8 @@ class TaskController extends Controller
         $currentPage = ($currentPage < 1) ? 1 : $currentPage;
 
         $offset = ($currentPage - 1) * $tasksPerPage;
-        $where = new Where("id", Operator::EQUALS, 2);
+        $where = new Where("user_id", Operator::EQUALS, $_SESSION["id"]);
         $tasks = $this->task::findBy($where, ["due_date" => "DESC"], $tasksPerPage, $offset);
-        dd($tasks);
-
         $this->render("home", ["tasks" => $tasks, "totalPages" => $totalPages, "currentPage" => $currentPage, "totalTasks" => $totalTasks, "notifyTask" => $notifyTask,]);
 
     }
@@ -194,7 +192,7 @@ class TaskController extends Controller
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $this->task->setId((int)$_POST['id']);
-            $this->extracted();
+            $this->setValues();
             $updated = $this->task->save();
             $alertMessage = ($updated) ? "<div class='alert alert-success' role='alert'>Task updated successfully!</div>" : "<div class='alert alert-danger' role='alert'>Something went wrong!</div>";
             $tasks = $this->taskRepository->getTaskById($id);
