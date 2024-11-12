@@ -4,9 +4,16 @@ namespace App\Model\ORM;
 
 class QueryBuilder
 {
+    private WhereClause $whereClause;
+
     public function __construct()
     {
-
+        $this->whereClause = new WhereClause();
+    }
+    public function andWhere(Where $where): self
+    {
+        $this->whereClause->andWhere($where);
+        return $this;
     }
 
     public static function buildSave(string $table, array $columns, ?string $idName = ""): array

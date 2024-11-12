@@ -7,6 +7,7 @@ use App\Mail\Mailer;
 use App\Model\Category;
 use App\Model\CategoryRepository;
 use App\Model\ORM\Operator;
+use App\Model\ORM\QueryBuilder;
 use App\Model\ORM\Where;
 use App\Model\ORM\WhereClause;
 use App\Model\Task;
@@ -86,7 +87,8 @@ class TaskController extends Controller
     public function show(int $id): mixed
     {
         $where = new Where("id", Operator::EQUALS,$id);
-        $tasks = $this->task::findBy($where)[0];
+        $tasks = Task::findBy($where)[0];
+
         $color = '';
         if ($tasks) {
             $categoryId = $tasks->category_id;
