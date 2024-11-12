@@ -4,9 +4,16 @@ namespace App\Model\ORM;
 
 class QueryBuilder
 {
+    private WhereClause $whereClause;
+
     public function __construct()
     {
-
+        $this->whereClause = new WhereClause();
+    }
+    public function andWhere(Where $where): self
+    {
+        $this->whereClause->andWhere($where);
+        return $this;
     }
 
     public static function buildSave(string $table, array $columns, ?string $idName = ""): array
@@ -36,5 +43,11 @@ class QueryBuilder
         $query = "DELETE FROM {$table} WHERE id = :id";
         return $query;
     }
+    public static function buildAll(string $table): string
+    {
+        $query = "SELECT COUNT(*) FROM {$table}";
+        return $query;
+    }
+
 
 }

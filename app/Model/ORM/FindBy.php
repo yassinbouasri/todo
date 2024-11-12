@@ -3,6 +3,7 @@
 namespace App\Model\ORM;
 
 use App\Config\Database;
+use App\Model\ORM\Where;
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -13,26 +14,33 @@ class FindBy
     private const string ORDER_BY_KEY = ":orderByKey";
     private const string ORDER_BY_VALUE = ":orderByValue";
 
-    public static function get(Database $db, string $tableName, array $where = [], array $orderBy = [], ?int $offset = null, ?int $limit = null): array
+    public static function get(Database $db, string $tableName, Where $where, array $orderBy = [], ?int $offset = null, ?int $limit = null): array
     {
         $sql = "SELECT * FROM {$tableName}";
-        $sql .= self::getSqlClauses($where, $orderBy, $limit, $offset);
+        $whereClauses = new WhereClause();
+
+
+        $whereClauses->andWhere($where);
+
+        $sql .= $whereClauses->build();
+        $sql .= self::getSqlClauses($orderBy, $limit, $offset);
         $stmt = $db->getConnection()->prepare($sql);
-        self::bindParams($where, $orderBy, $limit, $offset, $stmt);
+        self::bindParams($orderBy, $limit, $offset, $stmt);
+        $whereClauses->bind($stmt);
+       // $stmt->bindValue(":id",14);
+
         try {
             $stmt->execute();
         } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
             die();
         }
-
         return $stmt->fetchAll(PDO::FETCH_CLASS);
     }
 
-    private static function getSqlClauses(array $where, array $orderBy, ?int $limit, ?int $offset): string
+    private static function getSqlClauses(array $orderBy, ?int $limit, ?int $offset): string
     {
-        $sqlClause = WhereClause::addWhere($where);
-        $sqlClause .= self::addOrderBy($orderBy);
+        $sqlClause = self::addOrderBy($orderBy);
         $sqlClause .= self::addOffsetAndLimit($offset, $limit);
         return $sqlClause;
     }
@@ -59,9 +67,8 @@ class FindBy
         return '';
     }
 
-    private static function bindParams(array $where, array $orderBy, ?int $offset, ?int $limit, false|PDOStatement $stmt)
+    private static function bindParams(array $orderBy, ?int $offset, ?int $limit, false|PDOStatement $stmt): void
     {
-        WhereClause::bindWhere($where, $stmt);
         self::bindOrderBy($orderBy, $stmt);
         self::bindLimitAndOffset($offset, $limit, $stmt);
     }
