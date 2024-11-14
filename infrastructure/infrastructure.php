@@ -1,51 +1,28 @@
 <?php
 declare(strict_types = 1);
 
-function dd($data): void
+function run(string $url, array $routes):void
 {
-    echo '<!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Dump and Die</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                background-color: #f4f4f4;
-                margin: 0;
-                padding: 20px;
-            }
-            pre {
-                background-color: #fff;
-                border: 1px solid #ccc;
-                border-radius: 5px;
-                padding: 10px;
-                overflow: auto;
-                white-space: pre-wrap; /* Allow wrapping */
-                word-wrap: break-word; /* Break long words */
-            }
-            .title {
-                font-size: 1.5em;
-                margin-bottom: 10px;
-                color: #333;
-            }
-            .type {
-                color: #007BFF;
-                font-weight: bold;
-            }
-            .array-key {
-                color: #A52A2A;
-                font-weight: bold;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="title">Dump of Data:</div>';
+    $request = trim($url, '/');
+    $request = parse_url($request, PHP_URL_PATH);
+    $parts = explode('/', $request ?? '');
 
-    echo '<pre>';
-    echo htmlentities(print_r($data, true));
-    echo '</pre></body></html>';
+    $baseRoute = $parts[0] ?? null;
+    $function = $parts[1] ?? null;
 
-    die();
+    $path = $baseRoute;
+    if ($function) {
+        $path = $baseRoute . "/" . $function;
+    }
+
+    if (false === array_key_exists($path, $routes)) {
+        return;
+    }
+    $callback = $routes[$path];
+
+    $params = $parts[2] ?? null;
+
+    if (is_callable($callback)) {
+        $params ? $callback($params) : $callback();
+    }
 }
